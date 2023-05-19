@@ -1,9 +1,9 @@
 const router = require('express').Router();
-const { getAllSongs, renderSongFom, renderSongList } = require('../controllers/song');
+const { getAllSongs, getSongById, addSong, renderSongForm, renderSongList } = require('../controllers/song');
 
-router.route('/').get(getAllSongs);
+router.route('/').get(getAllSongs).post(addSong);
 router.get('/list', renderSongList);
-router.get('/new', renderSongFom);
+router.get('/new', renderSongForm);
 
-router.route('/:id').get().post().patch().delete();
+router.route('/:id').get(getSongById).patch().delete();
 module.exports = router;
