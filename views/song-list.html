@@ -1,37 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      * {
-        font-family: 'Noto Sans KR', sans-serif;
-      }
-    </style>
-    <title>song list</title>
-  </head>
-  <body>
-    <input type="text" name="search" id="search" />
-    <button name="search-btn" id="search-btn">검색</button>
+{% extends 'layout.html' %}
+
+{% block content %}
+  <p>
+    <h3>선택된 곡</h3>
+    <button type="button" class="btn btn-danger btn-sm">초기화</button>
+    <table id="selected-song-list">
+      <thead>
+        <tr>
+          <th>no</th>
+          <th>title</th>
+          <th>remove</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button type="button" class="btn btn-success">PPT 다운로드</button>
+  </p>
+
+  <p>
+    <h3>곡 목록</h3>
+    <!-- todo: 모달로 만들기 -->
+    <input type="text" name="search" id="search"/>
+    <button type="button" class="btn btn-primary" id="search-btn">검색</button>
+    <div>
+      <a href="./new">새로 등록하기</a>
+    </div>
     <table id="song-list">
       <thead>
         <tr>
           <th>no</th>
           <th>type</th>
           <th>title</th>
-          <th>add</th>
+          <th>select</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
-  </body>
+  </p>
+{% endblock %}
+
+{% block script %}
   <script>
     async function getAllSongs() {
       const res = await fetch('/song');
@@ -39,11 +47,11 @@
       //   console.log(songs);
       const tbody = document.querySelector('#song-list tbody');
       tbody.innerHTML = '';
-      songs.forEach((song, index) => {
+      songs.forEach((song, idx) => {
         const tr = document.createElement('tr');
         // no
         let td = document.createElement('td');
-        td.innerHTML = index + 1;
+        td.innerHTML = idx + 1;
         tr.appendChild(td);
         // type
         td = document.createElement('td');
@@ -51,19 +59,80 @@
         tr.appendChild(td);
         // title
         td = document.createElement('td');
-        td.innerHTML = song.title;
+        const titleLink = document.createElement('a');
+        titleLink.href = '#';
+        titleLink.innerHTML = song.title;
+        titleLink.onclick = () => {
+          alert(song.id);
+        };
+        td.appendChild(titleLink);
         tr.appendChild(td);
         // add
         td = document.createElement('td');
-        const addBtn = document.createElement('a');
-        addBtn.href = '#';
-        addBtn.innerHTML = '추가';
-        td.appendChild(addBtn);
+        const selectBtn = document.createElement('a');
+        selectBtn.href = '#';
+        selectBtn.innerHTML = '선택';
+        selectBtn.onclick = (e) => {
+          selectSong(song.id);
+        };
+        td.appendChild(selectBtn);
         tr.appendChild(td);
         tbody.appendChild(tr);
       });
     }
 
+    const selectedSongs = [];
+
+    async function selectSong(id) {
+      try {
+        const res = await fetch(`/song/${id}`);
+        const song = await res.json();
+        selectedSongs.push(song);
+        console.log(selectedSongs);
+
+        renderSelectedSongTable();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    function renderSelectedSongTable() {
+      const tbody = document.querySelector('#selected-song-list tbody');
+      tbody.innerHTML = '';
+
+      if (selectedSongs.length <= 0) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 3;
+        td.innerHTML = '선택된 곡이 없습니다. 목록에서 선택해주세요.';
+        tr.appendChild(td);
+        tbody.append(tr);
+        return;
+      }
+
+      selectedSongs.forEach((song, idx) => {
+        const tr = document.createElement('tr');
+        // no
+        let td = document.createElement('td');
+        td.innerHTML = idx + 1;
+        tr.appendChild(td);
+        // title
+        td = document.createElement('td');
+        td.innerHTML = song.title;
+        tr.appendChild(td);
+        // removeBtn
+        td = document.createElement('td');
+        const removeBtn = document.createElement('a');
+        removeBtn.href = '#';
+        removeBtn.innerHTML = '취소';
+        td.appendChild(removeBtn);
+        tr.appendChild(td);
+
+        tbody.append(tr);
+      });
+    }
+
     getAllSongs();
+    renderSelectedSongTable();
   </script>
-</html>
+{% endblock %}
