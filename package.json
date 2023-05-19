@@ -1,0 +1,21 @@
+{
+  "name": "worship-presenter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^4.14.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "nunjucks": "^3.2.4"
+  },
+  "devDependencies": {
+    "prisma": "^4.14.1"
+  }
+}
