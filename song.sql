@@ -4931,4 +4931,4 @@ INSERT INTO jeil."Song" ("title","lyrics","type","memo", "authorId", "updatedAt"
 다시 주를 닮아가도록
 
 채우소서 내 영혼이 세상 유혹 다 이기고 
-오직 주만 나타내도록','HYMN','', 1, now());
+오직 주만 나타내도록','CCM','', 1, now());
