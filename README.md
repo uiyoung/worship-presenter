@@ -4,17 +4,30 @@ can create ppt for worship
 
 ## todo
 
-
 ### server-side
+
 - [ ] local 로그인
 - [ ] kakao 로그인
 - [ ] auth 관리
-- [ ] CRUD 구현
+- [ ] song CRUD 구현
+- [ ] user CRUD 구현
 
-### overall
+### cliend-side
 
 - [x] bootstrap 적용
 - [x] navbar 추가
+- [ ] 제목 클릭시 modal 띄우기 - 수정, 삭제 구현
+- [ ] apply font-awesome
+- [ ] templating views : song-list, selected-list, setting&download
+
+### song-list
+
+- [ ] 선택된 곡 순서 변경 <-drag & drop
+- [ ] 선택된 곡 선택 취소
+- [ ] 선택된 곡 중복 선택 막기
+- [ ] 선택된 곡 초기화 버튼
+- [ ] 새로 등록하기 <-모달로 만들기
+- [ ] 가사로 검색 구현
 
 ### song-form
 
@@ -28,20 +41,14 @@ can create ppt for worship
 - [ ] align, vertical align 선택 추가
 - [ ] font style : font, fontSize, bold, italic 등 선택 추가
 
-### song-list
-
-- [ ] 선택된 곡 순서 변경 <-drag & drop
-- [ ] 선택된 곡 선택 취소 <- 제거 icon 사용
-- [ ] 선택된 곡 중복 선택 막기
-- [ ] 선택된 곡 초기화 버튼
-- [ ] 새로 등록하기 <-모달로 만들기
-
 ### more features...
 
-- [ ] 콘티 테이블 생성
-- [ ] 콘티별 불러오기,리관리
+- [ ] setlist 테이블 생성
+- [ ] setlist 불러오기, 관리
+- [ ] 곡별 ppt로 만들어진 횟수 관리, history 테이블 생성
 - [ ] 웹에서 바로보기 구현(reveal.js 사용)
 - [ ] 성경 자막 만들기 추가
 - [ ] 교독문 추가
 - [ ] 찬송가 추가
 - [ ] 예배 PPT 추가
+- [ ] 곡별 악보 추가
