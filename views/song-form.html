@@ -1,21 +1,26 @@
-{% extends 'layout.html' %}
-
-{% block content %}
+{% extends 'layout.html' %} {% block content %}
+<div class="container">
   <form action="/song" method="post" id="song-form">
     <div>
-      <input type="radio" name="song-type" id="hymn" value="HYMN" required="required"/>
+      <input type="radio" name="song-type" id="hymn" value="HYMN" required="required" />
       <label for="hymn">찬송가</label>
-      <input type="radio" name="song-type" id="ccm" value="CCM" required="required"/>
+      <input type="radio" name="song-type" id="ccm" value="CCM" required="required" />
       <label for="ccm">CCM</label>
     </div>
-    <div><input type="text" name="title" id="title" placeholder="제목" required="required"/></div>
-    <div>
-      <textarea name="lyrics" id="lyrics" cols="40" rows="20" placeholder="가사" required="required"></textarea>
+
+    <div class="row">
+    <input type="text" name="title" id="title" placeholder="제목" required="required" />
     </div>
+
+    <div class="row">
+      <label for="lyrics" class="form-label">가사</label>
+      <textarea class="form-control" id="lyrics" rows="20" placeholder="가사" required></textarea>
+    </div>
+
     <div>
       <select name="lines-per-slide" id="lines-per-slide">
         <option value="1">1</option>
-        <option value="2" selected="selected">2</option>
+        <option value="2" selected>2</option>
         <option value="3">3</option>
         <option value="4">4</option>
         <option value="5">5</option>
@@ -23,252 +28,237 @@
       </select>
       <button type="button" id="auto-align">줄씩 정렬</button>
       <div>
-        <input type="checkbox" name="include-title" id="include-title" checked="checked" disabled="disabled"/>
+        <input type="checkbox" name="include-title" id="include-title" checked="checked" disabled="disabled" />
         <label for="include-title">슬라이드에 제목 포함</label>
       </div>
       <a href="https://hangeul.naver.com/font/nanum">나눔폰트 다운로드</a>
       <button type="button" id="test">test lyrics</button>
       <button type="button" id="generate-ppt">PPT 바로 생성</button>
     </div>
-    <div><input type="text" name="memo" id="memo" placeholder="메모"/></div>
+    <div><input type="text" name="memo" id="memo" placeholder="메모" /></div>
     <div>
       <button type="button" id="saveBtn">저장</button>
     </div>
   </form>
-  {% endblock %}
+</div>
+{% endblock %} {% block script %}
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<script>
+  const songTitle = document.querySelector('#title');
+  const lyricsTextArea = document.querySelector('#lyrics');
 
-  {% block script %}
-    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
-    <script>
-      const songTitle = document.querySelector('#title');
-      const lyricsTextArea = document.querySelector('#lyrics');
+  // save song
+  const saveBtn = document.querySelector('#saveBtn');
+  saveBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const title = songTitle.value.trim();
+    const lyrics = lyricsTextArea.value.trim();
+    const type = document.querySelector('input[name=song-type]:checked')?.value;
+    const memo = document.querySelector('#memo').value.trim();
+    // todo : change authorId 1 to real logged-in user id
+    const authorId = 1;
 
-      // save song
-      const saveBtn = document.querySelector('#saveBtn');
-      saveBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const title = songTitle
-          .value
-          .trim();
-        const lyrics = lyricsTextArea
-          .value
-          .trim();
-        const type = document.querySelector('input[name=song-type]:checked')
-          ?.value;
-        const memo = document
-          .querySelector('#memo')
-          .value
-          .trim();
-        // todo : change authorId 1 to real logged-in user id
-        const authorId = 1;
+    if (type === undefined) {
+      alert('곡의 타입을 선택해주세요.');
+      document.querySelector('input[name=song-type]').focus();
+      return;
+    }
 
-        if (type === undefined) {
-          alert('곡의 타입을 선택해주세요.');
-          document
-            .querySelector('input[name=song-type]')
-            .focus();
-          return;
-        }
+    if (title === '') {
+      alert('제목을 작성해주세요.');
+      songTitle.focus();
+      return;
+    }
 
-        if (title === '') {
-          alert('제목을 작성해주세요.');
-          songTitle.focus();
-          return;
-        }
+    if (lyrics == '') {
+      alert('가사를 작성해주세요.');
+      lyricsTextArea.focus();
+      return;
+    }
 
-        if (lyrics == '') {
-          alert('가사를 작성해주세요.');
-          lyricsTextArea.focus();
-          return;
-        }
+    const payload = {
+      title,
+      lyrics,
+      type,
+      memo,
+      authorId,
+    };
 
-        const payload = {
-          title,
-          lyrics,
-          type,
-          memo,
-          authorId
-        };
+    try {
+      const res = await fetch('/song', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      const result = await res.json();
+      console.log(result);
+    } catch (error) {
+      console.error(error);
+    }
+  });
 
-        try {
-          const res = await fetch('/song', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
+  // for test
+  const testBtn = document.querySelector('#test');
+  testBtn.addEventListener('click', () => {
+    const testTitle = '하위이이잉';
+    const testLyrics =
+      '우리 주는 위대하며 능력이 많으시도다\n그의 지혜 무궁하며 인자는 영원하도다\n\n상한자들 고치시며 상처를 싸매시도다\n별들의 수를 세시며 이름을 붙이셨도다\n\n그가 구름으로 하늘을 덮으시며 \n땅을 위하여 비 준비하시니\n\n예루살렘아 여호와를 \n찬송할지어다 네 하나님을 \n\n감사함으로 그 앞에 나가며 \n주 임재함을 경배해\n';
+    songTitle.value = testTitle;
+    lyricsTextArea.value = testLyrics;
+  });
+
+  // 가사 자동정렬
+  const autoAlignBtn = document.querySelector('#auto-align');
+  autoAlignBtn.addEventListener('click', () => {
+    const lines = lyricsTextArea.value
+      .split('\n')
+      .filter((e) => e != '')
+      .map((e) => e.trim().replace(/\s+/g, ' '));
+
+    if (lines.length <= 0) {
+      alert('가사를 입력해주세요.');
+      lyricsTextArea.focus();
+      return;
+    }
+
+    const LINES_PER_SLIDE = 2;
+    let result = [];
+    const temp = [...lines];
+    const cnt = Math.ceil(temp.length / LINES_PER_SLIDE);
+    for (let i = 0; i < cnt; i++) {
+      result.push(temp.splice(0, LINES_PER_SLIDE));
+    }
+    result = result.map((e) => e.join('\n')).join('\n\n');
+
+    lyricsTextArea.value = result;
+  });
+
+  // PPT 생성
+  const generateBtn = document.querySelector('#generate-ppt');
+  generateBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    if (lyricsTextArea.value.trim().length <= 0) {
+      alert('가사를 입력해주세요.');
+      lyricsTextArea.focus();
+      return;
+    }
+
+    const lyricsPerSlideArr = lyricsTextArea.value.trim().split('\n\n');
+    console.log(lyricsPerSlideArr);
+
+    // align(left, center, right, justify)
+    const align = 'center';
+
+    // vertical align(top, middle, bottom)
+    const valign = 'bottom';
+
+    // 1. Create a new Presentation
+    const pptx = new PptxGenJS();
+
+    // font style
+    // const fontFace = '나눔스퀘어라운드 Bold';
+    const fontFace = '나눔고딕 Bold';
+    const fontSize = 36;
+    const fontBold = false;
+    const fontItalic = false;
+    const fontUnderline = false;
+    const fontColor = 'FFFFFF';
+    const fontOutline = {
+      size: 0.5,
+      color: '000000',
+    };
+    const fontGlow = {
+      size: 2,
+      opacity: 1.0,
+      color: '#000000',
+    };
+
+    const CM_1 = 28.346; // 1cm = 28.346pt
+
+    // sections by song
+    pptx.addSection({ title: songTitle.value });
+
+    // title slide master
+    pptx.defineSlideMaster({
+      title: 'TITLE_SLIDE',
+      background: {
+        color: '009933',
+      },
+      objects: [
+        {
+          placeholder: {
+            options: {
+              name: 'song-title',
+              type: 'title',
+              w: '100%',
+              h: '20%',
+              autoFit: true,
+              align: 'left',
+              valign: 'top',
+              fontSize: 24,
+              fontFace,
+              color: fontColor,
+              outline: fontOutline,
+              glow: fontGlow,
+              margin: [CM_1, CM_1, CM_1, CM_1],
             },
-            body: JSON.stringify(payload)
-          });
-          const result = await res.json();
-        } catch (error) {
-          console.error(error);
-        }
-      });
-
-      // for test
-      const testBtn = document.querySelector('#test');
-      testBtn.addEventListener('click', () => {
-        const testTitle = '하위이이잉';
-        const testLyrics = '우리 주는 위대하며 능력이 많으시도다\n그의 지혜 무궁하며 인자는 영원하도다\n\n상한자들 고치시며 상처를 싸매시도다\n별들의 수를 세시며 이름을 붙이셨도다\n\n그가 구름으로 하늘을 덮으시며 \n땅을 위하여 비 준비하시니\n\n예루살렘아 여호와를 \n찬송할지어다 네 하나님을 \n\n감사함으로 그 앞에 나가며 \n주 임재함을 경배해\n';
-        songTitle.value = testTitle;
-        lyricsTextArea.value = testLyrics;
-      });
-
-      // 가사 자동정렬
-      const autoAlignBtn = document.querySelector('#auto-align');
-      autoAlignBtn.addEventListener('click', () => {
-        const lines = lyricsTextArea
-          .value
-          .split('\n')
-          .filter((e) => e != '')
-          .map((e) => e.trim().replace(/\s+/g, ' '));
-
-        if (lines.length <= 0) {
-          alert('가사를 입력해주세요.');
-          lyricsTextArea.focus();
-          return;
-        }
-
-        const LINES_PER_SLIDE = 2;
-        let result = [];
-        const temp = [...lines];
-        const cnt = Math.ceil(temp.length / LINES_PER_SLIDE);
-        for (let i = 0; i < cnt; i++) {
-          result.push(temp.splice(0, LINES_PER_SLIDE));
-        }
-        result = result
-          .map((e) => e.join('\n'))
-          .join('\n\n');
-
-        lyricsTextArea.value = result;
-      });
-
-      // PPT 생성
-      const generateBtn = document.querySelector('#generate-ppt');
-      generateBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        if (lyricsTextArea.value.trim().length <= 0) {
-          alert('가사를 입력해주세요.');
-          lyricsTextArea.focus();
-          return;
-        }
-
-        const lyricsPerSlideArr = lyricsTextArea
-          .value
-          .trim()
-          .split('\n\n');
-        console.log(lyricsPerSlideArr);
-
-        // align(left, center, right, justify)
-        const align = 'center';
-
-        // vertical align(top, middle, bottom)
-        const valign = 'bottom';
-
-        // 1. Create a new Presentation
-        const pptx = new PptxGenJS();
-
-        // font style
-        // const fontFace = '나눔스퀘어라운드 Bold';
-        const fontFace = '나눔고딕 Bold';
-        const fontSize = 36;
-        const fontBold = false;
-        const fontItalic = false;
-        const fontUnderline = false;
-        const fontColor = 'FFFFFF';
-        const fontOutline = {
-          size: 0.5,
-          color: '000000'
-        };
-        const fontGlow = {
-          size: 2,
-          opacity: 1.0,
-          color: '#000000'
-        };
-
-        const CM_1 = 28.346; // 1cm = 28.346pt
-
-        // sections by song
-        pptx.addSection({title: songTitle.value});
-
-        // title slide master
-        pptx.defineSlideMaster({
-          title: 'TITLE_SLIDE',
-          background: {
-            color: '009933'
+            text: '(title here!)',
           },
-          objects: [
-            {
-              placeholder: {
-                options: {
-                  name: 'song-title',
-                  type: 'title',
-                  w: '100%',
-                  h: '20%',
-                  autoFit: true,
-                  align: 'left',
-                  valign: 'top',
-                  fontSize: 24,
-                  fontFace,
-                  color: fontColor,
-                  outline: fontOutline,
-                  glow: fontGlow,
-                  margin: [CM_1, CM_1, CM_1, CM_1]
-                },
-                text: '(title here!)'
-              }
-            }
-          ]
-        });
+        },
+      ],
+    });
 
-        // lyrics slide master
-        pptx.defineSlideMaster({
-          title: 'LYRICS_SLIDE',
-          background: {
-            color: '009933'
+    // lyrics slide master
+    pptx.defineSlideMaster({
+      title: 'LYRICS_SLIDE',
+      background: {
+        color: '009933',
+      },
+      objects: [
+        {
+          placeholder: {
+            options: {
+              name: 'lyrics-body',
+              type: 'body',
+              w: '100%',
+              h: '100%',
+              autoFit: true,
+              align,
+              valign,
+              bold: fontBold,
+              italic: fontItalic,
+              underline: fontUnderline,
+              fontSize,
+              fontFace,
+              color: fontColor,
+              outline: fontOutline,
+              glow: fontGlow,
+              lineSpacing: fontSize * 1.025,
+              margin: [1, 1, CM_1, CM_1],
+            },
+            text: '(lyrics here!)',
           },
-          objects: [
-            {
-              placeholder: {
-                options: {
-                  name: 'lyrics-body',
-                  type: 'body',
-                  w: '100%',
-                  h: '100%',
-                  autoFit: true,
-                  align,
-                  valign,
-                  bold: fontBold,
-                  italic: fontItalic,
-                  underline: fontUnderline,
-                  fontSize,
-                  fontFace,
-                  color: fontColor,
-                  outline: fontOutline,
-                  glow: fontGlow,
-                  lineSpacing: fontSize * 1.025,
-                  margin: [1, 1, CM_1, CM_1]
-                },
-                text: '(lyrics here!)'
-              }
-            }
-          ]
-        });
+        },
+      ],
+    });
 
-        // add title slide
-        const slide = pptx.addSlide({masterName: 'TITLE_SLIDE', sectionTitle: songTitle.value});
-        slide.addText(songTitle.value, {placeholder: 'song-title'});
+    // add title slide
+    const slide = pptx.addSlide({ masterName: 'TITLE_SLIDE', sectionTitle: songTitle.value });
+    slide.addText(songTitle.value, { placeholder: 'song-title' });
 
-        // Add Lyrics Slide
-        lyricsPerSlideArr.forEach((lyrics) => {
-          const slide = pptx.addSlide({masterName: 'LYRICS_SLIDE', sectionTitle: songTitle.value});
+    // Add Lyrics Slide
+    lyricsPerSlideArr.forEach((lyrics) => {
+      const slide = pptx.addSlide({ masterName: 'LYRICS_SLIDE', sectionTitle: songTitle.value });
 
-          // Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
-          slide.addText(lyrics, {placeholder: 'lyrics-body'});
-        });
+      // Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
+      slide.addText(lyrics, { placeholder: 'lyrics-body' });
+    });
 
-        // 4. Save the Presentation
-        pptx.writeFile({fileName: `${songTitle.value}.pptx`});
-      });
-    </script>
-  {% endblock %}
+    // 4. Save the Presentation
+    pptx.writeFile({ fileName: `${songTitle.value}.pptx` });
+  });
+</script>
+{% endblock %}
