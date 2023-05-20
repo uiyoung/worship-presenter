@@ -44,6 +44,7 @@
 {% endblock %} {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <script>
+  const SUB_DIR_URL = window.location.pathname.replace(/\/$/, '');
   const songTitle = document.querySelector('#title');
   const lyricsTextArea = document.querySelector('#lyrics');
 
@@ -85,7 +86,7 @@
     };
 
     try {
-      const res = await fetch('/song', {
+      const res = await fetch(`${SUB_DIR_URL}/song`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
