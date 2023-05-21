@@ -292,7 +292,7 @@ generateBtn.addEventListener('click', (e) => {
   const fontUnderline = false;
   const fontColor = 'FFFFFF';
   const fontOutline = {
-    size: 0.5,
+    size: 1.0,
     color: '000000',
   };
   const fontGlow = {
