@@ -59,7 +59,9 @@ async function getSongs(title, page) {
       // type
       td = document.createElement('td');
       const span = document.createElement('span');
-      span.className = `badge rounded-pill ${song.type === 'HYMN' ? 'text-bg-warning' : 'text-bg-info'}`;
+      span.className = `badge rounded-pill ${
+        song.type === 'HYMN' ? 'text-bg-warning' : 'text-bg-info'
+      }`;
       span.innerHTML = song.type;
       td.appendChild(span);
       tr.appendChild(td);
