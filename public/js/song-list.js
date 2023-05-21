@@ -1,4 +1,3 @@
-const SUB_DIR_URL = window.location.pathname.replace(/\/$/, '');
 const ITEMS_PER_PAGE = 10;
 
 let selectedSongs = [];
@@ -16,7 +15,7 @@ searchBtn.addEventListener('click', () => {
 
 async function getSongs(title, page) {
   try {
-    const res = await fetch(`${SUB_DIR_URL}/song?title=${title}&page=${page}`);
+    const res = await fetch(`/song?title=${title}&page=${page}`);
     const songs = await res.json();
     console.log(songs);
 
@@ -60,7 +59,9 @@ async function getSongs(title, page) {
       // type
       td = document.createElement('td');
       const span = document.createElement('span');
-      span.className = `badge rounded-pill ${song.type === 'HYMN' ? 'text-bg-warning' : 'text-bg-info'}`;
+      span.className = `badge rounded-pill ${
+        song.type === 'HYMN' ? 'text-bg-warning' : 'text-bg-info'
+      }`;
       span.innerHTML = song.type;
       td.appendChild(span);
       tr.appendChild(td);
@@ -104,7 +105,7 @@ async function selectSong(id) {
   }
 
   try {
-    const res = await fetch(`${SUB_DIR_URL}/song/${id}`);
+    const res = await fetch(`/song/${id}`);
     const song = await res.json();
     selectedSongs.push(song);
     console.log(selectedSongs);
@@ -173,7 +174,7 @@ initBtn.addEventListener('click', () => {
 
 async function renderPagination(currentPage) {
   try {
-    const res = await fetch(`${SUB_DIR_URL}/song/count`);
+    const res = await fetch(`/song/count`);
     const { count } = await res.json();
 
     const paginationElement = document.querySelector('#search-pagination');
