@@ -16,18 +16,20 @@ can create ppt for worship
 
 - [x] bootstrap 적용
 - [x] navbar 추가
-- [ ] 제목 클릭시 modal 띄우기 - 수정, 삭제 구현
+- [ ] 등록하기 버튼, 제목 클릭시 modal 띄우기
 - [ ] apply font-awesome
-- [ ] templating views : song-list, selected-list, setting&download
+- [ ] templating views : search-list, setlist, setting&download
 
-### song-list
+### search-list
 
-- [ ] 선택된 곡 순서 변경 <-drag & drop
-- [ ] 선택된 곡 선택 취소
-- [ ] 선택된 곡 중복 선택 막기
-- [ ] 선택된 곡 초기화 버튼
-- [ ] 새로 등록하기 <-모달로 만들기
 - [ ] 가사로 검색 구현
+
+### setlist
+
+- [x] 곡 선택 취소
+- [x] 곡 중복 선택 막기
+- [x] 곡 초기화 버튼
+- [ ] 곡 순서 변경 <-drag & drop
 
 ### song-form
 
@@ -52,3 +54,5 @@ can create ppt for worship
 - [ ] 찬송가 추가
 - [ ] 예배 PPT 추가
 - [ ] 곡별 악보 추가
+- [ ] 태그 구현
+  - tag table 생성, song table - tag table(N:M 관계)
