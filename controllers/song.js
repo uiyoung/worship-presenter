@@ -1,10 +1,16 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-exports.getTotalSongCount = async (req, res, next) => {
+exports.getTotalCount = async (req, res, next) => {
+  const { title } = req.query;
   try {
-    const count = await prisma.song.count();
-    res.send({ count });
+    const result = await prisma.$queryRaw`
+      SELECT COUNT(*)::integer as count 
+      FROM jeil."Song"
+      WHERE LOWER(REPLACE(title, ' ', '')) like '%' || LOWER(REPLACE(${title}, ' ', '')) || '%'
+    `;
+
+    res.json(result[0]);
   } catch (error) {
     console.error(error);
   }
@@ -24,7 +30,7 @@ exports.getSongs = async (req, res, next) => {
     const songs = await prisma.$queryRaw`
       SELECT id, title, type
       FROM jeil."Song"
-      WHERE REPLACE(title, ' ', '') like '%' || REPLACE(${title}, ' ', '') || '%'
+      WHERE LOWER(REPLACE(title, ' ', '')) like '%' || LOWER(REPLACE(${title}, ' ', '')) || '%'
       ORDER BY id DESC
       LIMIT ${SONGS_PER_PAGE} 
       OFFSET ${(page - 1) * SONGS_PER_PAGE}
@@ -35,21 +41,6 @@ exports.getSongs = async (req, res, next) => {
     next(error);
   }
 };
-
-// exports.getAllSongs = async (req, res, next) => {
-//   try {
-//     const songs = await prisma.song.findMany({
-//       select: { id: true, title: true, lyrics: true, type: true },
-//       skip: 0,
-//       take: 10,
-//       orderBy: [{ id: 'desc' }],
-//     });
-//     res.json(songs);
-//   } catch (err) {
-//     console.error(err);
-//     next(err);
-//   }
-// };
 
 exports.getSongById = async (req, res, next) => {
   try {

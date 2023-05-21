@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const {
-  getTotalSongCount,
+  getTotalCount,
   getSongs,
   getSongById,
   addSong,
@@ -9,8 +9,8 @@ const {
 } = require('../controllers/song');
 
 router.get('/list', renderSongList);
-router.get('/count', getTotalSongCount);
 router.get('/new', renderSongForm);
+router.get('/count', getTotalCount);
 router.route('/:id').get(getSongById).patch().delete();
 router.route('/').get(getSongs).post(addSong);
 
