@@ -21,12 +21,14 @@
               {# <option value="lyrics" >가사</option> #}
             </select>
           </div>
-          <input type="text" class="form-control" id="search-text" />
+          <input type="text" class="form-control" id="search-input" />
           <button class="btn btn-outline-primary" type="button" id="search-btn">검색</button>
         </div>
       </div>
+      <div class="row justify-content-center" id="search-info" hidden>
+      </div>
       <div class="row m-2">
-        <table class="table" id="song-list">
+        <table class="table" id="search-table">
           <thead class="table-light">
             <tr>
               <th>no</th>
@@ -75,7 +77,7 @@
         </div>
       </div>
       <div class="row m-2">
-        <table class="table" id="selected-song-list">
+        <table class="table" id="setlist-table">
           <thead class="table-light">
             <tr>
               <th>no</th>
