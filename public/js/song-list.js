@@ -2,106 +2,189 @@ const ITEMS_PER_PAGE = 10;
 
 let selectedSongs = [];
 
+const searchInput = document.querySelector('#search-input');
+searchInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    searchSong();
+  }
+});
+
 const searchBtn = document.querySelector('#search-btn');
 searchBtn.addEventListener('click', () => {
-  const searchInput = document.querySelector('#search-text');
-  if (searchInput.value === '') {
+  searchSong();
+});
+
+function searchSong() {
+  if (searchInput.value.trim() === '') {
     alert('검색어를 입력해주세요.');
     searchInput.focus();
     return;
   }
-  getSongs(searchInput.value, 1);
-});
 
-async function getSongs(title, page) {
+  render(searchInput.value, 1);
+}
+
+async function getSongsByPage(title, page) {
   try {
     const res = await fetch(`/song?title=${title}&page=${page}`);
     const songs = await res.json();
-    console.log(songs);
-
-    const tbody = document.querySelector('#song-list tbody');
-    tbody.innerHTML = '';
-
-    if (songs.length <= 0) {
-      let tr = document.createElement('tr');
-      let td = document.createElement('td');
-      td.colSpan = 4;
-      td.rowSpan = 2;
-      // td.innerHTML = '검색된 곡이 없습니다.';
-      const span = document.createElement('span');
-      span.innerHTML = '검색된 곡이 없습니다. ';
-      td.appendChild(span);
-      const a = document.createElement('a');
-      a.href = '/song/new';
-      a.innerHTML = '새로 등록하기';
-      td.appendChild(a);
-      tr.appendChild(td);
-      tbody.append(tr);
-
-      // tr = document.createElement('tr');
-      // td = document.createElement('td');
-      // td.colSpan = 4;
-      // const a = document.createElement('a');
-      // a.href = '/song/new';
-      // a.innerHTML = '새로 등록하기';
-      // td.appendChild(a);
-      // tr.appendChild(td);
-      // tbody.append(tr);
-      return;
-    }
-
-    songs.forEach((song, idx) => {
-      const tr = document.createElement('tr');
-      // no
-      let td = document.createElement('td');
-      td.innerHTML = idx + 1;
-      tr.appendChild(td);
-      // type
-      td = document.createElement('td');
-      const span = document.createElement('span');
-      span.className = `badge rounded-pill ${
-        song.type === 'HYMN' ? 'text-bg-warning' : 'text-bg-info'
-      }`;
-      span.innerHTML = song.type;
-      td.appendChild(span);
-      tr.appendChild(td);
-      // title
-      td = document.createElement('td');
-      const titleLink = document.createElement('a');
-      titleLink.href = '#';
-      titleLink.innerHTML = song.title;
-      titleLink.onclick = () => {
-        alert(song.id);
-      };
-      td.className = 'text-start';
-      td.appendChild(titleLink);
-      tr.appendChild(td);
-      // add
-      td = document.createElement('td');
-      const selectBtn = document.createElement('a');
-      selectBtn.href = '#';
-      selectBtn.innerHTML = '선택';
-      selectBtn.onclick = (e) => {
-        e.preventDefault();
-        selectSong(song.id);
-      };
-      td.appendChild(selectBtn);
-      tr.appendChild(td);
-      tbody.appendChild(tr);
-    });
-
-    renderPagination(page);
+    return songs;
   } catch (error) {
     console.error(error);
   }
 }
 
+async function getTotalSongCount(title) {
+  try {
+    const res = await fetch(`/song/count?title=${title}`);
+    const { count } = await res.json();
+    return count;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function render(title, pageNum) {
+  const songs = await getSongsByPage(title, pageNum);
+  renderSearchTable(songs);
+
+  const totalCount = await getTotalSongCount(title);
+  console.log(totalCount);
+  renderPagination(totalCount, pageNum);
+
+  renderSearchInfo(title, totalCount);
+}
+
+function renderSearchInfo(title, totalCount) {
+  const resultInfo = document.querySelector('#search-info');
+  resultInfo.innerHTML = '';
+
+  if (title === '%') {
+    resultInfo.hidden = true;
+    return;
+  }
+
+  const span = document.createElement('span');
+  span.innerHTML = `'${title}' 검색결과 : 총 ${totalCount} 건`;
+  span.className = 'col-auto';
+  resultInfo.appendChild(span);
+
+  const button = document.createElement('button');
+  button.innerHTML = 'x';
+  button.className = 'btn btn-danger btn-sm col-auto';
+  button.onclick = () => {
+    searchInput.value = '';
+    render('%', 1);
+  };
+  resultInfo.appendChild(button);
+  resultInfo.hidden = false;
+}
+
+function renderSearchTable(songs) {
+  const tbody = document.querySelector('#search-table tbody');
+  tbody.innerHTML = '';
+
+  if (songs.length <= 0) {
+    let tr = document.createElement('tr');
+    let td = document.createElement('td');
+    td.colSpan = 4;
+    td.rowSpan = 2;
+    const span = document.createElement('span');
+    span.innerHTML = '검색된 곡이 없습니다. ';
+    td.appendChild(span);
+    const a = document.createElement('a');
+    a.href = '/song/new';
+    a.innerHTML = '새로 등록하기';
+    td.appendChild(a);
+    tr.appendChild(td);
+    tbody.append(tr);
+    return;
+  }
+
+  songs.forEach((song, idx) => {
+    const tr = document.createElement('tr');
+    // no
+    let td = document.createElement('td');
+    td.innerHTML = idx + 1;
+    tr.appendChild(td);
+    // type
+    td = document.createElement('td');
+    const span = document.createElement('span');
+    span.className = `badge rounded-pill ${song.type === 'HYMN' ? 'text-bg-warning' : 'text-bg-info'}`;
+    span.innerHTML = song.type;
+    td.appendChild(span);
+    tr.appendChild(td);
+    // title
+    td = document.createElement('td');
+    const titleLink = document.createElement('a');
+    titleLink.href = '#';
+    titleLink.innerHTML = song.title;
+    // todo open modal
+    titleLink.onclick = () => {
+      alert(song.id);
+    };
+    td.className = 'text-start';
+    td.appendChild(titleLink);
+    tr.appendChild(td);
+    // select btn
+    td = document.createElement('td');
+    const selectBtn = document.createElement('a');
+    selectBtn.href = '#';
+    selectBtn.innerHTML = '선택';
+    selectBtn.onclick = (e) => {
+      e.preventDefault();
+      selectSong(song.id);
+    };
+    td.appendChild(selectBtn);
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  });
+}
+
+function renderPagination(totalCount, currentPage) {
+  const paginationElement = document.querySelector('#search-pagination');
+  paginationElement.innerHTML = '';
+  const totalPage = Math.ceil(totalCount / ITEMS_PER_PAGE);
+
+  let li = document.createElement('li');
+  li.className = 'page-item disabled';
+  let a = document.createElement('a');
+  a.className = 'page-link';
+  a.innerHTML = 'Previous';
+  a.href = '#';
+  li.appendChild(a);
+  paginationElement.appendChild(li);
+
+  for (let i = 0; i < totalPage; i++) {
+    li = document.createElement('li');
+    li.className = `page-item ${i + 1 === currentPage ? 'active' : ''}`;
+    a = document.createElement('a');
+    a.className = 'page-link';
+    a.innerHTML = i + 1;
+    a.href = '#';
+    a.onclick = (e) => {
+      e.preventDefault();
+      render(searchInput.value.trim(), i + 1);
+    };
+    li.appendChild(a);
+    paginationElement.appendChild(li);
+  }
+
+  li = document.createElement('li');
+  li.className = 'page-item';
+  a = document.createElement('a');
+  a.className = 'page-link';
+  a.innerHTML = 'Next';
+  a.href = '#';
+  li.appendChild(a);
+  paginationElement.appendChild(li);
+}
+
 async function selectSong(id) {
-  for (let i = 0; i < selectedSongs.length; i++) {
-    if (selectedSongs[i].id == id) {
-      alert('이미 선택된 곡입니다.');
-      return;
-    }
+  const result = selectedSongs.some((song) => song.id === id);
+  if (result) {
+    alert('이미 선택된 곡입니다.');
+    return;
   }
 
   try {
@@ -110,14 +193,14 @@ async function selectSong(id) {
     selectedSongs.push(song);
     console.log(selectedSongs);
 
-    renderSelectedSongTable();
+    renderSetlistTable();
   } catch (error) {
     console.error(error);
   }
 }
 
-function renderSelectedSongTable() {
-  const tbody = document.querySelector('#selected-song-list tbody');
+function renderSetlistTable() {
+  const tbody = document.querySelector('#setlist-table tbody');
   tbody.innerHTML = '';
 
   if (selectedSongs.length <= 0) {
@@ -149,7 +232,7 @@ function renderSelectedSongTable() {
     removeBtn.onclick = (e) => {
       e.preventDefault();
       selectedSongs = selectedSongs.filter((e) => e.id !== song.id);
-      renderSelectedSongTable();
+      renderSetlistTable();
     };
     td.appendChild(removeBtn);
     tr.appendChild(td);
@@ -169,54 +252,8 @@ initBtn.addEventListener('click', () => {
   }
 
   selectedSongs = [];
-  renderSelectedSongTable();
+  renderSetlistTable();
 });
-
-async function renderPagination(currentPage) {
-  try {
-    const res = await fetch(`/song/count`);
-    const { count } = await res.json();
-
-    const paginationElement = document.querySelector('#search-pagination');
-    paginationElement.innerHTML = '';
-    const totalPage = Math.ceil(count / ITEMS_PER_PAGE);
-
-    let li = document.createElement('li');
-    li.className = 'page-item disabled';
-    let a = document.createElement('a');
-    a.className = 'page-link';
-    a.innerHTML = 'Previous';
-    a.href = '#';
-    li.appendChild(a);
-    paginationElement.appendChild(li);
-
-    for (let i = 0; i < totalPage; i++) {
-      li = document.createElement('li');
-      li.className = `page-item ${i + 1 === currentPage ? 'active' : ''}`;
-      a = document.createElement('a');
-      a.className = 'page-link';
-      a.innerHTML = i + 1;
-      a.href = '#';
-      a.onclick = (e) => {
-        e.preventDefault();
-        getSongs('%', i + 1);
-      };
-      li.appendChild(a);
-      paginationElement.appendChild(li);
-    }
-
-    li = document.createElement('li');
-    li.className = 'page-item';
-    a = document.createElement('a');
-    a.className = 'page-link';
-    a.innerHTML = 'Next';
-    a.href = '#';
-    li.appendChild(a);
-    paginationElement.appendChild(li);
-  } catch (error) {
-    console.error(error);
-  }
-}
 
 // PPT 생성
 const generateBtn = document.querySelector('#generate-btn');
@@ -361,6 +398,5 @@ generateBtn.addEventListener('click', (e) => {
   });
 });
 
-getSongs('%', 1);
-renderPagination(1);
-renderSelectedSongTable();
+render('%', 1);
+searchInput.focus();
