@@ -2,6 +2,26 @@ const ITEMS_PER_PAGE = 10;
 
 let selectedSongs = [];
 
+const exampleModal = document.getElementById('exampleModal');
+if (exampleModal) {
+  exampleModal.addEventListener('show.bs.modal', (e) => {
+    // Button that triggered the modal
+    const button = e.relatedTarget;
+    // Extract info from data-bs-* attributes
+
+    const recipient = button.getAttribute('data-bs-whatever');
+    // If necessary, you could initiate an Ajax request here
+    // and then do the updating in a callback.
+
+    // Update the modal's content.
+    const modalTitle = exampleModal.querySelector('.modal-title');
+    const modalBodyInput = exampleModal.querySelector('.modal-body input');
+
+    modalTitle.textContent = `New message to ${recipient}`;
+    modalBodyInput.value = recipient;
+  });
+}
+
 const searchInput = document.querySelector('#search-input');
 searchInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') {
@@ -21,7 +41,7 @@ function searchSong() {
     return;
   }
 
-  render(searchInput.value, 1);
+  render(searchInput.value.trim(), 1);
 }
 
 async function getSongsByPage(title, page) {
@@ -49,8 +69,7 @@ async function render(title, pageNum) {
   renderSearchTable(songs);
 
   const totalCount = await getTotalSongCount(title);
-  console.log(totalCount);
-  renderPagination(totalCount, pageNum);
+  renderPagination(totalCount, pageNum, title);
 
   renderSearchInfo(title, totalCount);
 }
@@ -59,14 +78,14 @@ function renderSearchInfo(title, totalCount) {
   const resultInfo = document.querySelector('#search-info');
   resultInfo.innerHTML = '';
 
-  if (title === '%') {
+  if (title === '%' || title === '') {
     resultInfo.hidden = true;
     return;
   }
 
   const span = document.createElement('span');
   span.innerHTML = `'${title}' 검색결과 : 총 ${totalCount} 건`;
-  span.className = 'col-auto';
+  span.className = 'small col-auto';
   resultInfo.appendChild(span);
 
   const button = document.createElement('button');
@@ -76,7 +95,8 @@ function renderSearchInfo(title, totalCount) {
     searchInput.value = '';
     render('%', 1);
   };
-  resultInfo.appendChild(button);
+
+  span.appendChild(button);
   resultInfo.hidden = false;
 }
 
@@ -88,7 +108,6 @@ function renderSearchTable(songs) {
     let tr = document.createElement('tr');
     let td = document.createElement('td');
     td.colSpan = 4;
-    td.rowSpan = 2;
     const span = document.createElement('span');
     span.innerHTML = '검색된 곡이 없습니다. ';
     td.appendChild(span);
@@ -141,20 +160,31 @@ function renderSearchTable(songs) {
   });
 }
 
-function renderPagination(totalCount, currentPage) {
+function renderPagination(totalCount, currentPage, title) {
   const paginationElement = document.querySelector('#search-pagination');
   paginationElement.innerHTML = '';
+
+  if (totalCount <= 0) {
+    return;
+  }
+
   const totalPage = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
+  // prev
   let li = document.createElement('li');
-  li.className = 'page-item disabled';
+  li.className = `page-item ${currentPage == 1 ? 'disabled' : ''}`;
   let a = document.createElement('a');
   a.className = 'page-link';
-  a.innerHTML = 'Previous';
+  a.innerHTML = '이전';
   a.href = '#';
+  a.onclick = (e) => {
+    e.preventDefault();
+    render(title, currentPage - 1);
+  };
   li.appendChild(a);
   paginationElement.appendChild(li);
 
+  // page numbers
   for (let i = 0; i < totalPage; i++) {
     li = document.createElement('li');
     li.className = `page-item ${i + 1 === currentPage ? 'active' : ''}`;
@@ -164,18 +194,23 @@ function renderPagination(totalCount, currentPage) {
     a.href = '#';
     a.onclick = (e) => {
       e.preventDefault();
-      render(searchInput.value.trim(), i + 1);
+      render(title, i + 1);
     };
     li.appendChild(a);
     paginationElement.appendChild(li);
   }
 
+  // next
   li = document.createElement('li');
-  li.className = 'page-item';
+  li.className = `page-item ${currentPage + 1 > totalPage ? 'disabled' : ''}`;
   a = document.createElement('a');
   a.className = 'page-link';
-  a.innerHTML = 'Next';
+  a.innerHTML = '다음';
   a.href = '#';
+  a.onclick = (e) => {
+    e.preventDefault();
+    render(title, currentPage + 1);
+  };
   li.appendChild(a);
   paginationElement.appendChild(li);
 }
