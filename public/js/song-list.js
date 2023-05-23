@@ -2,25 +2,28 @@ const ITEMS_PER_PAGE = 10;
 
 let selectedSongs = [];
 
-const exampleModal = document.getElementById('exampleModal');
-if (exampleModal) {
-  exampleModal.addEventListener('show.bs.modal', (e) => {
-    // Button that triggered the modal
-    const button = e.relatedTarget;
-    // Extract info from data-bs-* attributes
+const songDetailModal = new bootstrap.Modal(document.querySelector('#songDetailModal'));
 
-    const recipient = button.getAttribute('data-bs-whatever');
-    // If necessary, you could initiate an Ajax request here
-    // and then do the updating in a callback.
+const newBtn = document.querySelector('#new-button');
+newBtn.addEventListener('click', () => {
+  songDetailModal.show();
+});
 
-    // Update the modal's content.
-    const modalTitle = exampleModal.querySelector('.modal-title');
-    const modalBodyInput = exampleModal.querySelector('.modal-body input');
+// songDetailModal.addEventListener('show.bs.modal', (e) => {
+//   // Button that triggered the modal
+//   const button = e.relatedTarget;
+//   // Extract info from data-bs-* attributes
+//   const recipient = button.getAttribute('data-bs-whatever');
+//   // If necessary, you could initiate an Ajax request here
+//   // and then do the updating in a callback.
 
-    modalTitle.textContent = `New message to ${recipient}`;
-    modalBodyInput.value = recipient;
-  });
-}
+//   // Update the modal's content.
+//   const modalTitle = songDetailModal.querySelector('.modal-title');
+//   const modalBodyInput = songDetailModal.querySelector('.modal-body input');
+
+//   modalTitle.textContent = `New message to ${recipient}`;
+//   modalBodyInput.value = recipient;
+// });
 
 const searchInput = document.querySelector('#search-input');
 searchInput.addEventListener('keypress', (e) => {
@@ -100,12 +103,23 @@ function renderSearchInfo(title, totalCount) {
   resultInfo.hidden = false;
 }
 
+async function getSongById(id) {
+  try {
+    const res = await fetch(`/song/${id}`);
+    const song = await res.json();
+    return song;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 function renderSearchTable(songs) {
   const tbody = document.querySelector('#search-table tbody');
   tbody.innerHTML = '';
 
   if (songs.length <= 0) {
     let tr = document.createElement('tr');
+    tr.className = 'text-center';
     let td = document.createElement('td');
     td.colSpan = 4;
     const span = document.createElement('span');
@@ -122,6 +136,7 @@ function renderSearchTable(songs) {
 
   songs.forEach((song, idx) => {
     const tr = document.createElement('tr');
+    tr.className = 'text-center';
     // no
     let td = document.createElement('td');
     td.innerHTML = idx + 1;
@@ -138,9 +153,15 @@ function renderSearchTable(songs) {
     const titleLink = document.createElement('a');
     titleLink.href = '#';
     titleLink.innerHTML = song.title;
-    // todo open modal
-    titleLink.onclick = () => {
-      alert(song.id);
+    titleLink.onclick = async () => {
+      try {
+        const { title, lyrics } = await getSongById(song.id);
+        document.querySelector('#modal-title').value = title;
+        document.querySelector('#modal-lyrics').value = lyrics;
+        songDetailModal.show();
+      } catch (error) {
+        console.error(error);
+      }
     };
     td.className = 'text-start';
     td.appendChild(titleLink);
@@ -222,16 +243,9 @@ async function selectSong(id) {
     return;
   }
 
-  try {
-    const res = await fetch(`/song/${id}`);
-    const song = await res.json();
-    selectedSongs.push(song);
-    console.log(selectedSongs);
-
-    renderSetlistTable();
-  } catch (error) {
-    console.error(error);
-  }
+  const selectedSong = await getSongById(id);
+  selectedSongs.push(selectedSong);
+  renderSetlistTable();
 }
 
 function renderSetlistTable() {
@@ -240,6 +254,7 @@ function renderSetlistTable() {
 
   if (selectedSongs.length <= 0) {
     const tr = document.createElement('tr');
+    tr.className = 'text-center';
     const td = document.createElement('td');
     td.colSpan = 3;
     td.innerHTML = '선택된 곡이 없습니다.';
@@ -250,6 +265,7 @@ function renderSetlistTable() {
 
   selectedSongs.forEach((song, idx) => {
     const tr = document.createElement('tr');
+    tr.className = 'text-center';
     // no
     let td = document.createElement('td');
     td.innerHTML = idx + 1;
@@ -271,7 +287,6 @@ function renderSetlistTable() {
     };
     td.appendChild(removeBtn);
     tr.appendChild(td);
-
     tbody.append(tr);
   });
 }
