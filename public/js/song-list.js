@@ -9,6 +9,9 @@ newBtn.addEventListener('click', () => {
   songDetailModal.show();
 });
 
+const modalSaveBtn = document.querySelector('#modal-save-btn');
+modalSaveBtn.addEventListener('click', () => {});
+
 // songDetailModal.addEventListener('show.bs.modal', (e) => {
 //   // Button that triggered the modal
 //   const button = e.relatedTarget;
