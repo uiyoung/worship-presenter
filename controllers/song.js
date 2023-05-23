@@ -100,6 +100,20 @@ exports.addSong = async (req, res, next) => {
   }
 };
 
+exports.updateSong = async (req, res, next) => {
+  try {
+    const { title, lyrics, type, memo, authorId } = req.body;
+    const updatedSong = await prisma.song.update({
+      data: { title, lyrics, type, memo },
+      where: { id: Number(req.params.id) },
+    });
+    res.json(updatedSong);
+  } catch (error) {
+    console.error(err);
+    next(error);
+  }
+};
+
 exports.renderSongList = (req, res) => {
   res.render('song-list', { title: 'song list - Worship Presenter' });
 };
