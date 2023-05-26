@@ -1,4 +1,164 @@
 {% extends 'layout.html' %} {% block content %}
+
+<div class="container-xxl mt-3">
+  <div class="row justify-content-center">
+    <!-- search card -->
+    <div class="col-lg-5 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">검색</h5>
+
+          <div class="text-end">
+            <button class="btn btn-primary btn-sm" type="button" id="new-button">새로 등록하기</button>
+          </div>
+
+          <div class="input-group my-3">
+            <div class="col-auto">
+              <label class="visually-hidden" for="specificSizeSelect">Preference</label>
+              <select class="form-select" id="specificSizeSelect">
+                <option value="title" selected="selected">제목</option>
+                <option value="lyrics" disabled>가사</option>
+              </select>
+            </div>
+            <input type="text" class="form-control" id="search-input" />
+            <button class="btn btn-outline-primary" type="button" id="search-btn">검색</button>
+          </div>
+
+          <div class="text-center mb-2 text-body-secondary" id="search-info" hidden></div>
+
+          <div class="table-responsive text-nowrap">
+            <table class="table table-hover" id="search-table">
+              <thead class="table-warning">
+                <tr class="text-center">
+                  <th style="width: 10%">#</th>
+                  <th style="width: 10%">타입</th>
+                  <th>제목</th>
+                  <th style="width: 5%">선택</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm justify-content-center" id="search-pagination"></ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- setlist card -->
+    <div class="col-lg-4 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">선택된 곡</h5>
+          <div class="text-end mb-3">
+            <button type="button" class="btn btn-danger btn-sm" id="init-button">비우기</button>
+          </div>
+
+          <div class="table-responsive text-nowrap" style="max-height: 470px">
+            <table class="table" id="setlist-table">
+              <thead class="table-info">
+                <tr class="text-center">
+                  <th style="width: 10%">#</th>
+                  <th>제목</th>
+                  <th sytle="width:10%">삭제</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="text-center">
+                  <td colspan="3">선택된 곡이 없습니다.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button type="button" class="btn btn-success" style="width: 100%" id="generate-btn">
+            PPT 다운로드
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- settings card -->
+    <div class="col-lg-3 col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <ul class="nav nav-pills card-header-pills">
+            <li class="nav-item">
+              <a class="nav-link active" href="#">설정</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" disabled>preview</a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          {#
+          <h5 class="card-title">설정</h5>
+          #}
+
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              asdf
+            </li>
+            <li class="list-group-item">
+            qwewer
+            </li>
+            <li class="list-group-item">
+              <a href="https://hangeul.naver.com/font/nanum">나눔폰트 다운로드</a>
+            </li>
+            <li class="list-group-item">
+              <input class="input" type="date" />
+            </li>
+          </ul>
+
+          <div class="list-group">
+            <label class="list-group-item d-flex gap-3">
+              <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;" checked disabled>
+              <span class="pt-1 form-checked-content">
+                <strong>슬라이드에 제목 포함</strong>
+                <small class="d-block text-body-secondary">
+                각 슬라이드의 사이에 제목 슬라이드를 추가합니다.
+                </small>
+              </span>
+            </label>
+            <label class="list-group-item d-flex gap-3">
+              <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;" disabled>
+              <span class="pt-1 form-checked-content">
+                <strong>Weekly All Hands</strong>
+                <small class="d-block text-body-secondary">
+                  2:00–2:30pm
+                </small>
+              </span>
+            </label>
+            <label class="list-group-item d-flex gap-3">
+              <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;" disabled>
+              <span class="pt-1 form-checked-content">
+                <strong>Out of office</strong>
+                <small class="d-block text-body-secondary">
+                  Tomorrow
+                </small>
+              </span>
+            </label>
+            <label class="list-group-item d-flex gap-3 bg-body-tertiary">
+              <input class="form-check-input form-check-input-placeholder bg-body-tertiary flex-shrink-0 pe-none" disabled="" type="checkbox" value="" style="font-size: 1.375em;">
+              <span class="pt-1 form-checked-content">
+                <span contenteditable="true" class="w-100">Add new task...</span>
+                <small class="d-block text-body-secondary">
+                  Choose list...
+                </small>
+              </span>
+            </label>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- modal -->
 <div class="modal fade" id="songDetailModal" tabindex="-1" aria-labelledby="songDetailModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -10,7 +170,7 @@
       <div class="modal-body">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-6">
+            <div class="col-lg-6">
               <form>
                 <div class="mb-3">
                   <label for="modal-title" class="col-form-label">제목</label>
@@ -22,132 +182,30 @@
                 </div>
               </form>
             </div>
-            <div class="col-6">settings</div>
+            <div class="col-lg-6">
+              <select style="width:30%"
+                name="lines-per-slide"
+                class="form-select form-select-sm"
+                id="lines-per-slide"
+              >
+                <option value="1">1줄 씩</option>
+                <option value="2" selected="selected">2줄 씩</option>
+                <option value="3">3줄 씩</option>
+                <option value="4">4줄 씩</option>
+                <option value="5">5줄 씩</option>
+                <option value="6">6줄 씩</option>
+              </select>
+              <button type="button" class="btn btn-outline-primary btn-sm" id="auto-align" disabled="disabled">정렬</button>
+            
+            </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="modal-save-btn">저장</button>
+        <button type="button" class="btn btn-primary" id="modal-save-btn disabled">저장</button>
       </div>
     </div>
-  </div>
-</div>
-
-<div class="container-xxl mt-3">
-  <div class="row justify-content-center">
-    <!-- search -->
-    <div class="col-lg-5 col-md-6">
-      <div class="row">
-        <h5 class="border-bottom text-start p-1">검색</h5>
-      </div>
-      <div class="row justify-content-end mb-2">
-        <div class="col-auto">
-          <button class="btn btn-primary btn-sm" type="button" id="new-button">새로 등록하기</button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-group mb-3">
-          <div class="col-auto">
-            <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-            <select class="form-select" id="specificSizeSelect">
-              <option value="title" selected="selected">제목</option>
-              {#
-              <option value="lyrics">가사</option>
-              #}
-            </select>
-          </div>
-          <input type="text" class="form-control" id="search-input" />
-          <button class="btn btn-outline-primary" type="button" id="search-btn">검색</button>
-        </div>
-      </div>
-      <div class="row justify-content-center" id="search-info" hidden="hidden"></div>
-      <div class="table-responsive text-nowrap row m-2">
-        <table class="table table-hover" id="search-table">
-          <thead class="table-warning">
-            <tr class="text-center">
-              <th style="width: 10%">#</th>
-              <th style="width: 10%">타입</th>
-              <th>제목</th>
-              <th style="width: 5%">선택</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <nav aria-label="Page navigation">
-        <ul class="pagination pagination-sm justify-content-center" id="search-pagination"></ul>
-      </nav>
-    </div>
-
-    <!-- setlist -->
-    <div class="col-lg-5 col-md-6">
-      <h5 class="border-bottom text-start p-1">선택된 곡</h5>
-      <div class="row justify-content-end">
-        <div class="col-auto">
-          <button type="button" class="btn btn-danger btn-sm" id="init-button">초기화</button>
-        </div>
-      </div>
-      <div class="table-responsive text-nowrap row m-2" style="max-height: 470px">
-        <table class="table" id="setlist-table">
-          <thead class="table-light">
-            <tr class="text-center">
-              <th style="width: 10%">#</th>
-              <th colspan="2">제목</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="text-center">
-              <td colspan="3">선택된 곡이 없습니다.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="row justify-content-center">
-        <button type="button" class="btn btn-success" style="width: 90%" id="generate-btn">PPT 다운로드</button>
-      </div>
-    </div>
-
-    <!-- settings -->
-    <div class="col-lg-2 col-md-12">
-      <h5 class="border-bottom text-start p-1">설정</h5>
-
-      <div class="row">
-        <div class="col-auto">
-          <select name="lines-per-slide" class="form-select form-select-sm" id="lines-per-slide" disabled="disabled">
-            <option value="1">1</option>
-            <option value="2" selected="selected">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-          </select>
-        </div>
-        <div class="col-auto">
-          <button type="button" class="btn btn-outline-primary btn-sm" id="auto-align" disabled="disabled">
-            줄씩 정렬
-          </button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col text-start">
-          <input type="checkbox" name="include-title" id="include-title" checked="checked" disabled="disabled" />
-          <label for="include-title">슬라이드에 제목 포함</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col text-start">
-          <a href="https://hangeul.naver.com/font/nanum">나눔폰트 다운로드</a>
-        </div>
-      </div>
-      <input class="input" type="date" />
-      <div class="row">
-        {# <button type="button" class="btn btn-success m-2 p-2" id="generate-btn">PPT 다운로드</button> #}
-      </div>
-    </div>
-
-    <!-- preview -->
-    <!--div class="col-lg-3 col-md-6"> <h5 class="border-bottom">미리보기</h5> <div class="card"> <h5 class="card-header">Featured</h5> <div class="card-body"> <h5 class="card-title">Special title treatment</h5> <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> <a href="#" class="btn btn-primary">Go somewhere</a> </div> </div> </div-->
   </div>
 </div>
 
