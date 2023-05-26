@@ -7,13 +7,15 @@
     "start": "nodemon -e * app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "suy",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^4.14.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "nunjucks": "^3.2.4"
+    "nunjucks": "^3.2.4",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22",

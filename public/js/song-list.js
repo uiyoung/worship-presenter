@@ -10,7 +10,8 @@ newBtn.addEventListener('click', () => {
 });
 
 const modalSaveBtn = document.querySelector('#modal-save-btn');
-modalSaveBtn.addEventListener('click', () => {});
+// todo : update, save event
+// modalSaveBtn.addEventListener('click', () => {});
 
 // songDetailModal.addEventListener('show.bs.modal', (e) => {
 //   // Button that triggered the modal
@@ -91,12 +92,12 @@ function renderSearchInfo(title, totalCount) {
 
   const span = document.createElement('span');
   span.innerHTML = `'${title}' 검색결과 : 총 ${totalCount} 건`;
-  span.className = 'small col-auto';
+  // span.className = 'small col-auto';
   resultInfo.appendChild(span);
 
   const button = document.createElement('button');
   button.innerHTML = 'x';
-  button.className = 'btn btn-danger btn-sm col-auto';
+  button.className = 'btn btn-danger btn-sm';
   button.onclick = () => {
     searchInput.value = '';
     render('%', 1);
@@ -161,6 +162,7 @@ function renderSearchTable(songs) {
         const { title, lyrics } = await getSongById(song.id);
         document.querySelector('#modal-title').value = title;
         document.querySelector('#modal-lyrics').value = lyrics;
+        document.querySelector('#modal-lyrics').rows = lyrics.split('\n').length;
         songDetailModal.show();
       } catch (error) {
         console.error(error);
@@ -318,13 +320,14 @@ generateBtn.addEventListener('click', (e) => {
 
   // add loading spinner to button
   const originalBtnText = e.target.innerHTML;
+  e.target.innerHTML = '';
   const spinner = document.createElement('span');
-  spinner.className = 'spinner-border spinner-border-sm';
+  spinner.className = 'spinner-border spinner-border-sm mx-2';
   spinner.role = 'status';
   spinner.ariaHidden = true;
-  e.target.innerHTML = 'ppt 생성 중... ';
-  e.target.disabled = true;
   e.target.appendChild(spinner);
+  e.target.innerHTML += 'PPT 생성 중... ';
+  e.target.disabled = true;
 
   // align(left, center, right, justify)
   const align = 'center';

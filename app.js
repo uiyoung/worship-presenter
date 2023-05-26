@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const nunjucks = require('nunjucks');
 
 const app = express();
@@ -11,12 +12,14 @@ nunjucks.configure('views', { autoescape: true, express: app });
 
 const indexRouter = require('./routes');
 const songRouter = require('./routes/song');
+const authRouter = require('./routes/auth');
 
 app.use(express.static('public'));
 app.use(express.json());
 
 app.use('/', indexRouter);
 app.use('/song', songRouter);
+app.use('/auth', authRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
