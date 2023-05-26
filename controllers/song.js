@@ -114,10 +114,6 @@ exports.updateSong = async (req, res, next) => {
   }
 };
 
-exports.renderSongList = (req, res) => {
-  res.render('song-list', { title: 'song list - Worship Presenter' });
-};
-
 exports.renderSongForm = (req, res) => {
   res.render('song-form', { title: 'song form - Worship Presenter' });
 };
