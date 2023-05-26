@@ -8,7 +8,6 @@ const {
   renderSongList,
 } = require('../controllers/song');
 
-router.get('/list', renderSongList);
 router.get('/new', renderSongForm);
 router.get('/count', getTotalCount);
 router.route('/:id').get(getSongById).patch().delete();
