@@ -1,21 +1,36 @@
 const express = require('express');
+const session = require('express-session');
 const passport = require('passport');
+const passportConfig = require('./passport');
 const nunjucks = require('nunjucks');
-
-const app = express();
-require('dotenv').config();
-
-const port = process.env.PORT || 3000;
-
-app.set('view engine', 'html');
-nunjucks.configure('views', { autoescape: true, express: app });
 
 const indexRouter = require('./routes');
 const songRouter = require('./routes/song');
 const authRouter = require('./routes/auth');
 
+const app = express();
+require('dotenv').config();
+passportConfig();
+app.set('port', process.env.PORT || 5000);
+app.set('view engine', 'html');
+nunjucks.configure('views', { autoescape: true, express: app });
+
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.COOKIE_SECRET,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+    },
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/song', songRouter);
@@ -33,4 +48,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.render('error');
 });
-app.listen(port, () => console.log('> Server is up and running on port : ' + port));
+
+app.listen(app.get('port'), () => {
+  console.log('> Server is up and running on port : ' + app.get('port'));
+});

@@ -1,10 +1,17 @@
 const router = require('express').Router();
-const { renderLogin } = require('../controllers/auth');
+const { renderLogin, renderSignup, login, signup, logout } = require('../controllers/auth');
 
-router.get('/login', renderLogin);
+router
+  .route('/login')
+  .get(renderLogin)
+  .post((req, res, next) => {
+    console.log(req.body);
+    next();
+  }, login);
 
-router.get('/another-route', (req, res) => {
-  // router code here
-});
+router.route('/signup').get(renderSignup).post(signup);
+router.route('/:id').get().patch().delete();
+
+router.post('/logout', logout);
 
 module.exports = router;
