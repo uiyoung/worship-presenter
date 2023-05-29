@@ -3,14 +3,11 @@ const bcrypt = require('bcrypt');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-exports.login = (req, res, next) => {
-  passport.authenticate('local', {
-    session: false,
-    successRedirect: '/',
-    failureRedirect: '/auth/login',
-    failureMessage: true,
-  });
-};
+exports.login = passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/auth/login',
+  failureMessage: true,
+});
 
 exports.signup = async (req, res, next) => {
   const { email, username, password } = req.body;
