@@ -32,6 +32,13 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  res.locals.messages = req.session.messages;
+  req.session.messages = [];
+  next();
+});
+
 app.use('/', indexRouter);
 app.use('/song', songRouter);
 app.use('/auth', authRouter);
