@@ -83,14 +83,14 @@ exports.getSongById = async (req, res, next) => {
 
 exports.addSong = async (req, res, next) => {
   try {
-    const { title, lyrics, type, memo, authorId } = req.body;
+    const { title, lyrics, type, memo } = req.body;
     const newSong = await prisma.song.create({
       data: {
         title,
         lyrics,
         type,
         memo,
-        authorId,
+        authorId: req.user.id,
       },
     });
     res.json(newSong);

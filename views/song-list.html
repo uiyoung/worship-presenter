@@ -9,7 +9,11 @@
           <h5 class="card-title">검색</h5>
 
           <div class="text-end">
+          {% if user %}
             <button class="btn btn-primary btn-sm" type="button" id="new-button">새로 등록하기</button>
+          {% else %}
+            <button class="btn btn-primary btn-sm" type="button" id="new-button" disabled>새로 등록하기</button>
+          {% endif %}
           </div>
 
           <div class="input-group my-3">
@@ -107,7 +111,7 @@
             qwewer
             </li>
             <li class="list-group-item">
-              <a href="https://hangeul.naver.com/font/nanum">나눔폰트 다운로드</a>
+              <a href="https://hangeul.naver.com/font/nanum" target="_blank">나눔폰트 다운로드</a>
             </li>
             <li class="list-group-item">
               <input class="input" type="date" />
