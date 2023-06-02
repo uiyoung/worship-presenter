@@ -3,7 +3,7 @@
 <div class="container-xxl mt-3">
   <div class="row justify-content-center">
     <!-- search card -->
-    <div class="col-lg-5 col-md-6">
+    <div class="col-xl-5 col-md-6">
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">검색</h5>
@@ -38,7 +38,7 @@
                 <tr class="text-center">
                   <th style="width: 10%">#</th>
                   <th style="width: 10%">타입</th>
-                  <th>제목</th>
+                  <th style="width: 75%">제목</th>
                   <th style="width: 5%">선택</th>
                 </tr>
               </thead>
@@ -54,7 +54,7 @@
     </div>
 
     <!-- setlist card -->
-    <div class="col-lg-5 col-md-6">
+    <div class="col-xl-5 col-md-6">
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">선택된 곡</h5>
@@ -63,7 +63,7 @@
           </div>
 
           <div class="table-responsive text-nowrap" style="max-height: 470px">
-            <table class="table" id="setlist-table">
+            <table class="table table-hover" id="setlist-table">
               <thead class="table-info">
                 <tr class="text-center">
                   <th style="width: 10%">#</th>
@@ -81,13 +81,14 @@
           </div>
         </div>
         <div class="card-footer">
-          <button type="button" class="btn btn-success" style="width: 100%" id="generate-btn">PPT 다운로드</button>
+          <button type="button" class="btn btn-success col-9" id="generate-btn">PPT 다운로드</button>
+          <button type="button" class="btn btn-outline-success col-2" id="settings-btn">설정</button>
         </div>
       </div>
     </div>
 
     <!-- settings card -->
-    <div class="col-lg-2 col-md-12">
+    <div class="col-xl-2 col-md-12">
       <div class="card">
         <div class="card-header">
           <ul class="nav nav-pills card-header-pills">
