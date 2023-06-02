@@ -7,7 +7,7 @@ const songDetailModal = new bootstrap.Modal(document.querySelector('#songDetailM
 const newBtn = document.querySelector('#new-button');
 if (newBtn) {
   newBtn.addEventListener('click', () => {
-    setSongDetailModal(null);
+    showSongDetailModal(null);
     songDetailModal.show();
   });
 }
@@ -16,7 +16,7 @@ const modalTitle = document.querySelector('#modal-title');
 const modalLyrics = document.querySelector('#modal-lyrics');
 const modalMemo = document.querySelector('#modal-memo');
 
-function setSongDetailModal(song) {
+async function showSongDetailModal(id) {
   const modalHeader = document.querySelector('#songDetailModalLabel');
   const modalSongTypes = document.querySelectorAll('input[name=song-type]');
   const deleteButton = document.querySelector('#song-delete-btn');
@@ -29,8 +29,12 @@ function setSongDetailModal(song) {
   modalSongTypes.forEach((e) => (e.checked = false));
   modalMemo.value = '';
 
-  if (song) {
-    const { type, title, lyrics, memo } = song;
+  if (!id) {
+    return;
+  }
+
+  try {
+    const { type, title, lyrics, memo } = await getSongById(id);
     modalHeader.innerHTML = title;
     deleteButton.onclick = async () => {
       if (!confirm(`${song.title} 삭제 하시겠습니까?`)) {
@@ -66,6 +70,11 @@ function setSongDetailModal(song) {
     modalLyrics.rows = lyrics.split('\n').length;
     Array.from(modalSongTypes).find((e) => e.value === type).checked = true;
     modalMemo.value = memo;
+
+    songDetailModal.show();
+  } catch (error) {
+    alert('error getSongById');
+    console.error(error);
   }
 }
 
@@ -161,25 +170,6 @@ modalSaveBtn.addEventListener('click', async () => {
 //   modalTitle.textContent = `New message to ${recipient}`;
 //   modalBodyInput.value = recipient;
 // });
-
-const logoutBtn = document.querySelector('#logoutBtn');
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', async () => {
-    try {
-      const response = await fetch('/auth/logout', {
-        method: 'POST',
-      });
-      const result = await response.json();
-      if (result.success) {
-        window.location.href = '/';
-      }
-    } catch (error) {
-      alert('logout error');
-      window.location.href = '/';
-      console.log(error);
-    }
-  });
-}
 
 const searchInput = document.querySelector('#search-input');
 searchInput.addEventListener('keypress', (e) => {
@@ -308,16 +298,9 @@ function renderSearchTable(songs) {
     td = document.createElement('td');
     const titleLink = document.createElement('a');
     titleLink.href = '#';
+    titleLink.className = 'title';
     titleLink.innerHTML = song.title;
-    titleLink.onclick = async () => {
-      try {
-        const clickedSong = await getSongById(song.id);
-        setSongDetailModal(clickedSong);
-        songDetailModal.show();
-      } catch (error) {
-        console.error(error);
-      }
-    };
+    titleLink.onclick = () => showSongDetailModal(song.id);
     td.className = 'text-start';
     td.appendChild(titleLink);
     tr.appendChild(td);
@@ -427,22 +410,43 @@ function renderSetlistTable() {
     tr.appendChild(td);
     // title
     td = document.createElement('td');
-    td.innerHTML = song.title;
     td.className = 'text-start';
+    const titleLink = document.createElement('a');
+    titleLink.innerHTML = song.title;
+    titleLink.href = '#';
+    titleLink.className = 'title';
+    titleLink.onclick = showSongDetailModal(song.id);
+    td.appendChild(titleLink);
     tr.appendChild(td);
 
     td = document.createElement('td');
     const upButton = document.createElement('button');
     upButton.innerHTML = '↑';
     upButton.className = 'btn btn-sm btn-outline-primary mx-1';
-    upButton.onclick = () => {};
+    upButton.disabled = idx === 0 ? true : false;
+    upButton.onclick = () => {
+      const idx = selectedSongs.findIndex((e) => e.id === song.id);
+      if (idx === 0) {
+        return;
+      }
+      [selectedSongs[idx], selectedSongs[idx - 1]] = [selectedSongs[idx - 1], selectedSongs[idx]];
+      renderSetlistTable();
+    };
     td.appendChild(upButton);
     tr.appendChild(td);
 
     const downButton = document.createElement('button');
     downButton.innerHTML = '↓';
     downButton.className = 'btn btn-sm btn-outline-secondary';
-    downButton.onclick = () => {};
+    downButton.disabled = idx === selectedSongs.length - 1 ? true : false;
+    downButton.onclick = () => {
+      const idx = selectedSongs.findIndex((e) => e.id === song.id);
+      if (idx === selectedSongs.length - 1) {
+        return;
+      }
+      [selectedSongs[idx], selectedSongs[idx + 1]] = [selectedSongs[idx + 1], selectedSongs[idx]];
+      renderSetlistTable();
+    };
     td.appendChild(downButton);
     tr.appendChild(td);
 
