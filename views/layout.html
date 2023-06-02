@@ -20,13 +20,24 @@
       * {
         font-family: 'Noto Sans KR', sans-serif;
       }
+
       #app-title {
         font-family: 'Pacifico', cursive;
       }
+
       a {
         text-decoration: none;
       }
+
+      .title {
+        white-space: nowrap; /* 줄 바꿈 방지 */
+        overflow: hidden; /* 내용이 넘칠 경우 숨김 */
+        text-overflow: ellipsis; /* 넘치는 부분을 ...으로 표시 */
+        display: table-cell;
+        max-width: 330px;
+      }
     </style>
+    {% block css%} {% endblock %}
   </head>
   <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -46,12 +57,12 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link" href="#">list</a>
+              <a class="nav-link" href="/about">about</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" href="#">new</a>
-            </li>
-            <li class="nav-item dropdown">
+            </li> -->
+            <!-- <li class="nav-item dropdown">
               <a
                 class="nav-link dropdown-toggle"
                 href="#"
@@ -73,14 +84,14 @@
                   <a class="dropdown-item" href="#">Something else here</a>
                 </li>
               </ul>
-            </li>
+            </li> -->
           </ul>
-          <!--form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+          <!-- <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
             <button class="btn btn-outline-success" type="submit">Search</button>
-          </!form-->
+          </form> -->
 
-          <ul class="navbar-nav d-none d-lg-flex ml-2 order-3">
+          <ul class="navbar-nav d-lg-flex ml-2 order-3">
             {% if user %}
             <li class="nav-item dropdown">
               <a
@@ -90,7 +101,7 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-              {{user.username}}
+                {{user.username}}
               </a>
               <ul class="dropdown-menu">
                 <li>
@@ -101,7 +112,7 @@
                 </li>
                 <li><hr class="dropdown-divider" /></li>
                 <li>
-                  <a class="dropdown-item" href="#" id='logoutBtn'>logout</a>
+                  <a class="dropdown-item" href="#" id="logoutBtn">logout</a>
                 </li>
               </ul>
             </li>
@@ -113,8 +124,7 @@
         </div>
       </div>
     </nav>
-    {% block content %}
-    {% endblock %}
+    {% block content %} {% endblock %}
 
     <!-- bootstrap -->
     <script
@@ -123,7 +133,8 @@
       crossorigin="anonymous"
     ></script>
 
-    {% block script %}
-    {% endblock %}
+    <script src="/js/layout.js"></script>
+
+    {% block script %} {% endblock %}
   </body>
 </html>
