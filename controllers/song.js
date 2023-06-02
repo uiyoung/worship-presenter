@@ -93,7 +93,7 @@ exports.addSong = async (req, res, next) => {
         authorId: req.user.id,
       },
     });
-    res.json(newSong);
+    res.json({ success: true });
   } catch (error) {
     console.error(error);
     next(error);
@@ -108,6 +108,18 @@ exports.updateSong = async (req, res, next) => {
       where: { id: Number(req.params.id) },
     });
     res.json(updatedSong);
+  } catch (error) {
+    console.error(err);
+    next(error);
+  }
+};
+
+exports.deleteSong = async (req, res, next) => {
+  try {
+    const deletedSong = await prisma.song.delete({
+      where: { id: Number(req.params.id) },
+    });
+    res.json({ success: true });
   } catch (error) {
     console.error(err);
     next(error);

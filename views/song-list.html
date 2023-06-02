@@ -9,11 +9,13 @@
           <h5 class="card-title">검색</h5>
 
           <div class="text-end">
-          {% if user %}
+            {% if user %}
             <button class="btn btn-primary btn-sm" type="button" id="new-button">새로 등록하기</button>
-          {% else %}
-            <button class="btn btn-primary btn-sm" type="button" id="new-button" disabled>새로 등록하기</button>
-          {% endif %}
+            {% else %}
+            <button class="btn btn-primary btn-sm" type="button" onclick="location.href='/auth/login'">
+              새로 등록하기
+            </button>
+            {% endif %}
           </div>
 
           <div class="input-group my-3">
@@ -52,7 +54,7 @@
     </div>
 
     <!-- setlist card -->
-    <div class="col-lg-4 col-md-6">
+    <div class="col-lg-5 col-md-6">
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">선택된 곡</h5>
@@ -66,27 +68,26 @@
                 <tr class="text-center">
                   <th style="width: 10%">#</th>
                   <th>제목</th>
+                  <th>순서</th>
                   <th sytle="width:10%">삭제</th>
                 </tr>
               </thead>
               <tbody>
                 <tr class="text-center">
-                  <td colspan="3">선택된 곡이 없습니다.</td>
+                  <td colspan="5">선택된 곡이 없습니다.</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
         <div class="card-footer">
-          <button type="button" class="btn btn-success" style="width: 100%" id="generate-btn">
-            PPT 다운로드
-          </button>
+          <button type="button" class="btn btn-success" style="width: 100%" id="generate-btn">PPT 다운로드</button>
         </div>
       </div>
     </div>
 
     <!-- settings card -->
-    <div class="col-lg-3 col-md-12">
+    <div class="col-lg-2 col-md-12">
       <div class="card">
         <div class="card-header">
           <ul class="nav nav-pills card-header-pills">
@@ -105,12 +106,6 @@
 
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
-              asdf
-            </li>
-            <li class="list-group-item">
-            qwewer
-            </li>
-            <li class="list-group-item">
               <a href="https://hangeul.naver.com/font/nanum" target="_blank">나눔폰트 다운로드</a>
             </li>
             <li class="list-group-item">
@@ -120,43 +115,33 @@
 
           <div class="list-group">
             <label class="list-group-item d-flex gap-3">
-              <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;" checked disabled>
+              <input
+                class="form-check-input flex-shrink-0"
+                type="checkbox"
+                value=""
+                style="font-size: 1.375em"
+                checked
+                disabled
+              />
               <span class="pt-1 form-checked-content">
                 <strong>슬라이드에 제목 포함</strong>
-                <small class="d-block text-body-secondary">
-                각 슬라이드의 사이에 제목 슬라이드를 추가합니다.
-                </small>
-              </span>
-            </label>
-            <label class="list-group-item d-flex gap-3">
-              <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;" disabled>
-              <span class="pt-1 form-checked-content">
-                <strong>Weekly All Hands</strong>
-                <small class="d-block text-body-secondary">
-                  2:00–2:30pm
-                </small>
-              </span>
-            </label>
-            <label class="list-group-item d-flex gap-3">
-              <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;" disabled>
-              <span class="pt-1 form-checked-content">
-                <strong>Out of office</strong>
-                <small class="d-block text-body-secondary">
-                  Tomorrow
-                </small>
+                <small class="d-block text-body-secondary"> 각 슬라이드의 사이에 제목 슬라이드를 추가합니다. </small>
               </span>
             </label>
             <label class="list-group-item d-flex gap-3 bg-body-tertiary">
-              <input class="form-check-input form-check-input-placeholder bg-body-tertiary flex-shrink-0 pe-none" disabled="" type="checkbox" value="" style="font-size: 1.375em;">
+              <input
+                class="form-check-input form-check-input-placeholder bg-body-tertiary flex-shrink-0 pe-none"
+                disabled=""
+                type="checkbox"
+                value=""
+                style="font-size: 1.375em"
+              />
               <span class="pt-1 form-checked-content">
                 <span contenteditable="true" class="w-100">Add new task...</span>
-                <small class="d-block text-body-secondary">
-                  Choose list...
-                </small>
+                <small class="d-block text-body-secondary"> Choose list... </small>
               </span>
             </label>
           </div>
-
         </div>
       </div>
     </div>
@@ -169,6 +154,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="songDetailModalLabel">New Song</h1>
+        <button type="button" class="btn btn-sm btn-danger mx-3" id="song-delete-btn" hidden>삭제</button>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -187,27 +173,49 @@
               </form>
             </div>
             <div class="col-lg-6">
-              <select style="width:30%"
-                name="lines-per-slide"
-                class="form-select form-select-sm"
-                id="lines-per-slide"
-              >
-                <option value="1">1줄 씩</option>
-                <option value="2" selected="selected">2줄 씩</option>
-                <option value="3">3줄 씩</option>
-                <option value="4">4줄 씩</option>
-                <option value="5">5줄 씩</option>
-                <option value="6">6줄 씩</option>
-              </select>
-              <button type="button" class="btn btn-outline-primary btn-sm" id="auto-align" disabled="disabled">정렬</button>
-            
+              <div class="mb-3">
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="song-type"
+                  id="hymn-radio"
+                  value="HYMN"
+                  autocomplete="off"
+                />
+                <label class="btn btn-sm btn-outline-success" for="hymn-radio">찬송가</label>
+                <input type="radio" class="btn-check" name="song-type" id="ccm-radio" value="CCM" autocomplete="off" />
+                <label class="btn btn-sm btn-outline-success" for="ccm-radio">CCM</label>
+              </div>
+
+              <div class="mb-3">
+                <label for="modal-memo" class="col-form-label">메모</label>
+                <textarea class="form-control" id="modal-memo" rows="1"></textarea>
+              </div>
+              <div class="mb-3">
+                <select
+                  style="width: 30%; display: inline"
+                  name="lines-per-slide"
+                  class="form-select form-select-sm"
+                  id="lines-per-slide"
+                >
+                  <option value="1">1줄 씩</option>
+                  <option value="2" selected="selected">2줄 씩</option>
+                  <option value="3">3줄 씩</option>
+                  <option value="4">4줄 씩</option>
+                  <option value="5">5줄 씩</option>
+                  <option value="6">6줄 씩</option>
+                </select>
+                <button type="button" class="btn btn-outline-primary btn-sm" id="auto-align-btn" onclick="autoAlign()">
+                  정렬
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="modal-save-btn">저장</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="modal-save-btn disabled">저장</button>
       </div>
     </div>
   </div>

@@ -5,13 +5,146 @@ let selectedSongs = [];
 const songDetailModal = new bootstrap.Modal(document.querySelector('#songDetailModal'));
 
 const newBtn = document.querySelector('#new-button');
-newBtn.addEventListener('click', () => {
-  songDetailModal.show();
-});
+if (newBtn) {
+  newBtn.addEventListener('click', () => {
+    setSongDetailModal(null);
+    songDetailModal.show();
+  });
+}
+
+const modalTitle = document.querySelector('#modal-title');
+const modalLyrics = document.querySelector('#modal-lyrics');
+const modalMemo = document.querySelector('#modal-memo');
+
+function setSongDetailModal(song) {
+  const modalHeader = document.querySelector('#songDetailModalLabel');
+  const modalSongTypes = document.querySelectorAll('input[name=song-type]');
+  const deleteButton = document.querySelector('#song-delete-btn');
+
+  modalHeader.innerHTML = '새로 등록하기';
+  deleteButton.hidden = true;
+  modalTitle.value = '';
+  modalLyrics.value = '';
+  modalLyrics.rows = 14;
+  modalSongTypes.forEach((e) => (e.checked = false));
+  modalMemo.value = '';
+
+  if (song) {
+    const { type, title, lyrics, memo } = song;
+    modalHeader.innerHTML = title;
+    deleteButton.onclick = async () => {
+      if (!confirm(`${song.title} 삭제 하시겠습니까?`)) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/song/${song.id}`, {
+          method: 'DELETE',
+        });
+        const result = await response.json();
+        if (!result.success && result.redirectURL) {
+          if (!confirm('로그인이 필요합니다.')) {
+            return;
+          }
+
+          window.location.href = result.redirectURL;
+          return;
+        }
+
+        alert('삭제 성공');
+        render('%', 1);
+        songDetailModal.hide();
+      } catch (error) {
+        alert('삭제 실패');
+        console.error(error);
+      }
+    };
+    deleteButton.hidden = false;
+
+    modalTitle.value = title;
+    modalLyrics.value = lyrics;
+    modalLyrics.rows = lyrics.split('\n').length;
+    Array.from(modalSongTypes).find((e) => e.value === type).checked = true;
+    modalMemo.value = memo;
+  }
+}
+
+function autoAlign() {
+  const lyricsTextArea = document.querySelector('#modal-lyrics');
+
+  const lines = lyricsTextArea.value
+    .split('\n')
+    .filter((e) => e != '')
+    .map((e) => e.trim().replace(/\s+/g, ' '));
+
+  if (lines.length <= 0) {
+    alert('가사를 입력해주세요.');
+    lyricsTextArea.focus();
+    return;
+  }
+
+  const LINES_PER_SLIDE = 2;
+  let result = [];
+  const temp = [...lines];
+  const cnt = Math.ceil(temp.length / LINES_PER_SLIDE);
+  for (let i = 0; i < cnt; i++) {
+    result.push(temp.splice(0, LINES_PER_SLIDE));
+  }
+  result = result.map((e) => e.join('\n')).join('\n\n');
+
+  lyricsTextArea.value = result;
+  lyricsTextArea.focus();
+}
 
 const modalSaveBtn = document.querySelector('#modal-save-btn');
 // todo : update, save event
-// modalSaveBtn.addEventListener('click', () => {});
+modalSaveBtn.addEventListener('click', async () => {
+  const title = modalTitle.value.trim();
+  if (title === '') {
+    alert('제목을 입력해주세요.');
+    modalTitle.focus();
+    return;
+  }
+  const lyrics = modalLyrics.value.trim();
+  if (lyrics === '') {
+    alert('가사를 입력해주세요.');
+    modalLyrics.focus();
+    return;
+  }
+  const type = document.querySelector('input[name=song-type]:checked')?.value;
+  if (type === undefined) {
+    alert('타입을 선택해주세요.');
+    return;
+  }
+  const memo = modalMemo.value.trim();
+
+  const newSong = {
+    title,
+    lyrics,
+    type,
+    memo,
+  };
+
+  try {
+    const response = await fetch(`/song`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newSong),
+    });
+    const result = await response.json();
+    console.log(result);
+    if (result.success) {
+      alert(`${title}이 등록되었습니다.`);
+      render('%', 1);
+      songDetailModal.hide();
+    }
+  } catch (error) {
+    alert('등록 실패');
+    console.error(error);
+  }
+});
 
 // songDetailModal.addEventListener('show.bs.modal', (e) => {
 //   // Button that triggered the modal
@@ -42,6 +175,7 @@ if (logoutBtn) {
       }
     } catch (error) {
       alert('logout error');
+      window.location.href = '/';
       console.log(error);
     }
   });
@@ -177,10 +311,8 @@ function renderSearchTable(songs) {
     titleLink.innerHTML = song.title;
     titleLink.onclick = async () => {
       try {
-        const { title, lyrics } = await getSongById(song.id);
-        document.querySelector('#modal-title').value = title;
-        document.querySelector('#modal-lyrics').value = lyrics;
-        document.querySelector('#modal-lyrics').rows = lyrics.split('\n').length;
+        const clickedSong = await getSongById(song.id);
+        setSongDetailModal(clickedSong);
         songDetailModal.show();
       } catch (error) {
         console.error(error);
@@ -298,11 +430,27 @@ function renderSetlistTable() {
     td.innerHTML = song.title;
     td.className = 'text-start';
     tr.appendChild(td);
+
+    td = document.createElement('td');
+    const upButton = document.createElement('button');
+    upButton.innerHTML = '↑';
+    upButton.className = 'btn btn-sm btn-outline-primary mx-1';
+    upButton.onclick = () => {};
+    td.appendChild(upButton);
+    tr.appendChild(td);
+
+    const downButton = document.createElement('button');
+    downButton.innerHTML = '↓';
+    downButton.className = 'btn btn-sm btn-outline-secondary';
+    downButton.onclick = () => {};
+    td.appendChild(downButton);
+    tr.appendChild(td);
+
     // removeBtn
     td = document.createElement('td');
     const removeBtn = document.createElement('a');
     removeBtn.href = '#';
-    removeBtn.innerHTML = '취소';
+    removeBtn.innerHTML = '🗑️';
     removeBtn.onclick = (e) => {
       e.preventDefault();
       selectedSongs = selectedSongs.filter((e) => e.id !== song.id);
