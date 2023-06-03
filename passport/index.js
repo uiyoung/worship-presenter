@@ -5,12 +5,12 @@ const prisma = new PrismaClient();
 
 module.exports = () => {
   passport.serializeUser((user, done) => {
-    console.log('serializeUser', user);
+    // console.log('serializeUser', user);
     done(null, user.id);
   });
 
   passport.deserializeUser(async (id, done) => {
-    console.log('deserializeUser', id);
+    // console.log('deserializeUser', id);
     try {
       const user = await prisma.user.findUnique({ where: { id } });
       done(null, user);
