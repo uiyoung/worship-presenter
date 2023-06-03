@@ -78,6 +78,7 @@ async function showSongDetailModal(id) {
   }
 }
 
+// todo : select에서 선택한 줄 수로 정렬
 function autoAlign() {
   const lyricsTextArea = document.querySelector('#modal-lyrics');
 
@@ -143,7 +144,16 @@ modalSaveBtn.addEventListener('click', async () => {
       body: JSON.stringify(newSong),
     });
     const result = await response.json();
-    console.log(result);
+
+    if (!result.success && result.redirectURL) {
+      if (!confirm('로그인이 필요합니다.')) {
+        return;
+      }
+
+      window.location.href = result.redirectURL;
+      return;
+    }
+
     if (result.success) {
       alert(`${title}이 등록되었습니다.`);
       render('%', 1);
