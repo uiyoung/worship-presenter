@@ -19,7 +19,7 @@ create ppt for worship and manage setlists
 - Node.js 20
 - Express
 - Nunjucks
-- PostgreSQL
+- [PostgreSQL](https://www.postgresql.org)
 - [Prisma](https://www.prisma.io)
 - [PptxGenJs](https://github.com/gitbrent/PptxGenJS)
 
