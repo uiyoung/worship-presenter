@@ -37,12 +37,12 @@ async function showSongDetailModal(id) {
     const { type, title, lyrics, memo } = await getSongById(id);
     modalHeader.innerHTML = title;
     deleteButton.onclick = async () => {
-      if (!confirm(`${song.title} 삭제 하시겠습니까?`)) {
+      if (!confirm(`${title} 삭제 하시겠습니까?`)) {
         return;
       }
 
       try {
-        const response = await fetch(`/song/${song.id}`, {
+        const response = await fetch(`/song/${id}`, {
           method: 'DELETE',
         });
         const result = await response.json();
@@ -343,17 +343,74 @@ function renderPagination(totalCount, currentPage, title) {
   li.appendChild(a);
   paginationElement.appendChild(li);
 
-  // page numbers
-  for (let i = 0; i < totalPage; i++) {
+  // first
+  li = document.createElement('li');
+  li.className = `page-item ${1 === currentPage ? 'active' : ''}`;
+  a = document.createElement('a');
+  a.className = 'page-link';
+  a.innerHTML = 1;
+  a.href = '#';
+  a.onclick = (e) => {
+    e.preventDefault();
+    render(title, 1);
+  };
+  li.appendChild(a);
+  paginationElement.appendChild(li);
+
+  const pageStart = currentPage >= totalPage - 4 ? Math.max(totalPage - 7, 2) : Math.max(currentPage - 3, 2);
+  const pageEnd = currentPage <= 5 && totalPage > 8 ? 8 : Math.min(currentPage + 3, totalPage - 1);
+  console.log(pageStart);
+  console.log(pageEnd);
+
+  // ...
+  if (pageStart > 2) {
     li = document.createElement('li');
-    li.className = `page-item ${i + 1 === currentPage ? 'active' : ''}`;
+    li.className = `page-item`;
     a = document.createElement('a');
     a.className = 'page-link';
-    a.innerHTML = i + 1;
+    a.innerHTML = '...';
+    li.appendChild(a);
+    paginationElement.appendChild(li);
+  }
+
+  // currentPage-3 ~ currentPage+3
+  for (let i = pageStart; i <= pageEnd; i++) {
+    li = document.createElement('li');
+    li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+    a = document.createElement('a');
+    a.className = 'page-link';
+    a.innerHTML = i;
     a.href = '#';
     a.onclick = (e) => {
       e.preventDefault();
-      render(title, i + 1);
+      render(title, i);
+    };
+    li.appendChild(a);
+    paginationElement.appendChild(li);
+  }
+
+  // ...
+  if (currentPage + 4 < totalPage) {
+    li = document.createElement('li');
+    li.className = `page-item`;
+    a = document.createElement('a');
+    a.className = 'page-link';
+    a.innerHTML = '...';
+    li.appendChild(a);
+    paginationElement.appendChild(li);
+  }
+
+  // last
+  if (totalPage > 1) {
+    li = document.createElement('li');
+    li.className = `page-item ${totalPage === currentPage ? 'active' : ''}`;
+    a = document.createElement('a');
+    a.className = 'page-link';
+    a.innerHTML = totalPage;
+    a.href = '#';
+    a.onclick = (e) => {
+      e.preventDefault();
+      render(title, totalPage);
     };
     li.appendChild(a);
     paginationElement.appendChild(li);
@@ -415,7 +472,7 @@ function renderSetlistTable() {
     titleLink.innerHTML = song.title;
     titleLink.href = '#';
     titleLink.className = 'title';
-    titleLink.onclick = showSongDetailModal(song.id);
+    titleLink.onclick = () => showSongDetailModal(song.id);
     td.appendChild(titleLink);
     tr.appendChild(td);
 
