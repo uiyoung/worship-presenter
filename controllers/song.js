@@ -102,14 +102,14 @@ exports.addSong = async (req, res, next) => {
 
 exports.updateSong = async (req, res, next) => {
   try {
-    const { title, lyrics, type, memo, authorId } = req.body;
+    const { title, lyrics, type, memo } = req.body;
     const updatedSong = await prisma.song.update({
-      data: { title, lyrics, type, memo },
+      data: { title, lyrics, type, memo, authorId: req.user.id },
       where: { id: Number(req.params.id) },
     });
-    res.json(updatedSong);
+    res.json({ success: true });
   } catch (error) {
-    console.error(err);
+    console.error(error);
     next(error);
   }
 };

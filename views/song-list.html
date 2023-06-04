@@ -199,12 +199,12 @@
                   class="form-select form-select-sm"
                   id="lines-per-slide"
                 >
-                  <option value="1">1줄 씩</option>
+                  <option value="1" disabled>1줄 씩</option>
                   <option value="2" selected="selected">2줄 씩</option>
-                  <option value="3">3줄 씩</option>
-                  <option value="4">4줄 씩</option>
-                  <option value="5">5줄 씩</option>
-                  <option value="6">6줄 씩</option>
+                  <option value="3" disabled>3줄 씩</option>
+                  <option value="4" disabled>4줄 씩</option>
+                  <option value="5" disabled>5줄 씩</option>
+                  <option value="6" disabled>6줄 씩</option>
                 </select>
                 <button type="button" class="btn btn-outline-primary btn-sm" id="auto-align-btn" onclick="autoAlign()">
                   정렬
@@ -216,6 +216,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" id="modal-save-btn">저장</button>
+        <button type="button" class="btn btn-primary" id="modal-modify-btn" hidden>수정</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
