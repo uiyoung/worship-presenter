@@ -80,9 +80,16 @@
             </table>
           </div>
         </div>
-        <div class="card-footer">
-          <button type="button" class="btn btn-success col-9" id="generate-btn">PPT 다운로드</button>
-          <button type="button" class="btn btn-outline-success col-2" id="settings-btn">설정</button>
+        <div class="card-footer text-center">
+          <button type="button" class="btn btn-success w-50" id="generate-btn">PPT 다운로드</button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary w-auto"
+            data-bs-toggle="modal"
+            data-bs-target="#settingsModal"
+          >
+            ⚙️
+          </button>
         </div>
       </div>
     </div>
@@ -149,7 +156,7 @@
   </div>
 </div>
 
-<!-- modal -->
+<!-- song detail modal -->
 <div class="modal fade" id="songDetailModal" tabindex="-1" aria-labelledby="songDetailModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -223,6 +230,44 @@
   </div>
 </div>
 
+<!-- settings modal -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="songDetailModalLabel">New Song</h1>
+        <button type="button" class="btn btn-sm btn-danger mx-3" id="song-delete-btn" hidden>삭제</button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-6">
+              <form>
+                <div class="mb-3">
+                  <label for="modal-title" class="col-form-label">제목</label>
+                  <input type="text" class="form-control" id="modal-title" />
+                </div>
+                <div class="mb-3">
+                  <label for="modal-title" class="col-form-label">제목</label>
+                  <input type="text" class="form-control" id="modal-title" />
+                </div>
+              </form>
+            </div>
+            <div class="col-lg-6">
+              <div class="mb-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="modal-save-btn">저장</button>
+        <button type="button" class="btn btn-primary" id="modal-modify-btn" hidden>수정</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %} {% block script %}
 
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
