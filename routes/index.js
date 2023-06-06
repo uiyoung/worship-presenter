@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 router.get('/', (req, res) => {
-  res.render('song-list', { title: 'Worship Presenter' });
+  res.render('presenter', { title: 'Worship Presenter' });
 });
 
 router.get('/about', (req, res) => {
