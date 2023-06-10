@@ -40,17 +40,17 @@
               <a class="nav-link" href="#" data-bs-toggle="pill" data-bs-target="#pills-bible">성경</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled" data-bs-toggle="pill" data-bs-target="#pills-responsive-reading">교독문</a>
+              <a class="nav-link" href="#" data-bs-toggle="pill" data-bs-target="#pills-responsive-reading">교독문</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled" data-bs-toggle="pill" data-bs-target="#pills-text">텍스트</a>
+              <a class="nav-link disabled" href="#" data-bs-toggle="pill" data-bs-target="#pills-text">텍스트</a>
             </li>
           </ul>
         </div>
 
         <div class="card-body">
+          <!-- lyrics search tab-->
           <div class="tab-content" id="pills-tabContent">
-            <!-- lyrics search tab-->
             <div
               class="tab-pane fade show active"
               id="pills-lyrics"
@@ -104,7 +104,7 @@
             <div class="tab-pane fade" id="pills-bible" role="tabpanel" aria-labelledby="pills-bible-tab" tabindex="0">
               Bible here
             </div>
-            <!-- todo : responsive reading search tab-->
+            <!-- responsive reading search tab-->
             <div
               class="tab-pane fade"
               id="pills-responsive-reading"
@@ -112,19 +112,29 @@
               aria-labelledby="pills-responsive-reading-tab"
               tabindex="0"
             >
-              Responsive Reading here
-            </div>
-            <!-- todo : new text slide tab-->
-            <div class="tab-pane fade" id="pills-text" role="tabpanel" aria-labelledby="pills-text-tab" tabindex="0">
-              text here
+              <select
+                class="form-select mb-3"
+                id="responsive-reading-select"
+                aria-label="Default select example"
+              ></select>
+
+              <div class="card">
+                <div class="card-body" id="rr-card-body">
+                  <p class="card-text text-center opacity-75">교독문을 선택해 주세요.</p>
+                </div>
+              </div>
+
+              <!-- todo : new text slide tab-->
+              <div class="tab-pane fade" id="pills-text" role="tabpanel" aria-labelledby="pills-text-tab" tabindex="0">
+                text here
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- settings card -->
-    <!-- <div class="col-xl-12 col-md-12 my-2">
+      <!-- settings card -->
+      <!-- <div class="col-xl-12 col-md-12 my-2">
       <div class="card">
         <div class="card-header">
           <ul class="nav nav-pills card-header-pills">
@@ -182,126 +192,141 @@
         </div>
       </div>
     </div> -->
+    </div>
   </div>
-</div>
 
-<!-- song detail modal -->
-<div class="modal fade" id="songDetailModal" tabindex="-1" aria-labelledby="songDetailModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="d-flex align-items-center text-truncate">
+  <!-- song detail modal -->
+  <div class="modal fade" id="songDetailModal" tabindex="-1" aria-labelledby="songDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="d-flex align-items-center text-truncate">
+            <h1 class="modal-title fs-5" id="songDetailModalLabel">New Song</h1>
+            <button type="button" class="btn btn-sm btn-danger mx-3" id="song-delete-btn" hidden>삭제</button>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-6">
+                <form>
+                  <div class="mb-3">
+                    <label for="modal-title" class="col-form-label">제목</label>
+                    <input type="text" class="form-control" id="modal-title" />
+                  </div>
+                  <div class="mb-3">
+                    <label for="modal-lyrics" class="col-form-label">가사</label>
+                    <textarea class="form-control" id="modal-lyrics" rows="14"></textarea>
+                  </div>
+                </form>
+              </div>
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="song-type"
+                    id="hymn-radio"
+                    value="HYMN"
+                    autocomplete="off"
+                  />
+                  <label class="btn btn-sm btn-outline-success" for="hymn-radio">찬송가</label>
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="song-type"
+                    id="ccm-radio"
+                    value="CCM"
+                    autocomplete="off"
+                  />
+                  <label class="btn btn-sm btn-outline-success" for="ccm-radio">CCM</label>
+                </div>
+
+                <div class="mb-3">
+                  <label for="modal-memo" class="col-form-label">메모</label>
+                  <textarea class="form-control" id="modal-memo" rows="1"></textarea>
+                </div>
+                <div class="mb-3">
+                  <select
+                    style="width: 30%; display: inline"
+                    name="lines-per-slide"
+                    class="form-select form-select-sm"
+                    id="lines-per-slide"
+                  >
+                    <option value="1" disabled>1줄 씩</option>
+                    <option value="2" selected="selected">2줄 씩</option>
+                    <option value="3" disabled>3줄 씩</option>
+                    <option value="4" disabled>4줄 씩</option>
+                    <option value="5" disabled>5줄 씩</option>
+                    <option value="6" disabled>6줄 씩</option>
+                  </select>
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary btn-sm"
+                    id="auto-align-btn"
+                    onclick="autoAlign()"
+                  >
+                    정렬
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="modal-save-btn">저장</button>
+          <button type="button" class="btn btn-primary" id="modal-modify-btn" hidden>수정</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- settings modal -->
+  <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
           <h1 class="modal-title fs-5" id="songDetailModalLabel">New Song</h1>
           <button type="button" class="btn btn-sm btn-danger mx-3" id="song-delete-btn" hidden>삭제</button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-lg-6">
-              <form>
-                <div class="mb-3">
-                  <label for="modal-title" class="col-form-label">제목</label>
-                  <input type="text" class="form-control" id="modal-title" />
-                </div>
-                <div class="mb-3">
-                  <label for="modal-lyrics" class="col-form-label">가사</label>
-                  <textarea class="form-control" id="modal-lyrics" rows="14"></textarea>
-                </div>
-              </form>
-            </div>
-            <div class="col-lg-6">
-              <div class="mb-3">
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="song-type"
-                  id="hymn-radio"
-                  value="HYMN"
-                  autocomplete="off"
-                />
-                <label class="btn btn-sm btn-outline-success" for="hymn-radio">찬송가</label>
-                <input type="radio" class="btn-check" name="song-type" id="ccm-radio" value="CCM" autocomplete="off" />
-                <label class="btn btn-sm btn-outline-success" for="ccm-radio">CCM</label>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-6">
+                <form>
+                  <div class="mb-3">
+                    <label for="modal-title" class="col-form-label">제목</label>
+                    <input type="text" class="form-control" id="modal-title" />
+                  </div>
+                  <div class="mb-3">
+                    <label for="modal-title" class="col-form-label">제목</label>
+                    <input type="text" class="form-control" id="modal-title" />
+                  </div>
+                </form>
               </div>
-
-              <div class="mb-3">
-                <label for="modal-memo" class="col-form-label">메모</label>
-                <textarea class="form-control" id="modal-memo" rows="1"></textarea>
-              </div>
-              <div class="mb-3">
-                <select
-                  style="width: 30%; display: inline"
-                  name="lines-per-slide"
-                  class="form-select form-select-sm"
-                  id="lines-per-slide"
-                >
-                  <option value="1" disabled>1줄 씩</option>
-                  <option value="2" selected="selected">2줄 씩</option>
-                  <option value="3" disabled>3줄 씩</option>
-                  <option value="4" disabled>4줄 씩</option>
-                  <option value="5" disabled>5줄 씩</option>
-                  <option value="6" disabled>6줄 씩</option>
-                </select>
-                <button type="button" class="btn btn-outline-primary btn-sm" id="auto-align-btn" onclick="autoAlign()">
-                  정렬
-                </button>
+              <div class="col-lg-6">
+                <div class="mb-3"></div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="modal-save-btn">저장</button>
-        <button type="button" class="btn btn-primary" id="modal-modify-btn" hidden>수정</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- settings modal -->
-<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModal" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="songDetailModalLabel">New Song</h1>
-        <button type="button" class="btn btn-sm btn-danger mx-3" id="song-delete-btn" hidden>삭제</button>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-lg-6">
-              <form>
-                <div class="mb-3">
-                  <label for="modal-title" class="col-form-label">제목</label>
-                  <input type="text" class="form-control" id="modal-title" />
-                </div>
-                <div class="mb-3">
-                  <label for="modal-title" class="col-form-label">제목</label>
-                  <input type="text" class="form-control" id="modal-title" />
-                </div>
-              </form>
-            </div>
-            <div class="col-lg-6">
-              <div class="mb-3"></div>
-            </div>
-          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="modal-save-btn">저장</button>
+          <button type="button" class="btn btn-primary" id="modal-modify-btn" hidden>수정</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="modal-save-btn">저장</button>
-        <button type="button" class="btn btn-primary" id="modal-modify-btn" hidden>수정</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
     </div>
   </div>
+  {% endblock %} {% block script %}
+
+  <script src="/js/presenter.js"></script>
+  <script src="/js/responsive-reading.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+  <script src="/js/generate-ppt.js"></script>
+
+  {% endblock %}
 </div>
-{% endblock %} {% block script %}
-
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
-<script src="/js/presenter.js"></script>
-
-{% endblock %}
