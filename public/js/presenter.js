@@ -198,10 +198,8 @@ async function modifySong(id) {
     const result = await response.json();
 
     if (!result.success && result.redirectURL) {
-      if (!confirm('로그인이 필요합니다.')) {
-        return;
-      }
-      window.location.href = result.redirectURL;
+      alert('로그인이 필요합니다.');
+      // window.location.href = result.redirectURL;
       return;
     }
 
