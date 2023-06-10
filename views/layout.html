@@ -29,12 +29,26 @@
         text-decoration: none;
       }
 
-      .title {
-        white-space: nowrap; /* 줄 바꿈 방지 */
-        overflow: hidden; /* 내용이 넘칠 경우 숨김 */
-        text-overflow: ellipsis; /* 넘치는 부분을 ...으로 표시 */
-        display: table-cell;
-        max-width: 330px;
+      .list-group-item-check:checked + .list-group-item {
+        color: #fff;
+        background-color: var(--bs-primary);
+        border-color: var(--bs-primary);
+      }
+
+      #setlist > li {
+        cursor: pointer;
+      }
+
+      .table-responsive td {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .draggable.dragging {
+        opacity: 0.5;
+        cursor: move;
       }
     </style>
     {% block css%} {% endblock %}
@@ -121,7 +135,7 @@
             </li>
 
             {% else %}
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <button
                 type="button"
                 class="btn btn-outline-primary"
@@ -130,12 +144,12 @@
               >
                 회원가입
               </button>
-            </li>
+            </li> -->
 
             <li class="nav-item">
-              <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalLogin">
+              <!-- <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalLogin">
                 로그인
-              </button>
+              </button> -->
             </li>
             <li class="nav-item"><a class="nav-link" href="/auth/login">로그인</a></li>
             {% endif %}
@@ -154,17 +168,32 @@
           </div>
 
           <div class="modal-body p-5 pt-0">
-            <form class="">
+            <form action="/auth/login" method="POST">
               <div class="form-floating mb-3">
-                <input type="email" class="form-control rounded-3" id="floatingInput" placeholder="name@example.com" />
+                <input
+                  type="email"
+                  class="form-control rounded-3"
+                  id="floatingInput"
+                  name="email"
+                  placeholder="name@example.com"
+                />
                 <label for="floatingInput">Email address</label>
               </div>
               <div class="form-floating mb-3">
-                <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Password" />
+                <input
+                  type="password"
+                  class="form-control rounded-3"
+                  id="floatingPassword"
+                  name="password"
+                  placeholder="Password"
+                />
                 <label for="floatingPassword">Password</label>
               </div>
               <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign in</button>
               <hr class="my-4" />
+              <p class="small text-center text-gray-soft mt-3">
+                Don't have an account yet? <a href="/auth/signup">Sign up</a>
+              </p>
               <!--h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
               <button class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-3" type="submit">
                 <svg class="bi me-1" width="16" height="16"><use xlink:href="#twitter" /></svg>
@@ -185,11 +214,11 @@
     </div>
 
     <!-- Sign Up Modal -->
-    <div class="modal fade" id="modalSignin" tabindex="-1" aria-labelledby="modalSigninLabel" aria-hidden="true">
+    <!-- <div class="modal fade" id="modalSignin" tabindex="-1" aria-labelledby="modalSigninLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content rounded-4 shadow">
           <div class="modal-header p-5 pb-4 border-bottom-0">
-            <h1 class="fw-bold mb-0 fs-2">Sign up for free</h1>
+            <h1 class="fw-bold mb-0 fs-2">Sign up</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
 
@@ -218,7 +247,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     {% block content %} {% endblock %}
 

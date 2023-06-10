@@ -58,11 +58,8 @@ async function showSongDetailModal(id) {
   try {
     const { type, title, lyrics, memo } = await getSongById(id);
     modalHeader.innerHTML = title;
+    modalHeader.classList = 'modal-title fs-5 text-truncate';
     deleteButton.onclick = async () => {
-      if (!confirm(`${title} 삭제 하시겠습니까?`)) {
-        return;
-      }
-
       try {
         const response = await fetch(`/song/${id}`, {
           method: 'DELETE',
@@ -74,6 +71,9 @@ async function showSongDetailModal(id) {
           }
 
           window.location.href = result.redirectURL;
+          return;
+        }
+        if (!confirm(`${title} 삭제 하시겠습니까?`)) {
           return;
         }
 
@@ -211,7 +211,7 @@ async function modifySong(id) {
     // setlist에 선택되어있는 경우 selectedSongs 값 업데이트
     selectedSongs = selectedSongs.map((song) => (song.id === id ? { ...song, title, lyrics, type, memo } : song));
 
-    renderSetlistTable();
+    renderSetlist();
   } catch (error) {
     alert('등록 실패');
     console.error(error);
@@ -296,6 +296,8 @@ async function render(title, pageNum) {
   renderPagination(totalCount, pageNum, title);
 
   renderSearchInfo(title, totalCount);
+
+  renderSetlist();
 }
 
 function renderSearchInfo(title, totalCount) {
@@ -308,19 +310,20 @@ function renderSearchInfo(title, totalCount) {
   }
 
   const span = document.createElement('span');
+  span.className = 'small';
   span.innerHTML = `'${title}' 검색결과 : 총 ${totalCount} 건`;
   // span.className = 'small col-auto';
   resultInfo.appendChild(span);
 
   const button = document.createElement('button');
   button.innerHTML = 'x';
-  button.className = 'btn btn-danger btn-sm';
+  button.className = 'btn btn-danger btn-sm ms-2';
   button.onclick = () => {
     searchInput.value = '';
     render('%', 1);
   };
 
-  span.appendChild(button);
+  resultInfo.appendChild(button);
   resultInfo.hidden = false;
 }
 
@@ -380,7 +383,10 @@ function renderSearchTable(songs) {
     titleLink.href = '#';
     titleLink.className = 'title';
     titleLink.innerHTML = song.title;
-    titleLink.onclick = () => showSongDetailModal(song.id);
+    titleLink.onclick = (e) => {
+      e.preventDefault();
+      showSongDetailModal(song.id);
+    };
     td.className = 'text-start';
     td.appendChild(titleLink);
     tr.appendChild(td);
@@ -399,6 +405,7 @@ function renderSearchTable(songs) {
   });
 }
 
+// todo : DRY!
 function renderPagination(totalCount, currentPage, title) {
   const paginationElement = document.querySelector('#search-pagination');
   paginationElement.innerHTML = '';
@@ -439,8 +446,6 @@ function renderPagination(totalCount, currentPage, title) {
 
   const pageStart = currentPage >= totalPage - 4 ? Math.max(totalPage - 7, 2) : Math.max(currentPage - 3, 2);
   const pageEnd = currentPage <= 5 && totalPage > 8 ? 8 : Math.min(currentPage + 3, totalPage - 1);
-  console.log(pageStart);
-  console.log(pageEnd);
 
   // ...
   if (pageStart > 2) {
@@ -512,99 +517,116 @@ function renderPagination(totalCount, currentPage, title) {
 }
 
 async function selectSong(id) {
-  const result = selectedSongs.some((song) => song.id === id);
-  if (result) {
-    alert('이미 선택된 곡입니다.');
-    return;
-  }
+  // const result = selectedSongs.some((song) => song.id === id);
+  // if (result) {
+  //   alert('이미 선택된 곡입니다.');
+  //   return;
+  // }
 
   const selectedSong = await getSongById(id);
-  selectedSongs.push(selectedSong);
-  renderSetlistTable();
+  selectedSongs.push({ no: selectedSongs.length + 1, ...selectedSong });
+  renderSetlist();
 }
 
-function renderSetlistTable() {
-  const tbody = document.querySelector('#setlist-table tbody');
-  tbody.innerHTML = '';
+let newIndexAfterDrag;
+
+const setList = document.querySelector('#setlist');
+setList.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  const draggingElement = document.querySelector('.dragging');
+  const afterElement = getDragAfterElement(e.clientY);
+  if (afterElement == null) {
+    setList.appendChild(draggingElement);
+    newIndexAfterDrag = selectedSongs.length - 1;
+  } else {
+    setList.insertBefore(draggingElement, afterElement);
+    newIndexAfterDrag = Number(afterElement.getAttribute('no'));
+  }
+});
+
+function getDragAfterElement(y) {
+  const notDraggedElements = [...setList.querySelectorAll('.draggable:not(.dragging)')];
+
+  return notDraggedElements.reduce(
+    (closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
+      if (offset < 0 && offset > closest.offset) {
+        return { offset: offset, element: child };
+      } else {
+        return closest;
+      }
+    },
+    { offset: Number.NEGATIVE_INFINITY }
+  ).element;
+}
+
+function renderSetlist() {
+  const setList = document.querySelector('#setlist');
+  setList.innerHTML = '';
 
   if (selectedSongs.length <= 0) {
-    const tr = document.createElement('tr');
-    tr.className = 'text-center';
-    const td = document.createElement('td');
-    td.colSpan = 4;
-    td.innerHTML = '선택된 곡이 없습니다.';
-    tr.appendChild(td);
-    tbody.append(tr);
+    const li = document.createElement('li');
+    li.className = 'text-center small opacity-50';
+    li.innerHTML = '선택된 곡이 없습니다.';
+    setList.append(li);
+    generateBtn.disabled = true;
     return;
   }
 
+  generateBtn.disabled = false;
+
   selectedSongs.forEach((song, idx) => {
-    const tr = document.createElement('tr');
-    tr.className = 'text-center';
-    // no
-    let td = document.createElement('td');
-    td.innerHTML = idx + 1;
-    tr.appendChild(td);
+    const li = document.createElement('li');
+    li.className = 'list-group-item rounded-3 border-1 d-flex justify-content-between align-items-center draggable';
+    li.draggable = true;
+    li.setAttribute('no', idx);
+    li.onclick = () => showSongDetailModal(song.id);
+    li.addEventListener('dragstart', () => {
+      li.classList.add('dragging');
+    });
+    li.addEventListener('dragend', () => {
+      li.classList.remove('dragging');
+      console.log('oldIdx:', idx, ', newIdx:', newIndexAfterDrag);
+      [selectedSongs[idx], selectedSongs[newIndexAfterDrag]] = [selectedSongs[newIndexAfterDrag], selectedSongs[idx]];
+      selectedSongs.forEach((s, index) => {
+        s.no = index + 1;
+      });
+      renderSetlist();
+      console.log(selectedSongs);
+    });
+
     // title
-    td = document.createElement('td');
-    td.className = 'text-start';
-    const titleLink = document.createElement('a');
-    titleLink.innerHTML = song.title;
-    titleLink.href = '#';
-    titleLink.className = 'title';
-    titleLink.onclick = () => showSongDetailModal(song.id);
-    td.appendChild(titleLink);
-    tr.appendChild(td);
+    const div = document.createElement('div');
+    div.className = 'text-truncate';
+    div.innerHTML = `${idx + 1}. ${song.title} `;
 
-    td = document.createElement('td');
-    const upButton = document.createElement('button');
-    upButton.innerHTML = '↑';
-    upButton.className = 'btn btn-sm btn-outline-primary mx-1';
-    upButton.disabled = idx === 0 ? true : false;
-    upButton.onclick = () => {
-      const idx = selectedSongs.findIndex((e) => e.id === song.id);
-      if (idx === 0) {
-        return;
-      }
-      [selectedSongs[idx], selectedSongs[idx - 1]] = [selectedSongs[idx - 1], selectedSongs[idx]];
-      renderSetlistTable();
-    };
-    td.appendChild(upButton);
-    tr.appendChild(td);
+    // lyrics preview
+    const lyricsSpan = document.createElement('span');
+    lyricsSpan.className = 'd-block small opacity-50 ms-2 text-truncate';
+    lyricsSpan.innerHTML = song.lyrics;
+    div.appendChild(lyricsSpan);
+    li.appendChild(div);
 
-    const downButton = document.createElement('button');
-    downButton.innerHTML = '↓';
-    downButton.className = 'btn btn-sm btn-outline-secondary';
-    downButton.disabled = idx === selectedSongs.length - 1 ? true : false;
-    downButton.onclick = () => {
-      const idx = selectedSongs.findIndex((e) => e.id === song.id);
-      if (idx === selectedSongs.length - 1) {
-        return;
-      }
-      [selectedSongs[idx], selectedSongs[idx + 1]] = [selectedSongs[idx + 1], selectedSongs[idx]];
-      renderSetlistTable();
-    };
-    td.appendChild(downButton);
-    tr.appendChild(td);
-
-    // removeBtn
-    td = document.createElement('td');
     const removeBtn = document.createElement('a');
     removeBtn.href = '#';
     removeBtn.innerHTML = '🗑️';
     removeBtn.onclick = (e) => {
       e.preventDefault();
-      selectedSongs = selectedSongs.filter((e) => e.id !== song.id);
-      renderSetlistTable();
+      e.stopPropagation();
+      const listItem = removeBtn.parentNode;
+      const targetIdx = Array.from(setList.children).indexOf(listItem);
+      selectedSongs = selectedSongs.filter((_, index) => index !== targetIdx);
+      renderSetlist();
     };
-    td.appendChild(removeBtn);
-    tr.appendChild(td);
-    tbody.append(tr);
+    li.appendChild(removeBtn);
+
+    setList.append(li);
   });
 }
 
-const initBtn = document.querySelector('#init-button');
-initBtn.addEventListener('click', () => {
+const clearButton = document.querySelector('#clear-button');
+clearButton.addEventListener('click', () => {
   if (selectedSongs.length <= 0) {
     alert('선택된 곡이 없습니다.');
     return;
@@ -614,7 +636,7 @@ initBtn.addEventListener('click', () => {
   }
 
   selectedSongs = [];
-  renderSetlistTable();
+  renderSetlist();
 });
 
 // PPT 생성
@@ -666,9 +688,10 @@ generateBtn.addEventListener('click', (e) => {
 
   const CM_1 = 28.346; // 1cm = 28.346pt
 
-  selectedSongs.forEach((song) => {
+  selectedSongs.forEach((song, idx) => {
+    const sectionTitle = `${idx}_${song.title}`;
     // sections by song
-    pptx.addSection({ title: song.title });
+    pptx.addSection({ title: sectionTitle });
 
     // title slide master
     pptx.defineSlideMaster({
@@ -735,14 +758,14 @@ generateBtn.addEventListener('click', (e) => {
     });
 
     // add title slide
-    const slide = pptx.addSlide({ masterName: 'TITLE_SLIDE', sectionTitle: song.title });
+    const slide = pptx.addSlide({ masterName: 'TITLE_SLIDE', sectionTitle });
     slide.addText(song.title, { placeholder: 'song-title' });
 
     const lyricsPerSlideArr = song.lyrics.split('\n\n');
 
     // Add Lyrics Slide
     lyricsPerSlideArr.forEach((lyrics) => {
-      const slide = pptx.addSlide({ masterName: 'LYRICS_SLIDE', sectionTitle: song.title });
+      const slide = pptx.addSlide({ masterName: 'LYRICS_SLIDE', sectionTitle });
 
       // Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
       slide.addText(lyrics, { placeholder: 'lyrics-body' });
@@ -753,6 +776,11 @@ generateBtn.addEventListener('click', (e) => {
 
   // 4. Save the Presentation
   const worshipName = prompt('워십의 이름을 적어주세요.');
+  if (!worshipName) {
+    generateBtn.innerHTML = originalBtnText;
+    generateBtn.disabled = false;
+    return;
+  }
 
   pptx.writeFile({ fileName: `${worshipName}.pptx` }).then((fileName) => {
     console.log(`created file: ${fileName}`);
