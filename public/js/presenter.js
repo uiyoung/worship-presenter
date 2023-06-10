@@ -616,47 +616,12 @@ function renderSetlist() {
       e.stopPropagation();
       const listItem = removeBtn.parentNode;
       const targetIdx = Array.from(setList.children).indexOf(listItem);
-      // selectedSongs = selectedSongs.filter((e) => e.no !== song.no);
       selectedSongs = selectedSongs.filter((_, index) => index !== targetIdx);
       renderSetlist();
     };
     li.appendChild(removeBtn);
 
     setList.append(li);
-
-    // up button
-    // td = document.createElement('td');
-    // const upButton = document.createElement('button');
-    // upButton.innerHTML = '↑';
-    // upButton.className = 'btn btn-sm btn-outline-primary mx-1';
-    // upButton.disabled = idx === 0 ? true : false;
-    // upButton.onclick = () => {
-    //   const idx = selectedSongs.findIndex((e) => e.id === song.id);
-    //   if (idx === 0) {
-    //     return;
-    //   }
-    //   [selectedSongs[idx], selectedSongs[idx - 1]] = [selectedSongs[idx - 1], selectedSongs[idx]];
-    //   renderSetlist();
-    // };
-    // td.appendChild(upButton);
-    // tr.appendChild(td);
-
-    // down button
-    // td = document.createElement('td');
-    // const downButton = document.createElement('button');
-    // downButton.innerHTML = '↓';
-    // downButton.className = 'btn btn-sm btn-outline-secondary';
-    // downButton.disabled = idx === selectedSongs.length - 1 ? true : false;
-    // downButton.onclick = () => {
-    //   const idx = selectedSongs.findIndex((e) => e.id === song.id);
-    //   if (idx === selectedSongs.length - 1) {
-    //     return;
-    //   }
-    //   [selectedSongs[idx], selectedSongs[idx + 1]] = [selectedSongs[idx + 1], selectedSongs[idx]];
-    //   renderSetlist();
-    // };
-    // td.appendChild(downButton);
-    // tr.appendChild(td);
   });
 }
 
