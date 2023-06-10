@@ -1,6 +1,6 @@
 const ITEMS_PER_PAGE = 10;
 
-let selectedSongs = [];
+let selectedList = [];
 
 const songDetailModal = new bootstrap.Modal(document.querySelector('#songDetailModal'));
 
@@ -25,7 +25,6 @@ const newBtn = document.querySelector('#new-button');
 if (newBtn) {
   newBtn.addEventListener('click', () => {
     showSongDetailModal(null);
-    songDetailModal.show();
   });
 }
 
@@ -52,6 +51,7 @@ async function showSongDetailModal(id) {
   modalModifyBtn.hidden = true;
 
   if (!id) {
+    songDetailModal.show();
     return;
   }
 
@@ -208,8 +208,8 @@ async function modifySong(id) {
     alert(`${title}이(가) 수정되었습니다.`);
     songDetailModal.hide();
 
-    // setlist에 선택되어있는 경우 selectedSongs 값 업데이트
-    selectedSongs = selectedSongs.map((song) => (song.id === id ? { ...song, title, lyrics, type, memo } : song));
+    // setlist에 선택되어있는 경우 selectedList 값 업데이트
+    selectedList = selectedList.map((song) => (song.id === id ? { ...song, title, lyrics, type, memo } : song));
 
     renderSetlist();
   } catch (error) {
@@ -349,15 +349,6 @@ function renderSearchTable(songs) {
     const span = document.createElement('span');
     span.innerHTML = '검색된 곡이 없습니다. ';
     td.appendChild(span);
-    const a = document.createElement('a');
-    a.href = '#';
-    a.onclick = (e) => {
-      e.preventDefault();
-      showSongDetailModal(null);
-      songDetailModal.show();
-    };
-    a.innerHTML = '새로 등록하기';
-    td.appendChild(a);
     tr.appendChild(td);
     tbody.append(tr);
     return;
@@ -397,7 +388,7 @@ function renderSearchTable(songs) {
     selectBtn.innerHTML = '선택';
     selectBtn.onclick = (e) => {
       e.preventDefault();
-      selectSong(song.id);
+      selectLyrics(song.id);
     };
     td.appendChild(selectBtn);
     tr.appendChild(td);
@@ -516,15 +507,16 @@ function renderPagination(totalCount, currentPage, title) {
   paginationElement.appendChild(li);
 }
 
-async function selectSong(id) {
-  // const result = selectedSongs.some((song) => song.id === id);
+async function selectLyrics(id) {
+  // const result = selectedList.some((song) => song.id === id);
   // if (result) {
   //   alert('이미 선택된 곡입니다.');
   //   return;
   // }
 
   const selectedSong = await getSongById(id);
-  selectedSongs.push({ no: selectedSongs.length + 1, ...selectedSong });
+  const { title, lyrics } = selectedSong;
+  selectedList.push({ no: selectedList.length + 1, type: 'lyrics', id, title, lyrics });
   renderSetlist();
 }
 
@@ -537,10 +529,10 @@ setList.addEventListener('dragover', (e) => {
   const afterElement = getDragAfterElement(e.clientY);
   if (afterElement == null) {
     setList.appendChild(draggingElement);
-    newIndexAfterDrag = selectedSongs.length - 1;
+    newIndexAfterDrag = selectedList.length - 1;
   } else {
     setList.insertBefore(draggingElement, afterElement);
-    newIndexAfterDrag = Number(afterElement.getAttribute('no'));
+    newIndexAfterDrag = Number(afterElement.getAttribute('no')) - 1;
   }
 });
 
@@ -565,10 +557,10 @@ function renderSetlist() {
   const setList = document.querySelector('#setlist');
   setList.innerHTML = '';
 
-  if (selectedSongs.length <= 0) {
+  if (selectedList.length <= 0) {
     const li = document.createElement('li');
     li.className = 'text-center small opacity-50';
-    li.innerHTML = '선택된 곡이 없습니다.';
+    li.innerHTML = '선택된 아이템이 없습니다.';
     setList.append(li);
     generateBtn.disabled = true;
     return;
@@ -576,36 +568,75 @@ function renderSetlist() {
 
   generateBtn.disabled = false;
 
-  selectedSongs.forEach((song, idx) => {
+  selectedList.forEach((item, idx) => {
     const li = document.createElement('li');
     li.className = 'list-group-item rounded-3 border-1 d-flex justify-content-between align-items-center draggable';
     li.draggable = true;
     li.setAttribute('no', idx);
-    li.onclick = () => showSongDetailModal(song.id);
+    li.onclick = () => {
+      switch (item.type) {
+        case 'lyrics':
+          showSongDetailModal(item.id);
+          break;
+        case 'responsive-reading':
+          // todo : responsive-reading modal
+          break;
+
+        default:
+          break;
+      }
+    };
     li.addEventListener('dragstart', () => {
       li.classList.add('dragging');
     });
     li.addEventListener('dragend', () => {
       li.classList.remove('dragging');
       console.log('oldIdx:', idx, ', newIdx:', newIndexAfterDrag);
-      [selectedSongs[idx], selectedSongs[newIndexAfterDrag]] = [selectedSongs[newIndexAfterDrag], selectedSongs[idx]];
-      selectedSongs.forEach((s, index) => {
+      [selectedList[idx], selectedList[newIndexAfterDrag]] = [selectedList[newIndexAfterDrag], selectedList[idx]];
+      selectedList.forEach((s, index) => {
         s.no = index + 1;
       });
       renderSetlist();
-      console.log(selectedSongs);
+      console.log(selectedList);
     });
 
-    // title
     const div = document.createElement('div');
     div.className = 'text-truncate';
-    div.innerHTML = `${idx + 1}. ${song.title} `;
+
+    // title
+    const titleSpan = document.createElement('span');
+    titleSpan.innerHTML = `${idx + 1}. ${item.title} `;
+    div.appendChild(titleSpan);
+
+    // type
+    const badgeSpan = document.createElement('span');
+    badgeSpan.classList = 'badge text-bg-primary';
+    let type = '';
+    switch (item.type) {
+      case 'lyrics':
+        type = '가사';
+        badgeSpan.classList.add('text-bg-primary');
+        break;
+      case 'responsive-reading':
+        type = '교독문';
+        badgeSpan.classList.add('text-bg-success');
+        break;
+
+      default:
+        break;
+    }
+    badgeSpan.innerHTML = `${type} `;
+    div.appendChild(badgeSpan);
+
+    // div.innerHTML = `${idx + 1}. ${item.title} `;
 
     // lyrics preview
-    const lyricsSpan = document.createElement('span');
-    lyricsSpan.className = 'd-block small opacity-50 ms-2 text-truncate';
-    lyricsSpan.innerHTML = song.lyrics;
-    div.appendChild(lyricsSpan);
+    if (item.type === 'lyrics') {
+      const previewSpan = document.createElement('span');
+      previewSpan.className = 'd-block small opacity-50 ms-2 text-truncate';
+      previewSpan.innerHTML = item.lyrics;
+      div.appendChild(previewSpan);
+    }
     li.appendChild(div);
 
     const removeBtn = document.createElement('a');
@@ -616,7 +647,7 @@ function renderSetlist() {
       e.stopPropagation();
       const listItem = removeBtn.parentNode;
       const targetIdx = Array.from(setList.children).indexOf(listItem);
-      selectedSongs = selectedSongs.filter((_, index) => index !== targetIdx);
+      selectedList = selectedList.filter((_, index) => index !== targetIdx);
       renderSetlist();
     };
     li.appendChild(removeBtn);
@@ -627,7 +658,7 @@ function renderSetlist() {
 
 const clearButton = document.querySelector('#clear-button');
 clearButton.addEventListener('click', () => {
-  if (selectedSongs.length <= 0) {
+  if (selectedList.length <= 0) {
     alert('선택된 곡이 없습니다.');
     return;
   }
@@ -635,158 +666,8 @@ clearButton.addEventListener('click', () => {
     return;
   }
 
-  selectedSongs = [];
+  selectedList = [];
   renderSetlist();
-});
-
-// PPT 생성
-const generateBtn = document.querySelector('#generate-btn');
-generateBtn.addEventListener('click', (e) => {
-  if (selectedSongs.length <= 0) {
-    alert('곡을 먼저 선택해 주세요.');
-    return;
-  }
-
-  // add loading spinner to button
-  const originalBtnText = e.target.innerHTML;
-  e.target.innerHTML = '';
-  const spinner = document.createElement('span');
-  spinner.className = 'spinner-border spinner-border-sm mx-2';
-  spinner.role = 'status';
-  spinner.ariaHidden = true;
-  e.target.appendChild(spinner);
-  e.target.innerHTML += 'PPT 생성 중... ';
-  e.target.disabled = true;
-
-  // align(left, center, right, justify)
-  const align = 'center';
-
-  // vertical align(top, middle, bottom)
-  const valign = 'bottom';
-
-  // 1. Create a new Presentation
-  const pptx = new PptxGenJS();
-
-  // font style
-  // const fontFace = '나눔스퀘어라운드 Bold';
-  //const fontFace = '나눔고딕 Bold';
-  const fontFace = '다음_SemiBold';
-  const fontSize = 36;
-  const fontBold = false;
-  const fontItalic = false;
-  const fontUnderline = false;
-  const fontColor = 'FFFFFF';
-  const fontOutline = {
-    size: 1.0,
-    color: '000000',
-  };
-  const fontGlow = {
-    size: 2,
-    opacity: 1.0,
-    color: '#000000',
-  };
-
-  const CM_1 = 28.346; // 1cm = 28.346pt
-
-  selectedSongs.forEach((song, idx) => {
-    const sectionTitle = `${idx}_${song.title}`;
-    // sections by song
-    pptx.addSection({ title: sectionTitle });
-
-    // title slide master
-    pptx.defineSlideMaster({
-      title: 'TITLE_SLIDE',
-      background: {
-        color: '009933',
-      },
-      objects: [
-        {
-          placeholder: {
-            options: {
-              name: 'song-title',
-              type: 'title',
-              w: '100%',
-              h: '20%',
-              autoFit: true,
-              align: 'left',
-              valign: 'top',
-              fontSize: 24,
-              fontFace,
-              color: fontColor,
-              outline: fontOutline,
-              glow: fontGlow,
-              margin: [CM_1, CM_1, CM_1, CM_1],
-            },
-            text: '(title here!)',
-          },
-        },
-      ],
-    });
-
-    // lyrics slide master
-    pptx.defineSlideMaster({
-      title: 'LYRICS_SLIDE',
-      background: {
-        color: '009933',
-      },
-      objects: [
-        {
-          placeholder: {
-            options: {
-              name: 'lyrics-body',
-              type: 'body',
-              w: '100%',
-              h: '100%',
-              autoFit: true,
-              align,
-              valign,
-              bold: fontBold,
-              italic: fontItalic,
-              underline: fontUnderline,
-              fontSize,
-              fontFace,
-              color: fontColor,
-              outline: fontOutline,
-              glow: fontGlow,
-              lineSpacing: fontSize * 1.025,
-              margin: [1, 1, CM_1, CM_1],
-            },
-            text: '(lyrics here!)',
-          },
-        },
-      ],
-    });
-
-    // add title slide
-    const slide = pptx.addSlide({ masterName: 'TITLE_SLIDE', sectionTitle });
-    slide.addText(song.title, { placeholder: 'song-title' });
-
-    const lyricsPerSlideArr = song.lyrics.split('\n\n');
-
-    // Add Lyrics Slide
-    lyricsPerSlideArr.forEach((lyrics) => {
-      const slide = pptx.addSlide({ masterName: 'LYRICS_SLIDE', sectionTitle });
-
-      // Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
-      slide.addText(lyrics, { placeholder: 'lyrics-body' });
-    });
-
-    console.log(song);
-  });
-
-  // 4. Save the Presentation
-  const worshipName = prompt('워십의 이름을 적어주세요.');
-  if (!worshipName) {
-    generateBtn.innerHTML = originalBtnText;
-    generateBtn.disabled = false;
-    return;
-  }
-
-  pptx.writeFile({ fileName: `${worshipName}.pptx` }).then((fileName) => {
-    console.log(`created file: ${fileName}`);
-    generateBtn.innerHTML = originalBtnText;
-    generateBtn.disabled = false;
-  });
 });
 
 render('%', 1);
