@@ -28,7 +28,7 @@ generateBtn.addEventListener('click', (e) => {
     fontFace: '다음_SemiBold',
     // const fontFace = '나눔스퀘어라운드 Bold';
     //const fontFace = '나눔고딕 Bold';
-    fontSize: 36,
+    fontSize: 48,
     fontBold: false,
     fontItalic: false,
     fontUnderline: false,
@@ -71,7 +71,7 @@ generateBtn.addEventListener('click', (e) => {
                   autoFit: true,
                   align: 'left',
                   valign: 'top',
-                  fontSize: 24,
+                  fontSize: 32,
                   fontFace: lyricsOptions.fontFace,
                   color: lyricsOptions.fontColor,
                   outline: lyricsOptions.fontOutline,
@@ -100,7 +100,7 @@ generateBtn.addEventListener('click', (e) => {
                   h: '100%',
                   autoFit: true,
                   align: lyricsOptions.align,
-                  valign: lyricsOptions.valing,
+                  valign: lyricsOptions.valign,
                   bold: lyricsOptions.fontBold,
                   italic: lyricsOptions.fontItalic,
                   underline: lyricsOptions.fontUnderline,
