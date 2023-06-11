@@ -525,12 +525,24 @@ setList.addEventListener('dragover', (e) => {
   e.preventDefault();
   const draggingElement = document.querySelector('.dragging');
   const afterElement = getDragAfterElement(e.clientY);
+
+  if (draggingElement.getAttribute('no') > afterElement.getAttribute('no')) {
+    console.log('going up');
+    newIndexAfterDrag = Number(afterElement.getAttribute('no'));
+  } else if (draggingElement.getAttribute('no') < afterElement.getAttribute('no')) {
+    console.log('going down');
+    newIndexAfterDrag = Number(afterElement.getAttribute('no')) - 1;
+  } else {
+    console.log('no move');
+    newIndexAfterDrag = Number(draggingElement.getAttribute('no'));
+  }
+
+  console.log(newIndexAfterDrag);
   if (afterElement == null) {
-    setList.appendChild(draggingElement);
     newIndexAfterDrag = selectedList.length - 1;
+    setList.appendChild(draggingElement);
   } else {
     setList.insertBefore(draggingElement, afterElement);
-    newIndexAfterDrag = Number(afterElement.getAttribute('no')) - 1;
   }
 });
 
