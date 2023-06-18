@@ -207,7 +207,9 @@ async function modifySong(id) {
     songDetailModal.hide();
 
     // setlist에 선택되어있는 경우 selectedList 값 업데이트
-    selectedList = selectedList.map((song) => (song.id === id ? { ...song, title, lyrics, type, memo } : song));
+    selectedList = selectedList.map((item) =>
+      item.type === 'lyrics' && item.id === id ? { ...item, title, lyrics, memo } : item
+    );
 
     renderSetlist();
   } catch (error) {
@@ -526,24 +528,21 @@ setList.addEventListener('dragover', (e) => {
   const draggingElement = document.querySelector('.dragging');
   const afterElement = getDragAfterElement(e.clientY);
 
-  if (draggingElement.getAttribute('no') > afterElement.getAttribute('no')) {
-    console.log('going up');
-    newIndexAfterDrag = Number(afterElement.getAttribute('no'));
-  } else if (draggingElement.getAttribute('no') < afterElement.getAttribute('no')) {
-    console.log('going down');
-    newIndexAfterDrag = Number(afterElement.getAttribute('no')) - 1;
-  } else {
-    console.log('no move');
-    newIndexAfterDrag = Number(draggingElement.getAttribute('no'));
-  }
-
-  console.log(newIndexAfterDrag);
   if (afterElement == null) {
     newIndexAfterDrag = selectedList.length - 1;
     setList.appendChild(draggingElement);
-  } else {
-    setList.insertBefore(draggingElement, afterElement);
+    return;
   }
+
+  if (draggingElement.getAttribute('no') > afterElement.getAttribute('no')) {
+    newIndexAfterDrag = Number(afterElement.getAttribute('no'));
+  } else if (draggingElement.getAttribute('no') < afterElement.getAttribute('no')) {
+    newIndexAfterDrag = Number(afterElement.getAttribute('no')) - 1;
+  } else {
+    newIndexAfterDrag = Number(draggingElement.getAttribute('no'));
+  }
+
+  setList.insertBefore(draggingElement, afterElement);
 });
 
 function getDragAfterElement(y) {
