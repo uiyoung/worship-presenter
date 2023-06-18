@@ -197,6 +197,17 @@ generateBtn.addEventListener('click', (e) => {
           .addText(`${item.title}`, { placeholder: 'rr-subtitle' });
 
         // todo : add rr content slide
+        console.log(item.contents);
+        // for (let i = 0; i < contents.length; i++) {
+        //   const p = document.createElement('p');
+        //   p.className = 'card-text';
+        //   if (i % 2 === 1 || contents[i].startsWith('(다같이)')) {
+        //     p.classList.add('fw-bold');
+        //   }
+        //   p.innerHTML = contents[i];
+        //   rrCardBody.appendChild(p);
+        // }
+
         break;
       default:
         break;
