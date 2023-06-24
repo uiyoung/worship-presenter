@@ -256,23 +256,14 @@ generateBtn.addEventListener('click', (e) => {
             );
           }
         });
+        break;
 
-        // todo : add rr content slide
-        // console.log(item.contents);
-        // for (let i = 0; i < item.contents.length; i++) {
-        //   if (i % 2 === 1 || item.contents[i].startsWith('(다같이)')) {
-        //     console.log('group2 :', item.contents[i]);
-        //   } else {
-        //     console.log('group1 :', item.contents[i]);
-        //   }
-        // }
-
+      case bible:
+        // todo : generate bible ppt
         break;
       default:
         break;
     }
-
-    // console.log(item);
   });
 
   // 4. Save the Presentation
