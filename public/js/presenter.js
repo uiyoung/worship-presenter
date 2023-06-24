@@ -290,7 +290,7 @@ async function getTotalSongCount(title) {
 
 async function render(title, pageNum) {
   const songs = await getSongsByPage(title, pageNum);
-  renderSearchTable(songs);
+  renderSearchTable(songs, pageNum);
 
   const totalCount = await getTotalSongCount(title);
   renderPagination(totalCount, pageNum, title);
@@ -337,7 +337,7 @@ async function getSongById(id) {
   }
 }
 
-function renderSearchTable(songs) {
+function renderSearchTable(songs, pageNum) {
   const tbody = document.querySelector('#search-table tbody');
   tbody.innerHTML = '';
 
@@ -359,7 +359,7 @@ function renderSearchTable(songs) {
     tr.className = 'text-center';
     // no
     let td = document.createElement('td');
-    td.innerHTML = idx + 1;
+    td.innerHTML = (pageNum - 1) * 10 + idx + 1;
     tr.appendChild(td);
     // type
     td = document.createElement('td');
