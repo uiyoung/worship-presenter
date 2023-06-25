@@ -4,8 +4,16 @@ create ppt for worship and manage setlists
 
 ## How to Run
 
-1. `$ npm i`
-2. `$ npm start`
+1. `$ touch .env`
+2. set `.env` values
+
+- ```
+  DATABASE_URL=""
+  COOKIE_SECRET=""
+  ```
+
+3. `$ npm i`
+4. `$ npm start`
 
 ## Features
 
@@ -26,3 +34,7 @@ create ppt for worship and manage setlists
 ## todo
 
 - [trello](https://trello.com/b/7oiX5itL/todo)
+
+```
+
+```
