@@ -7,7 +7,7 @@ function scanChars() {
     for (let i = 1; i <= book.chapterNo; i++) {
       const chapter = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/${book.no}/${i}.json`));
       for (const no in chapter.verses) {
-        if (chapter.verses[no].includes('（')) {
+        if (chapter.verses[no].includes('（') || chapter.verses[no].includes('）')) {
           console.log(`${book.no}  ${i}장 ${no}절 - ${chapter.verses[no]}`);
         }
       }
