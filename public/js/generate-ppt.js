@@ -17,10 +17,7 @@ generateBtn.addEventListener('click', (e) => {
   e.target.innerHTML += 'PPT 생성 중... ';
   e.target.disabled = true;
 
-  // 1. Create a new Presentation
-  const pptx = new PptxGenJS();
-  pptx.layout = 'LAYOUT_WIDE';
-
+  // options
   const CM_1 = 28.346; // 1cm = 28.346pt
   const shadowOptions = { type: 'outer', angle: 45, blur: 3, color: '000000', offset: 3, opacity: 0.57 };
 
@@ -56,130 +53,79 @@ generateBtn.addEventListener('click', (e) => {
     group2: 'FFE699',
   };
 
-  // song title slide master
-  pptx.defineSlideMaster({
-    title: 'LYRICS_TITLE_SLIDE',
-    background: {
-      color: '009933',
-    },
-    objects: [
-      {
-        placeholder: {
-          options: {
-            name: 'song-title',
-            type: 'title',
-            w: '100%',
-            h: '20%',
-            autoFit: true,
-            align: 'left',
-            valign: 'top',
-            fontSize: 32,
-            fontFace: lyricsOptions.fontFace,
-            color: lyricsOptions.fontColor,
-            outline: lyricsOptions.fontOutline,
-            glow: lyricsOptions.fontGlow,
-            margin: [CM_1, CM_1, CM_1, CM_1],
-          },
-          text: '(title here!)',
-        },
-      },
-    ],
-  });
+  // 1. Create a new Presentation
+  const pptx = new PptxGenJS();
+  pptx.layout = 'LAYOUT_WIDE';
 
-  // lyrics slide master
-  pptx.defineSlideMaster({
-    title: 'LYRICS_SLIDE',
-    background: {
-      color: '009933',
-    },
-    objects: [
-      {
-        placeholder: {
-          options: {
-            name: 'lyrics-body',
-            type: 'body',
-            w: '100%',
-            h: '100%',
-            autoFit: true,
-            align: lyricsOptions.align,
-            valign: lyricsOptions.valign,
-            bold: lyricsOptions.fontBold,
-            italic: lyricsOptions.fontItalic,
-            underline: lyricsOptions.fontUnderline,
-            fontSize: lyricsOptions.fontSize,
-            fontFace: lyricsOptions.fontFace,
-            color: lyricsOptions.fontColor,
-            outline: lyricsOptions.fontOutline,
-            glow: lyricsOptions.fontGlow,
-            lineSpacing: lyricsOptions.fontSize * 1.025,
-            margin: [1, 1, CM_1, CM_1],
-          },
-          text: '(lyrics here!)',
-        },
-      },
-    ],
-  });
-
-  // rr title slide master
-  pptx.defineSlideMaster({
-    title: 'RR_TITLE_SLIDE',
-    background: { path: '/backgrounds/rr-background.jpg' },
-    objects: [
-      {
-        placeholder: {
-          options: {
-            name: 'rr-title',
-            type: 'title',
-            x: 0,
-            y: 1.76,
-            w: '100%',
-            // h: '100%',
-            autoFit: true,
-            align: 'center',
-            valign: 'middle',
-            fontSize: 54,
-            fontFace: rrTitleOptions.fontFace,
-            color: rrTitleOptions.fontColor,
-          },
-          text: '(title here!)',
-        },
-      },
-      {
-        placeholder: {
-          options: {
-            name: 'rr-subtitle',
-            type: 'title',
-            x: 0,
-            y: 2.64,
-            w: '100%',
-            // h: '100%',
-            autoFit: true,
-            align: 'center',
-            valign: 'middle',
-            fontSize: rrTitleOptions.fontSize,
-            fontFace: rrTitleOptions.fontFace,
-            color: rrTitleOptions.fontColor,
-          },
-          text: '(subtitle here!)',
-        },
-      },
-    ],
-  });
-
-  // rr content slide master
-  pptx.defineSlideMaster({
-    title: 'RR_CONTENT_SLIDE',
-    background: { path: '/backgrounds/rr-background.jpg' },
-    objects: [{ rect: { x: 0, y: 0, w: '100%', h: '100%', fill: { color: '000000', transparency: 50 } } }],
-  });
-
-  // todo : defineSlideMaster 정리 : 위로 빼기
   selectedList.forEach((item, idx) => {
     const sectionTitle = `${idx}_${item.title}`;
-    console.log(sectionTitle);
 
     switch (item.type) {
       case 'lyrics':
+        // song title slide master
+        pptx.defineSlideMaster({
+          title: 'LYRICS_TITLE_SLIDE',
+          background: {
+            color: '009933',
+          },
+          objects: [
+            {
+              placeholder: {
+                options: {
+                  name: 'song-title',
+                  type: 'title',
+                  w: '100%',
+                  h: '20%',
+                  autoFit: true,
+                  align: 'left',
+                  valign: 'top',
+                  fontSize: 32,
+                  fontFace: lyricsOptions.fontFace,
+                  color: lyricsOptions.fontColor,
+                  outline: lyricsOptions.fontOutline,
+                  glow: lyricsOptions.fontGlow,
+                  margin: [CM_1, CM_1, CM_1, CM_1],
+                },
+                text: '(title here!)',
+              },
+            },
+          ],
+        });
+
+        // lyrics slide master
+        pptx.defineSlideMaster({
+          title: 'LYRICS_SLIDE',
+          background: {
+            color: '009933',
+          },
+          objects: [
+            {
+              placeholder: {
+                options: {
+                  name: 'lyrics-body',
+                  type: 'body',
+                  w: '100%',
+                  h: '100%',
+                  autoFit: true,
+                  align: lyricsOptions.align,
+                  valign: lyricsOptions.valign,
+                  bold: lyricsOptions.fontBold,
+                  italic: lyricsOptions.fontItalic,
+                  underline: lyricsOptions.fontUnderline,
+                  fontSize: lyricsOptions.fontSize,
+                  fontFace: lyricsOptions.fontFace,
+                  color: lyricsOptions.fontColor,
+                  outline: lyricsOptions.fontOutline,
+                  glow: lyricsOptions.fontGlow,
+                  lineSpacing: lyricsOptions.fontSize * 1.025,
+                  margin: [1, 1, CM_1, CM_1],
+                },
+                text: '(lyrics here!)',
+              },
+            },
+          ],
+        });
+
         // sections by item
         pptx.addSection({ title: sectionTitle });
 
@@ -199,6 +145,58 @@ generateBtn.addEventListener('click', (e) => {
         break;
 
       case 'responsive-reading':
+        // rr title slide master
+        pptx.defineSlideMaster({
+          title: 'RR_TITLE_SLIDE',
+          background: { path: '/backgrounds/rr-background.jpg' },
+          objects: [
+            {
+              placeholder: {
+                options: {
+                  name: 'rr-title',
+                  type: 'title',
+                  x: 0,
+                  y: 1.76,
+                  w: '100%',
+                  // h: '100%',
+                  autoFit: true,
+                  align: 'center',
+                  valign: 'middle',
+                  fontSize: 54,
+                  fontFace: rrTitleOptions.fontFace,
+                  color: rrTitleOptions.fontColor,
+                },
+                text: '(title here!)',
+              },
+            },
+            {
+              placeholder: {
+                options: {
+                  name: 'rr-subtitle',
+                  type: 'title',
+                  x: 0,
+                  y: 2.64,
+                  w: '100%',
+                  // h: '100%',
+                  autoFit: true,
+                  align: 'center',
+                  valign: 'middle',
+                  fontSize: rrTitleOptions.fontSize,
+                  fontFace: rrTitleOptions.fontFace,
+                  color: rrTitleOptions.fontColor,
+                },
+                text: '(subtitle here!)',
+              },
+            },
+          ],
+        });
+
+        // rr content slide master
+        pptx.defineSlideMaster({
+          title: 'RR_CONTENT_SLIDE',
+          background: { path: '/backgrounds/rr-background.jpg' },
+          objects: [{ rect: { x: 0, y: 0, w: '100%', h: '100%', fill: { color: '000000', transparency: 50 } } }],
+        });
         // sections by item
         pptx.addSection({ title: sectionTitle });
 
@@ -236,7 +234,16 @@ generateBtn.addEventListener('click', (e) => {
                   options: { ...rrContentOptions, color: rrContentColors.group2 },
                 },
               ],
-              { x: 0, y: 0, w: '100%', h: '100%', align: 'left', valign: 'top', margin: [30, 30, 100, 100] }
+              {
+                x: 0,
+                y: 0,
+                w: '100%',
+                h: '100%',
+                align: 'left',
+                valign: 'top',
+                margin: [30, 30, 100, 100],
+                wrap: true,
+              }
             );
           } else {
             console.log(`group 1: ${pair[0]}, group 2: ${pair[1]}`);
