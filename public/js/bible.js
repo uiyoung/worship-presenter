@@ -75,10 +75,15 @@ async function getBible(bookIndex, chapterIndex, verseIndex) {
     li.id = `verse${i}`;
 
     const span = document.createElement('span');
-    span.classList = 'me-1';
+    span.classList = 'me-1 d-flex';
 
-    const verseNo = document.createElement('span');
-    verseNo.classList = 'small me-2 opacity-75 text-success-emphasis';
+    const verseNo = document.createElement('a');
+    verseNo.href = `#verse${i}`;
+    verseNo.onclick = () => {
+      verseSelect.value = i;
+      verseSelect.dispatchEvent(new Event('change'));
+    };
+    verseNo.classList = 'me-2 opacity-75 text-success-emphasis';
     verseNo.innerHTML = i;
     span.appendChild(verseNo);
 
@@ -95,7 +100,6 @@ async function getBible(bookIndex, chapterIndex, verseIndex) {
     selectBtn.innerHTML = '선택';
     li.appendChild(selectBtn);
 
-    // li.innerHTML = result.verses[i];
     bibleList.appendChild(li);
   }
 }
