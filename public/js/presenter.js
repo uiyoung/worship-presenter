@@ -409,7 +409,7 @@ function renderPagination(totalCount, currentPage, title) {
 
   // prev
   let li = document.createElement('li');
-  li.className = `page-item ${currentPage == 1 ? 'disabled' : ''}`;
+  li.className = `page-item text-nowrap ${currentPage == 1 ? 'disabled' : ''}`;
   let a = document.createElement('a');
   a.className = 'page-link';
   a.innerHTML = '이전';
@@ -494,7 +494,7 @@ function renderPagination(totalCount, currentPage, title) {
 
   // next
   li = document.createElement('li');
-  li.className = `page-item ${currentPage + 1 > totalPage ? 'disabled' : ''}`;
+  li.className = `page-item text-nowrap ${currentPage + 1 > totalPage ? 'disabled' : ''}`;
   a = document.createElement('a');
   a.className = 'page-link';
   a.innerHTML = '다음';
