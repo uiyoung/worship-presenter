@@ -56,16 +56,16 @@ function renderResponsiveReading(data) {
   rrCardBody.appendChild(a);
 }
 
-async function setResponsiveReadingOptions() {
+async function setResponsiveReadingSelectOptions() {
+  const option = document.createElement('option');
+  option.label = '교독문 선택';
+  rrSelect.appendChild(option);
+
   try {
     const response = await fetch('/responsive-reading/index.json');
-    const result = await response.json();
+    const data = await response.json();
 
-    const option = document.createElement('option');
-    option.label = '교독문 선택';
-    rrSelect.appendChild(option);
-
-    for (const { no, title } of result) {
+    for (const { no, title } of data) {
       const option = document.createElement('option');
       option.value = no;
       option.innerHTML = `${no}번. ${title}`;
@@ -76,4 +76,4 @@ async function setResponsiveReadingOptions() {
   }
 }
 
-setResponsiveReadingOptions();
+setResponsiveReadingSelectOptions();
