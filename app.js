@@ -6,6 +6,7 @@ const nunjucks = require('nunjucks');
 
 const indexRouter = require('./routes');
 const songRouter = require('./routes/song');
+const hymnRouter = require('./routes/hymn');
 const authRouter = require('./routes/auth');
 
 const app = express();
@@ -41,6 +42,7 @@ app.use((req, res, next) => {
 
 app.use('/', indexRouter);
 app.use('/song', songRouter);
+app.use('/hymn', hymnRouter);
 app.use('/auth', authRouter);
 
 app.use((req, res, next) => {
