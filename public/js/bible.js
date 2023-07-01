@@ -28,9 +28,8 @@ verseSelect.addEventListener('change', (e) => {
 async function setChapter(bookIndex) {
   // const response = await fetch('/bibles/NKRV/index.json');
   // const result = await response.json();
-  // const maxChapterNo = result.books.filter((book) => book.no === bookIndex)[0].chapterNo;
 
-  const maxChapterNo = bibleInfo.books.filter((book) => book.no === bookIndex)[0].chapterNo;
+  const maxChapterNo = bibleInfo.books.find((book) => book.no === bookIndex).chapterNo;
 
   chapterSelect.innerHTML = '';
   for (let i = 1; i <= maxChapterNo; i++) {
@@ -44,9 +43,8 @@ async function setChapter(bookIndex) {
 async function setVerse(bookIndex, chapterIndex) {
   // const response = await fetch('/bibles/NKRV/index.json');
   // const result = await response.json();
-  // const verseNo = result.books.filter((book) => book.no === bookIndex)[0].verseNos[chapterIndex - 1];
 
-  const verseNo = bibleInfo.books.filter((book) => book.no === bookIndex)[0].verseNos[chapterIndex - 1];
+  const verseNo = bibleInfo.books.find((book) => book.no === bookIndex).verseNos[chapterIndex - 1];
 
   verseSelect.innerHTML = '';
   for (let i = 1; i <= verseNo; i++) {
@@ -60,15 +58,13 @@ async function setVerse(bookIndex, chapterIndex) {
 async function getBible(bookIndex, chapterIndex, verseIndex) {
   const response = await fetch(`/bibles/NKRV/${bookIndex}/${chapterIndex}.json`);
   const result = await response.json();
-  // console.log(result.verses[verseIndex]);
-  // console.log(result);
-  // console.log(Object.keys(result.verses).length);
 
   const bibleTitle = document.querySelector('#bible-title');
   bibleTitle.innerHTML = result.title;
 
   const bibleList = document.querySelector('#bible-list');
   bibleList.innerHTML = '';
+
   for (let i = 1; i <= Object.keys(result.verses).length; i++) {
     const li = document.createElement('li');
     li.classList = 'list-group-item d-flex justify-content-between';
