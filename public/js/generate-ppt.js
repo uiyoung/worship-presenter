@@ -53,6 +53,15 @@ generateBtn.addEventListener('click', (e) => {
     group2: 'FFE699',
   };
 
+  const hymnTitleOptions = {
+    fontSize1: 18,
+    fontFace1: '마루 부리 조금굵은',
+    fontColor1: '210C00',
+    fontSize2: 36,
+    fontFace2: '마루 부리 굵은',
+    fontColor2: '431f00',
+  };
+
   // 1. Create a new Presentation
   const pptx = new PptxGenJS();
   pptx.layout = 'LAYOUT_WIDE';
@@ -144,6 +153,66 @@ generateBtn.addEventListener('click', (e) => {
         });
         break;
 
+      case 'hymn-image':
+        // hymn title slide master
+        pptx.defineSlideMaster({
+          title: 'HYMN_TITLE_SLIDE',
+          background: { path: '/backgrounds/hymn-title-background.jpg' },
+          objects: [
+            {
+              placeholder: {
+                options: {
+                  name: 'hymn-no',
+                  type: 'title',
+                  x: 0,
+                  y: 2.32,
+                  w: '100%',
+                  autoFit: true,
+                  align: 'center',
+                  valign: 'middle',
+                  fontSize: hymnTitleOptions.fontSize1,
+                  fontFace: hymnTitleOptions.fontFace1,
+                  color: hymnTitleOptions.fontColor1,
+                },
+                text: '(hymn no here!)',
+              },
+            },
+            {
+              placeholder: {
+                options: {
+                  name: 'hymn-title',
+                  type: 'title',
+                  x: 0,
+                  y: 3.75,
+                  w: '100%',
+                  autoFit: true,
+                  align: 'center',
+                  valign: 'middle',
+                  fontSize: hymnTitleOptions.fontSize2,
+                  fontFace: hymnTitleOptions.fontFace2,
+                  color: hymnTitleOptions.fontColor2,
+                },
+                text: '(hymn title here!)',
+              },
+            },
+          ],
+        });
+        // sections by item
+        pptx.addSection({ title: sectionTitle });
+
+        // add hymn title slide
+        const [hymnNo, title] = item.title.split('-');
+        const hymnTitleSlide = pptx.addSlide({ masterName: 'HYMN_TITLE_SLIDE', sectionTitle });
+        hymnTitleSlide.addText(hymnNo, { placeholder: 'hymn-no' });
+        hymnTitleSlide.addText(title, { placeholder: 'hymn-title' });
+
+        // add hymn image slides
+        item.images.forEach((image) => {
+          const imgSlide = pptx.addSlide({ sectionTitle });
+          imgSlide.background = { path: image }; // image: url
+        });
+
+        break;
       case 'responsive-reading':
         // rr title slide master
         pptx.defineSlideMaster({
@@ -197,6 +266,7 @@ generateBtn.addEventListener('click', (e) => {
           background: { path: '/backgrounds/rr-background.jpg' },
           objects: [{ rect: { x: 0, y: 0, w: '100%', h: '100%', fill: { color: '000000', transparency: 50 } } }],
         });
+
         // sections by item
         pptx.addSection({ title: sectionTitle });
 

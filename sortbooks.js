@@ -1,21 +1,58 @@
 const fs = require('fs');
+// const lyrics = JSON.parse(fs.readFileSync(`./public/hymn/lyrics/200.json`));
+// const verses = Object.keys(lyrics.verses)
+//   .sort()
+//   .reduce((newObj, key) => {
+//     newObj[key] = lyrics.verses[key].trim();
+//     return newObj;
+//   }, {});
+// console.log({ no: 200, title: lyrics.title.split('. ')[1], verses });
 
-// 전각괄호 포함된 verse 스캔
-function scanChars() {
-  const result = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/index.json`));
-  for (const book of result.books) {
-    for (let i = 1; i <= book.chapterNo; i++) {
-      const chapter = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/${book.no}/${i}.json`));
-      for (const no in chapter.verses) {
-        if (chapter.verses[no].includes('（') || chapter.verses[no].includes('）')) {
-          console.log(`${book.no}  ${i}장 ${no}절 - ${chapter.verses[no]}`);
-        }
-      }
-    }
-  }
+for (let i = 1; i <= 645; i++) {
+  const lyrics = JSON.parse(fs.readFileSync(`./public/hymn/lyrics/${i}.json`));
+  const verses = Object.keys(lyrics.verses)
+    .sort()
+    .reduce((newObj, key) => {
+      newObj[key] = lyrics.verses[key].trim();
+      return newObj;
+    }, {});
+  console.log({ no: i, title: lyrics.title.split('. ')[1], verses });
+
+  fs.writeFileSync(
+    `./public/hymn/lyrics2/${i}.json`,
+    JSON.stringify({ no: i, title: lyrics.title.split('. ')[1], verses: { ...verses } })
+  );
+
+  // fs.writeFileSync(
+  //   `./public/hymn/lyrics2/${i}.json `,
+  //   JSON.stringify({ no: i, title: lyrics.title.split('. ')[1], verses })
+  // );
 }
 
-scanChars();
+// genereate hymn index
+// const hymn = [];
+// for (let i = 1; i <= 645; i++) {
+//   const lyrics = JSON.parse(fs.readFileSync(`./public/hymn/lyrics/${i}.json`));
+//   hymn.push({ no: i, title: lyrics.title.split('. ')[1] });
+// }
+// fs.writeFileSync(`./public/hymn/index.json`, JSON.stringify({ version: '새찬송가', hymn: [...hymn] }));
+
+// 전각괄호 포함된 verse 스캔
+// function scanChars() {
+//   const result = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/index.json`));
+//   for (const book of result.books) {
+//     for (let i = 1; i <= book.chapterNo; i++) {
+//       const chapter = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/${book.no}/${i}.json`));
+//       for (const no in chapter.verses) {
+//         if (chapter.verses[no].includes('（') || chapter.verses[no].includes('）')) {
+//           console.log(`${book.no}  ${i}장 ${no}절 - ${chapter.verses[no]}`);
+//         }
+//       }
+//     }
+//   }
+// }
+
+// scanChars();
 
 // const result = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/${1}/${1}.json`));
 // const newObj = Object.keys(result.verses).reduce((newObj, key) => {

@@ -587,8 +587,11 @@ function renderSetlist() {
         case 'lyrics':
           showSongDetailModal(item.id);
           break;
+        case 'hymn-image':
+          // todo : responsive-reading preview modal
+          break;
         case 'responsive-reading':
-          // todo : responsive-reading modal
+          // todo : responsive-reading preview modal
           break;
 
         default:
@@ -626,6 +629,10 @@ function renderSetlist() {
         type = '가사';
         badgeSpan.classList.add('text-bg-primary');
         break;
+      case 'hymn-image':
+        type = '이미지';
+        badgeSpan.classList.add('text-bg-warning');
+        break;
       case 'responsive-reading':
         type = '교독문';
         badgeSpan.classList.add('text-bg-success');
@@ -636,8 +643,6 @@ function renderSetlist() {
     }
     badgeSpan.innerHTML = `${type} `;
     div.appendChild(badgeSpan);
-
-    // div.innerHTML = `${idx + 1}. ${item.title} `;
 
     // lyrics preview
     if (item.type === 'lyrics') {
