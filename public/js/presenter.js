@@ -517,6 +517,7 @@ async function selectLyrics(id) {
   const selectedSong = await getSongById(id);
   const { title, lyrics } = selectedSong;
   selectedList.push({ no: selectedList.length + 1, type: 'lyrics', id, title, lyrics });
+  console.log(selectedList);
   renderSetlist();
 }
 

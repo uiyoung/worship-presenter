@@ -66,7 +66,7 @@ function renderHymnLyrics(data) {
     span.appendChild(verseNo);
 
     const verse = document.createElement('span');
-    verse.innerHTML = verses[key];
+    verse.innerHTML = verses[key].replaceAll('\n', '<br/>');
     span.appendChild(verse);
 
     p.appendChild(span);
@@ -86,6 +86,7 @@ function renderHymnLyrics(data) {
       title: `찬송가 ${no}장-${title}`,
       verses,
     });
+    console.log(selectedList);
     renderSetlist();
   };
   hymnCardBody.appendChild(a);
