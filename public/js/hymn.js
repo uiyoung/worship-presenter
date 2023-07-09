@@ -13,6 +13,15 @@ hymnSelect.addEventListener('change', async () => {
     p.className = 'card-text text-center opacity-75';
     p.innerHTML = '찬송가를 선택해 주세요.';
     hymnCardBody.appendChild(p);
+
+    hymnSlide.innerHTML = '';
+    hymnIndicators.innerHTML = '';
+    hymnSlide.innerHTML = '';
+    hymnImageBtn.innerHTML = '';
+
+    document.querySelector('.carousel-control-prev').innerHTML = '';
+    document.querySelector('.carousel-control-next').innerHTML = '';
+
     return;
   }
 
@@ -36,6 +45,12 @@ hymnSelect.addEventListener('change', async () => {
   } catch (error) {
     console.error(error);
     hymnSlide.innerHTML = '이미지 불러오기 실패';
+    hymnIndicators.innerHTML = '';
+    hymnSlide.innerHTML = '';
+    hymnImageBtn.innerHTML = '';
+
+    document.querySelector('.carousel-control-prev').innerHTML = '';
+    document.querySelector('.carousel-control-next').innerHTML = '';
   }
 });
 
@@ -76,7 +91,7 @@ function renderHymnLyrics(data) {
   // select button
   const a = document.createElement('a');
   a.href = '#';
-  a.className = 'btn btn-primary';
+  a.className = 'btn btn-primary disabled';
   a.innerHTML = `가사 선택`;
   a.onclick = (e) => {
     e.preventDefault();
