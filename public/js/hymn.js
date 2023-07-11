@@ -91,17 +91,24 @@ function renderHymnLyrics(data) {
   // select button
   const a = document.createElement('a');
   a.href = '#';
-  a.className = 'btn btn-primary disabled';
+  a.className = 'btn btn-primary';
   a.innerHTML = `가사 선택`;
   a.onclick = (e) => {
     e.preventDefault();
+
+    // convert hymn verses to lyrics string
+    const lyricsArr = [];
+    for (let key in verses) {
+      lyricsArr.push(`${key}.${verses[key]}`);
+    }
+    const lyrics = lyricsArr.join('\n\n');
+
     selectedList.push({
       no: selectedList.length + 1,
-      type: 'hymn-lyrics',
+      type: 'lyrics',
       title: `찬송가 ${no}장-${title}`,
-      verses,
+      lyrics,
     });
-    console.log(selectedList);
     renderSetlist();
   };
   hymnCardBody.appendChild(a);
