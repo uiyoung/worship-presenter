@@ -1,4 +1,29 @@
 const fs = require('fs');
+
+const song = JSON.parse(fs.readFileSync(`./public/hymn/lyrics/10.json`));
+for (let key in song.verses) {
+  console.log(key, song.verses[key]);
+}
+
+// const songs = JSON.parse(fs.readFileSync(`./public/hymn/temp/temp.json`));
+// songs.forEach((song) => {
+//   const lyrics = song.lyrics.split(/\d+\./).filter(Boolean);
+//   const verses = {};
+//   for (let i = 0; i < lyrics.length; i++) {
+//     verses[i + 1] = lyrics[i].trim();
+//   }
+
+//   const newObj = {
+//     no: Number(song.no),
+//     title: song.title,
+//     verses,
+//   };
+//   console.log(newObj);
+//   fs.writeFileSync(`./public/hymn/temp/${song.no}.json`, JSON.stringify(newObj));
+// });
+
+// console.log(songs);
+
 // const lyrics = JSON.parse(fs.readFileSync(`./public/hymn/lyrics/200.json`));
 // const verses = Object.keys(lyrics.verses)
 //   .sort()
@@ -8,26 +33,21 @@ const fs = require('fs');
 //   }, {});
 // console.log({ no: 200, title: lyrics.title.split('. ')[1], verses });
 
-for (let i = 1; i <= 645; i++) {
-  const lyrics = JSON.parse(fs.readFileSync(`./public/hymn/lyrics/${i}.json`));
-  const verses = Object.keys(lyrics.verses)
-    .sort()
-    .reduce((newObj, key) => {
-      newObj[key] = lyrics.verses[key].trim();
-      return newObj;
-    }, {});
-  console.log({ no: i, title: lyrics.title.split('. ')[1], verses });
+// for (let i = 1; i <= 645; i++) {
+//   const lyrics = JSON.parse(fs.readFileSync(`./public/hymn/lyrics/${i}.json`));
+//   const verses = Object.keys(lyrics.verses)
+//     .sort()
+//     .reduce((newObj, key) => {
+//       newObj[key] = lyrics.verses[key].trim();
+//       return newObj;
+//     }, {});
+//   console.log({ no: i, title: lyrics.title.split('. ')[1], verses });
 
-  fs.writeFileSync(
-    `./public/hymn/lyrics2/${i}.json`,
-    JSON.stringify({ no: i, title: lyrics.title.split('. ')[1], verses: { ...verses } })
-  );
-
-  // fs.writeFileSync(
-  //   `./public/hymn/lyrics2/${i}.json `,
-  //   JSON.stringify({ no: i, title: lyrics.title.split('. ')[1], verses })
-  // );
-}
+//   fs.writeFileSync(
+//     `./public/hymn/lyrics2/${i}.json`,
+//     JSON.stringify({ no: i, title: lyrics.title.split('. ')[1], verses: { ...verses } })
+//   );
+// }
 
 // genereate hymn index
 // const hymn = [];
