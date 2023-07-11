@@ -8,7 +8,7 @@ create ppt for worship and manage setlists
 2. set `.env` values
 
 - ```
-  DATABASE_URL=""
+  DATABASE_URL="DATABASE_URL="postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public"
   COOKIE_SECRET=""
   ```
 
