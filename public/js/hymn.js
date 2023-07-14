@@ -2,6 +2,8 @@ const hymnCarousel = document.querySelector('#hymn-carousel');
 const hymnIndicators = document.querySelector('#hymn-indicators');
 const hymnSlide = document.querySelector('#hymn-slide');
 const hymnImageBtn = document.querySelector('#hymn-image-btn');
+const carouselPrevBtn = document.querySelector('.carousel-control-prev');
+const carouselNextBtn = document.querySelector('.carousel-control-next');
 
 const hymnSelect = document.querySelector('#hymn-select');
 hymnSelect.addEventListener('change', async () => {
@@ -18,9 +20,8 @@ hymnSelect.addEventListener('change', async () => {
     hymnIndicators.innerHTML = '';
     hymnSlide.innerHTML = '';
     hymnImageBtn.innerHTML = '';
-
-    document.querySelector('.carousel-control-prev').innerHTML = '';
-    document.querySelector('.carousel-control-next').innerHTML = '';
+    carouselPrevBtn.innerHTML = '';
+    carouselNextBtn.innerHTML = '';
 
     return;
   }
@@ -48,9 +49,8 @@ hymnSelect.addEventListener('change', async () => {
     hymnIndicators.innerHTML = '';
     hymnSlide.innerHTML = '';
     hymnImageBtn.innerHTML = '';
-
-    document.querySelector('.carousel-control-prev').innerHTML = '';
-    document.querySelector('.carousel-control-next').innerHTML = '';
+    carouselPrevBtn.innerHTML = '';
+    carouselNextBtn.innerHTML = '';
   }
 });
 
@@ -127,6 +127,8 @@ function renderHymnImages(data) {
   hymnIndicators.innerHTML = '';
   hymnSlide.innerHTML = '';
   hymnImageBtn.innerHTML = '';
+  carouselPrevBtn.innerHTML = '';
+  carouselNextBtn.innerHTML = '';
 
   images.forEach((image, index) => {
     // append indicators
@@ -148,6 +150,16 @@ function renderHymnImages(data) {
     div.appendChild(img);
     hymnSlide.appendChild(div);
   });
+
+  // prev, next button
+  // <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  const spanPrev = document.createElement('span');
+  spanPrev.className = 'carousel-control-prev-icon';
+  carouselPrevBtn.appendChild(spanPrev);
+
+  const spanNext = document.createElement('span');
+  spanNext.className = 'carousel-control-next-icon';
+  carouselNextBtn.appendChild(spanNext);
 
   // select button
   const a = document.createElement('a');
@@ -188,3 +200,4 @@ async function setHymnSelectOptions() {
 }
 
 setHymnSelectOptions();
+hymnSelect.dispatchEvent(new Event('change'));
