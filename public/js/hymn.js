@@ -147,6 +147,7 @@ function renderHymnImages(data) {
     const img = document.createElement('img');
     img.className = 'd-block w-100';
     img.src = `/hymn/images/${no}/${image}`;
+    img.loading = 'lazy';
     div.appendChild(img);
     hymnSlide.appendChild(div);
   });
