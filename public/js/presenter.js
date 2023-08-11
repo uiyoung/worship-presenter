@@ -4,22 +4,6 @@ let selectedList = [];
 
 const songDetailModal = new bootstrap.Modal(document.querySelector('#songDetailModal'));
 
-// songDetailModal.addEventListener('show.bs.modal', (e) => {
-//   // Button that triggered the modal
-//   const button = e.relatedTarget;
-//   // Extract info from data-bs-* attributes
-//   const recipient = button.getAttribute('data-bs-whatever');
-//   // If necessary, you could initiate an Ajax request here
-//   // and then do the updating in a callback.
-
-//   // Update the modal's content.
-//   const modalTitle = songDetailModal.querySelector('.modal-title');
-//   const modalBodyInput = songDetailModal.querySelector('.modal-body input');
-
-//   modalTitle.textContent = `New message to ${recipient}`;
-//   modalBodyInput.value = recipient;
-// });
-
 // 새로 등록하기
 const newBtn = document.querySelector('#new-button');
 if (newBtn) {
@@ -34,7 +18,7 @@ const modalMemo = document.querySelector('#modal-memo');
 const modalSaveBtn = document.querySelector('#modal-save-btn');
 const modalModifyBtn = document.querySelector('#modal-modify-btn');
 
-// 등록, 수정 modal
+// modal : 등록, 수정
 async function showSongDetailModal(id) {
   const modalHeader = document.querySelector('#songDetailModalLabel');
   const modalSongTypes = document.querySelectorAll('input[name=song-type]');
@@ -103,7 +87,7 @@ async function showSongDetailModal(id) {
   }
 }
 
-// 저장
+// modal : 저장
 modalSaveBtn.addEventListener('click', async () => {
   const title = modalTitle.value.trim();
   if (title === '') {
@@ -159,7 +143,7 @@ modalSaveBtn.addEventListener('click', async () => {
   }
 });
 
-// 수정
+// modal : 수정
 async function modifySong(id) {
   const title = modalTitle.value.trim();
   if (title === '') {
@@ -218,14 +202,14 @@ async function modifySong(id) {
   }
 }
 
-// todo : select에서 선택한 줄 수로 정렬
+// modal : 자동 정렬
 function autoAlign() {
   const lyricsTextArea = document.querySelector('#modal-lyrics');
 
   const lines = lyricsTextArea.value
     .split('\n')
-    .filter((e) => e != '')
-    .map((e) => e.trim().replace(/\s+/g, ' '));
+    .map((e) => e.replace(/[\s\u200B]+/g, ' ').trim()) // ZWSP공백 제거, 문자열 내의 연속된 공백을 하나의 공백으로 대체
+    .filter((e) => e !== '');
 
   if (lines.length <= 0) {
     alert('가사를 입력해주세요.');
@@ -233,7 +217,7 @@ function autoAlign() {
     return;
   }
 
-  const LINES_PER_SLIDE = 2;
+  const LINES_PER_SLIDE = Number(document.querySelector('#lines-per-slide').value) || 2;
   let result = [];
   const temp = [...lines];
   const cnt = Math.ceil(temp.length / LINES_PER_SLIDE);
@@ -249,92 +233,42 @@ function autoAlign() {
 const searchInput = document.querySelector('#search-input');
 searchInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') {
-    searchSong();
+    searchBtn.dispatchEvent(new Event('click'));
   }
 });
 
 const searchBtn = document.querySelector('#search-btn');
 searchBtn.addEventListener('click', () => {
-  searchSong();
-});
-
-function searchSong() {
-  if (searchInput.value.trim() === '') {
+  const query = searchInput.value.trim();
+  if (query === '') {
     alert('검색어를 입력해주세요.');
     searchInput.focus();
     return;
   }
 
-  render(searchInput.value.trim(), 1);
+  render(query, 1);
+});
+
+async function searchSong(query, pageNum) {
+  const searchBy = document.querySelector('#search-type-select').value;
+  const url = `/song?${searchBy}=${query}&page=${pageNum}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
 }
 
-async function getSongsByPage(title, page) {
+async function render(query, pageNum) {
   try {
-    const res = await fetch(`/song?title=${title}&page=${page}`);
-    const songs = await res.json();
-    return songs;
+    const { songs, totalCount } = await searchSong(query, pageNum);
+
+    renderSearchTable(songs, pageNum);
+    renderPagination(totalCount, pageNum, query);
+    renderSearchInfo(query, totalCount);
   } catch (error) {
     console.error(error);
   }
-}
-
-async function getTotalSongCount(title) {
-  try {
-    const res = await fetch(`/song/count?title=${title}`);
-    const { count } = await res.json();
-    return count;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function render(title, pageNum) {
-  const songs = await getSongsByPage(title, pageNum);
-  renderSearchTable(songs, pageNum);
-
-  const totalCount = await getTotalSongCount(title);
-  renderPagination(totalCount, pageNum, title);
-
-  renderSearchInfo(title, totalCount);
 
   renderSetlist();
-}
-
-function renderSearchInfo(title, totalCount) {
-  const resultInfo = document.querySelector('#search-info');
-  resultInfo.innerHTML = '';
-
-  if (title === '%' || title === '') {
-    resultInfo.hidden = true;
-    return;
-  }
-
-  const span = document.createElement('span');
-  span.className = 'small';
-  span.innerHTML = `'${title}' 검색결과 : 총 ${totalCount} 건`;
-  // span.className = 'small col-auto';
-  resultInfo.appendChild(span);
-
-  const button = document.createElement('button');
-  button.innerHTML = 'x';
-  button.className = 'btn btn-danger btn-sm ms-2';
-  button.onclick = () => {
-    searchInput.value = '';
-    render('%', 1);
-  };
-
-  resultInfo.appendChild(button);
-  resultInfo.hidden = false;
-}
-
-async function getSongById(id) {
-  try {
-    const res = await fetch(`/song/${id}`);
-    const song = await res.json();
-    return song;
-  } catch (error) {
-    console.error(error);
-  }
 }
 
 function renderSearchTable(songs, pageNum) {
@@ -397,7 +331,7 @@ function renderSearchTable(songs, pageNum) {
 }
 
 // todo : DRY!
-function renderPagination(totalCount, currentPage, title) {
+function renderPagination(totalCount, currentPage, query) {
   const paginationElement = document.querySelector('#search-pagination');
   paginationElement.innerHTML = '';
 
@@ -416,7 +350,7 @@ function renderPagination(totalCount, currentPage, title) {
   a.href = '#';
   a.onclick = (e) => {
     e.preventDefault();
-    render(title, currentPage - 1);
+    render(query, currentPage - 1);
   };
   li.appendChild(a);
   paginationElement.appendChild(li);
@@ -430,7 +364,7 @@ function renderPagination(totalCount, currentPage, title) {
   a.href = '#';
   a.onclick = (e) => {
     e.preventDefault();
-    render(title, 1);
+    render(query, 1);
   };
   li.appendChild(a);
   paginationElement.appendChild(li);
@@ -459,7 +393,7 @@ function renderPagination(totalCount, currentPage, title) {
     a.href = '#';
     a.onclick = (e) => {
       e.preventDefault();
-      render(title, i);
+      render(query, i);
     };
     li.appendChild(a);
     paginationElement.appendChild(li);
@@ -486,7 +420,7 @@ function renderPagination(totalCount, currentPage, title) {
     a.href = '#';
     a.onclick = (e) => {
       e.preventDefault();
-      render(title, totalPage);
+      render(query, totalPage);
     };
     li.appendChild(a);
     paginationElement.appendChild(li);
@@ -501,10 +435,163 @@ function renderPagination(totalCount, currentPage, title) {
   a.href = '#';
   a.onclick = (e) => {
     e.preventDefault();
-    render(title, currentPage + 1);
+    render(query, currentPage + 1);
   };
   li.appendChild(a);
   paginationElement.appendChild(li);
+}
+
+function renderSearchInfo(query, totalCount) {
+  const resultInfo = document.querySelector('#search-info');
+  resultInfo.innerHTML = '';
+
+  if (query === '%' || query === '') {
+    resultInfo.hidden = true;
+    return;
+  }
+
+  const span = document.createElement('span');
+  span.className = 'small';
+  span.innerHTML = `'${query}' 검색결과 : 총 ${totalCount} 건`;
+  // span.className = 'small col-auto';
+  resultInfo.appendChild(span);
+
+  const button = document.createElement('button');
+  button.innerHTML = 'x';
+  button.className = 'btn btn-danger btn-sm ms-2';
+  button.onclick = () => {
+    searchInput.value = '';
+    render('%', 1);
+  };
+
+  resultInfo.appendChild(button);
+  resultInfo.hidden = false;
+}
+
+function renderSetlist() {
+  const setList = document.querySelector('#setlist');
+  setList.innerHTML = '';
+
+  if (selectedList.length <= 0) {
+    const li = document.createElement('li');
+    li.className = 'text-center small opacity-50';
+    li.innerHTML = '선택된 아이템이 없습니다.';
+    setList.append(li);
+    generateBtn.disabled = true;
+    return;
+  }
+
+  console.log(selectedList);
+
+  generateBtn.disabled = false;
+
+  selectedList.forEach((item, idx) => {
+    const li = document.createElement('li');
+    li.className = 'list-group-item rounded-3 border-1 d-flex justify-content-between align-items-center draggable';
+    li.draggable = true;
+    li.setAttribute('no', idx);
+    li.onclick = () => {
+      switch (item.type) {
+        case 'lyrics':
+          showSongDetailModal(item.id);
+          break;
+        case 'hymn-image':
+          // todo : responsive-reading preview modal
+          break;
+        case 'bible':
+          // todo : bible preview modal
+          break;
+        case 'responsive-reading':
+          // todo : responsive-reading preview modal
+          break;
+        default:
+          break;
+      }
+    };
+    li.addEventListener('dragstart', () => {
+      li.classList.add('dragging');
+    });
+    li.addEventListener('dragend', () => {
+      li.classList.remove('dragging');
+      console.log('oldIdx:', idx, ', newIdx:', newIndexAfterDrag);
+      [selectedList[idx], selectedList[newIndexAfterDrag]] = [selectedList[newIndexAfterDrag], selectedList[idx]];
+      selectedList.forEach((s, index) => {
+        s.no = index + 1;
+      });
+      renderSetlist();
+      console.log(selectedList);
+    });
+
+    const div = document.createElement('div');
+    div.className = 'text-truncate';
+
+    // title
+    const titleSpan = document.createElement('span');
+    titleSpan.innerHTML = `${idx + 1}. ${item.title} `;
+    div.appendChild(titleSpan);
+
+    // type
+    const badgeSpan = document.createElement('span');
+    badgeSpan.classList = 'badge text-bg-primary';
+    let type = '';
+    switch (item.type) {
+      case 'lyrics':
+        type = '가사';
+        badgeSpan.classList.add('text-bg-primary');
+        break;
+      case 'hymn-image':
+        type = '이미지';
+        badgeSpan.classList.add('text-bg-warning');
+        break;
+      case 'bible':
+        type = '성경';
+        badgeSpan.classList.add('text-bg-success');
+        break;
+      case 'responsive-reading':
+        type = '교독문';
+        badgeSpan.classList.add('text-bg-secondary');
+        break;
+
+      default:
+        break;
+    }
+    badgeSpan.innerHTML = `${type} `;
+    div.appendChild(badgeSpan);
+
+    // lyrics preview
+    if (item.type === 'lyrics') {
+      const previewSpan = document.createElement('span');
+      previewSpan.className = 'd-block small opacity-50 ms-2 text-truncate';
+      previewSpan.innerHTML = item.lyrics;
+      div.appendChild(previewSpan);
+    }
+    li.appendChild(div);
+
+    const removeBtn = document.createElement('a');
+    removeBtn.href = '#';
+    removeBtn.innerHTML = '🗑️';
+    removeBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const listItem = removeBtn.parentNode;
+      const targetIdx = Array.from(setList.children).indexOf(listItem);
+      selectedList = selectedList.filter((_, index) => index !== targetIdx);
+      renderSetlist();
+    };
+    li.appendChild(removeBtn);
+
+    setList.append(li);
+  });
+}
+
+async function getSongById(id) {
+  try {
+    const response = await fetch(`/song/${id}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 async function selectLyrics(id) {
@@ -561,114 +648,6 @@ function getDragAfterElement(y) {
     },
     { offset: Number.NEGATIVE_INFINITY }
   ).element;
-}
-
-function renderSetlist() {
-  const setList = document.querySelector('#setlist');
-  setList.innerHTML = '';
-
-  if (selectedList.length <= 0) {
-    const li = document.createElement('li');
-    li.className = 'text-center small opacity-50';
-    li.innerHTML = '선택된 아이템이 없습니다.';
-    setList.append(li);
-    generateBtn.disabled = true;
-    return;
-  }
-
-  generateBtn.disabled = false;
-
-  selectedList.forEach((item, idx) => {
-    const li = document.createElement('li');
-    li.className = 'list-group-item rounded-3 border-1 d-flex justify-content-between align-items-center draggable';
-    li.draggable = true;
-    li.setAttribute('no', idx);
-    li.onclick = () => {
-      switch (item.type) {
-        case 'lyrics':
-          showSongDetailModal(item.id);
-          break;
-        case 'hymn-image':
-          // todo : responsive-reading preview modal
-          break;
-        case 'responsive-reading':
-          // todo : responsive-reading preview modal
-          break;
-
-        default:
-          break;
-      }
-    };
-    li.addEventListener('dragstart', () => {
-      li.classList.add('dragging');
-    });
-    li.addEventListener('dragend', () => {
-      li.classList.remove('dragging');
-      console.log('oldIdx:', idx, ', newIdx:', newIndexAfterDrag);
-      [selectedList[idx], selectedList[newIndexAfterDrag]] = [selectedList[newIndexAfterDrag], selectedList[idx]];
-      selectedList.forEach((s, index) => {
-        s.no = index + 1;
-      });
-      renderSetlist();
-      console.log(selectedList);
-    });
-
-    const div = document.createElement('div');
-    div.className = 'text-truncate';
-
-    // title
-    const titleSpan = document.createElement('span');
-    titleSpan.innerHTML = `${idx + 1}. ${item.title} `;
-    div.appendChild(titleSpan);
-
-    // type
-    const badgeSpan = document.createElement('span');
-    badgeSpan.classList = 'badge text-bg-primary';
-    let type = '';
-    switch (item.type) {
-      case 'lyrics':
-        type = '가사';
-        badgeSpan.classList.add('text-bg-primary');
-        break;
-      case 'hymn-image':
-        type = '이미지';
-        badgeSpan.classList.add('text-bg-warning');
-        break;
-      case 'responsive-reading':
-        type = '교독문';
-        badgeSpan.classList.add('text-bg-success');
-        break;
-
-      default:
-        break;
-    }
-    badgeSpan.innerHTML = `${type} `;
-    div.appendChild(badgeSpan);
-
-    // lyrics preview
-    if (item.type === 'lyrics') {
-      const previewSpan = document.createElement('span');
-      previewSpan.className = 'd-block small opacity-50 ms-2 text-truncate';
-      previewSpan.innerHTML = item.lyrics;
-      div.appendChild(previewSpan);
-    }
-    li.appendChild(div);
-
-    const removeBtn = document.createElement('a');
-    removeBtn.href = '#';
-    removeBtn.innerHTML = '🗑️';
-    removeBtn.onclick = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const listItem = removeBtn.parentNode;
-      const targetIdx = Array.from(setList.children).indexOf(listItem);
-      selectedList = selectedList.filter((_, index) => index !== targetIdx);
-      renderSetlist();
-    };
-    li.appendChild(removeBtn);
-
-    setList.append(li);
-  });
 }
 
 const clearButton = document.querySelector('#clear-button');
