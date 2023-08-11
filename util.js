@@ -1,9 +1,9 @@
 const fs = require('fs');
 
-const song = JSON.parse(fs.readFileSync(`./public/hymn/lyrics/10.json`));
-for (let key in song.verses) {
-  console.log(key, song.verses[key]);
-}
+// const song = JSON.parse(fs.readFileSync(`./public/hymn/lyrics/10.json`));
+// for (let key in song.verses) {
+//   console.log(key, song.verses[key]);
+// }
 
 // const songs = JSON.parse(fs.readFileSync(`./public/hymn/temp/temp.json`));
 // songs.forEach((song) => {
@@ -73,6 +73,29 @@ for (let key in song.verses) {
 // }
 
 // scanChars();
+
+// const result = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/index.json`));
+// // console.log([...result.books]);
+
+// const titles = result.books.reduce((acc, cur) => {
+//   const { title } = cur;
+//   acc.push(title);
+//   return acc;
+// }, []);
+// console.log(titles);
+
+// const index = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/index.json`));
+// for (let i = 0; i < 66; i++) {
+//   fs.mkdirSync(`./public/bibles/NKRV/temp/${i + 1}`);
+//   const { chapterNo } = index.books[i];
+//   for (let j = 0; j < chapterNo; j++) {
+//     const result = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/${i + 1}/${j + 1}.json`));
+//     // console.log({ title: result.title.split(' ')[0], chapter: 1, verses: result.verses });
+//     const newObj = { title: result.title.split(' ')[0], chapter: j + 1, verses: result.verses };
+
+//     fs.writeFileSync(`./public/bibles/NKRV/temp/${i + 1}/${j + 1}.json`, JSON.stringify({ ...newObj }));
+//   }
+// }
 
 // const result = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/${1}/${1}.json`));
 // const newObj = Object.keys(result.verses).reduce((newObj, key) => {
