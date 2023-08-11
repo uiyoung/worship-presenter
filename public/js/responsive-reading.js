@@ -5,7 +5,8 @@ rrSelect.addEventListener('change', async () => {
     const rrCardBody = document.querySelector('#rr-card-body');
     rrCardBody.innerHTML = '';
     const p = document.createElement('p');
-    p.className = 'card-text text-center opacity-75';
+    // p.className = 'card-text text-center opacity-75';
+    p.className = 'card-text text-body-secondary text-center';
     p.innerHTML = '교독문을 선택해 주세요.';
     rrCardBody.appendChild(p);
     return;
