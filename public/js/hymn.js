@@ -14,7 +14,6 @@ hymnSelect.addEventListener('change', async () => {
     const hymnCardBody = document.querySelector('#hymn-card-body');
     hymnCardBody.innerHTML = '';
     const p = document.createElement('p');
-    // p.className = 'card-text text-center opacity-75';
     p.className = 'card-text text-body-secondary text-center';
     p.innerHTML = '찬송가를 선택해 주세요.';
     hymnCardBody.appendChild(p);
