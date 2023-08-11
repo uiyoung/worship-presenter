@@ -60,7 +60,7 @@ async function getBible(bookIndex, chapterIndex, verseIndex) {
   const result = await response.json();
 
   const bibleTitle = document.querySelector('#bible-title');
-  bibleTitle.innerHTML = result.title;
+  bibleTitle.innerHTML = `${result.title} ${result.chapter}${+bookIndex === 19 ? '편' : '장'}`;
 
   const bibleList = document.querySelector('#bible-list');
   bibleList.innerHTML = '';
@@ -87,13 +87,24 @@ async function getBible(bookIndex, chapterIndex, verseIndex) {
     verse.classList = i === Number(verseIndex) ? 'fw-bold' : '';
     verse.innerHTML = result.verses[i];
     span.appendChild(verse);
-
     li.appendChild(span);
 
     const selectBtn = document.createElement('button');
     selectBtn.type = 'button';
-    selectBtn.classList = 'btn btn-primary btn-sm text-nowrap align-self-center disabled';
+    selectBtn.classList = 'btn btn-primary btn-sm text-nowrap align-self-center';
     selectBtn.innerHTML = '선택';
+    selectBtn.onclick = () => {
+      selectedList.push({
+        no: selectedList.length + 1,
+        type: 'bible',
+        title: `${result.title} ${result.chapter}:${i}`,
+        book: result.title,
+        chapterNo: result.chapter,
+        verseNo: i,
+        verse: result.verses[i],
+      });
+      renderSetlist();
+    };
     li.appendChild(selectBtn);
 
     bibleList.appendChild(li);

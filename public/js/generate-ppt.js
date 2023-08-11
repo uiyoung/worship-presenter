@@ -53,6 +53,19 @@ generateBtn.addEventListener('click', (e) => {
     group2: 'FFE699',
   };
 
+  const bibleOptions = {
+    fullScreenSubtitleOptions: {
+      fontFace: '마루 부리 중간',
+      fontSize: 20,
+      color: 'FFFFFF',
+    },
+    fullScreenVerseOptions: {
+      fontFace: '나눔명조 ExtraBold',
+      fontSize: 40,
+      color: 'FFFFFF',
+    },
+  };
+
   const hymnTitleOptions = {
     fontSize1: 18,
     fontFace1: '마루 부리 조금굵은',
@@ -152,7 +165,6 @@ generateBtn.addEventListener('click', (e) => {
           slide.addText(lyrics, { placeholder: 'lyrics-body' });
         });
         break;
-
       case 'hymn-image':
         // hymn title slide master
         pptx.defineSlideMaster({
@@ -296,7 +308,7 @@ generateBtn.addEventListener('click', (e) => {
           const rrContentSlide = pptx.addSlide({ masterName: 'RR_CONTENT_SLIDE', sectionTitle });
 
           if (pair.length == 1) {
-            console.log(`group2: ${pair[0]}`);
+            // console.log(`group2: ${pair[0]}`);
             rrContentSlide.addText(
               [
                 {
@@ -316,7 +328,7 @@ generateBtn.addEventListener('click', (e) => {
               }
             );
           } else {
-            console.log(`group 1: ${pair[0]}, group 2: ${pair[1]}`);
+            // console.log(`group 1: ${pair[0]}, group 2: ${pair[1]}`);
             rrContentSlide.addText(
               [
                 {
@@ -334,10 +346,136 @@ generateBtn.addEventListener('click', (e) => {
           }
         });
         break;
+      case 'bible':
+        // todo : bible coverslide master
+        pptx.defineSlideMaster({
+          title: 'BIBLE_COVER',
+          background: { path: '/backgrounds/bible-fullscreen-bg.jpg' },
+          objects: [
+            {
+              placeholder: {
+                options: {
+                  name: 'rr-title',
+                  type: 'title',
+                  x: 0,
+                  y: 1.76,
+                  w: '100%',
+                  // h: '100%',
+                  autoFit: true,
+                  align: 'center',
+                  valign: 'middle',
+                  fontSize: 54,
+                  fontFace: rrTitleOptions.fontFace,
+                  color: rrTitleOptions.fontColor,
+                },
+                text: '(title here!)',
+              },
+            },
+            {
+              placeholder: {
+                options: {
+                  name: 'rr-subtitle',
+                  type: 'title',
+                  x: 0,
+                  y: 2.64,
+                  w: '100%',
+                  // h: '100%',
+                  autoFit: true,
+                  align: 'center',
+                  valign: 'middle',
+                  fontSize: rrTitleOptions.fontSize,
+                  fontFace: rrTitleOptions.fontFace,
+                  color: rrTitleOptions.fontColor,
+                },
+                text: '(subtitle here!)',
+              },
+            },
+          ],
+        });
 
-      case bible:
-        // todo : generate bible ppt
+        // rr content slide master
+        pptx.defineSlideMaster({
+          title: 'BIBLE_SLIDE',
+          background: { path: '/backgrounds/bible-fullscreen-bg.jpg' },
+          // objects: [{ rect: { x: 0, y: 0, w: '100%', h: '100%', fill: { color: '000000', transparency: 50 } } }],
+        });
+
+        // sections by item
+        pptx.addSection({ title: sectionTitle });
+
+        // todo : add bible cover slide
+        // const bibleCoverSlide = pptx.addSlide({ masterName: 'RR_TITLE_SLIDE', sectionTitle });
+        // bibleCoverSlide
+        //   .addText('교독문', {
+        //     placeholder: 'rr-title',
+        //     shadow: shadowOptions,
+        //   })
+        //   .addShape(pptx.ShapeType.rect, { fill: { color: 'FFFFFF' }, h: 0.07, w: 1.51, x: 5.91, y: 2.25 })
+        //   .addText(`${item.title}`, { placeholder: 'rr-subtitle' });
+
+        // bible slide
+        const bibleSlide = pptx.addSlide({ masterName: 'BIBLE_SLIDE', sectionTitle });
+        bibleSlide
+          // subtitle
+          .addText(
+            [
+              {
+                text: `${item.book} ${item.chapterNo}${item.book === '시편' ? '편' : '장'} ${item.verseNo}절`,
+                options: { ...bibleOptions.fullScreenSubtitleOptions },
+              },
+            ],
+            {
+              x: 0.4,
+              y: 0.2,
+              w: '30%',
+              h: '10%',
+              align: 'left',
+              valign: 'center',
+              margin: [0, 30, 100, 100],
+              wrap: true,
+            }
+          )
+          // verse no
+          .addText(
+            [
+              {
+                text: `${item.verseNo}.`,
+                options: { ...bibleOptions.fullScreenSubtitleOptions, fontSize: 32 },
+              },
+            ],
+            {
+              x: 0.2,
+              y: 1.35,
+              w: '6%',
+              h: '10%',
+              align: 'right',
+              valign: 'center',
+              margin: [0, 0, 0, 0],
+              wrap: true,
+            }
+          )
+          // verse
+          .addText(
+            [
+              {
+                text: item.verse,
+                options: { ...bibleOptions.fullScreenVerseOptions },
+              },
+            ],
+            {
+              x: 1.2,
+              y: 0,
+              w: '90%',
+              h: '100%',
+              align: 'left',
+              valign: 'top',
+              margin: [0, 30, 100, 100],
+              wrap: true,
+            }
+          );
+
         break;
+
       default:
         break;
     }
