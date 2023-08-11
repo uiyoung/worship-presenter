@@ -5,6 +5,8 @@ const hymnImageBtn = document.querySelector('#hymn-image-btn');
 const carouselPrevBtn = document.querySelector('.carousel-control-prev');
 const carouselNextBtn = document.querySelector('.carousel-control-next');
 
+const hymnLyricsModal = new bootstrap.Modal(document.querySelector('#hymnLyricsModal'));
+
 const hymnSelect = document.querySelector('#hymn-select');
 hymnSelect.addEventListener('change', async () => {
   const no = hymnSelect.value;
@@ -12,7 +14,8 @@ hymnSelect.addEventListener('change', async () => {
     const hymnCardBody = document.querySelector('#hymn-card-body');
     hymnCardBody.innerHTML = '';
     const p = document.createElement('p');
-    p.className = 'card-text text-center opacity-75';
+    // p.className = 'card-text text-center opacity-75';
+    p.className = 'card-text text-body-secondary text-center';
     p.innerHTML = '찬송가를 선택해 주세요.';
     hymnCardBody.appendChild(p);
 
@@ -22,7 +25,6 @@ hymnSelect.addEventListener('change', async () => {
     hymnImageBtn.innerHTML = '';
     carouselPrevBtn.innerHTML = '';
     carouselNextBtn.innerHTML = '';
-
     return;
   }
 
@@ -61,10 +63,113 @@ function renderHymnLyrics(data) {
   const { no, title, verses } = data;
 
   // title
+  const div = document.createElement('div');
+  div.className = 'card-title mb-4 d-flex';
+
   const h5 = document.createElement('h5');
-  h5.className = 'card-title text-center mb-4';
+  h5.className = 'flex-grow-1 text-center';
   h5.innerHTML = `${no}장. ${title}`;
-  hymnCardBody.appendChild(h5);
+  div.appendChild(h5);
+
+  // modify button
+  const modifyLyricsBtn = document.createElement('a');
+  modifyLyricsBtn.href = '#';
+  modifyLyricsBtn.className = 'btn btn-outline-success position-absolute top-0 end-0 m-2';
+  modifyLyricsBtn.innerHTML = `수정`;
+  modifyLyricsBtn.onclick = async (e) => {
+    e.preventDefault();
+
+    // open modal
+    hymnLyricsModal.show();
+    const modalTitle = document.querySelector('#hymnLyricsModalLabel');
+    modalTitle.innerHTML = `${no}장. ${title}`;
+    const modalBody = document.querySelector('#hymn-modal-body');
+    modalBody.innerHTML = '';
+
+    for (const key in verses) {
+      const div = document.createElement('div');
+      div.className = 'mb-3';
+      const label = document.createElement('label');
+      label.htmlFor = `textarea${key}`;
+      label.className = 'form-label';
+      label.innerHTML = `${key}절`;
+      div.appendChild(label);
+      const textarea = document.createElement('textarea');
+      textarea.className = 'form-control hymn-textarea';
+      textarea.value = `${verses[key]}`;
+      textarea.rows = verses[key].split('\n').length;
+      div.appendChild(textarea);
+      modalBody.appendChild(div);
+    }
+
+    const modifyBtn = document.querySelector('#hymn-modal-modify-btn');
+    modifyBtn.onclick = async () => {
+      if (!confirm(`수정 하시겠습니까?`)) {
+        return;
+      }
+
+      const textareas = document.querySelectorAll('.hymn-textarea');
+      const newVerses = Array.from(textareas)
+        .filter((textarea) => textarea.value !== '')
+        .reduce((acc, textarea, idx) => {
+          acc[idx + 1] = textarea.value;
+          return acc;
+        }, {});
+
+      try {
+        const response = await fetch(`/hymn/lyrics/${no}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newVerses),
+        });
+
+        const result = await response.json();
+        console.log(result);
+
+        if (!result.success && result.redirectURL) {
+          alert('로그인이 필요합니다.');
+          return;
+        }
+
+        hymnSelect.dispatchEvent(new Event('change'));
+        hymnLyricsModal.hide();
+      } catch (error) {
+        alert('수정 실패');
+        console.error(error);
+      }
+    };
+
+    const autoAlignBtn = document.querySelector('#hymn-modal-auto-align-btn');
+    autoAlignBtn.onclick = () => {
+      const textareas = document.querySelectorAll('.hymn-textarea');
+      textareas.forEach((textarea) => {
+        const alignedText = autoAlign(textarea.value);
+        textarea.value = alignedText;
+      });
+    };
+  };
+
+  function autoAlign(text) {
+    const lines = text
+      .split('\n')
+      .filter((e) => e != '')
+      .map((e) => e.trim().replace(/\s+/g, ' '));
+
+    const LINES_PER_SLIDE = 2;
+    let result = [];
+    const temp = [...lines];
+    const cnt = Math.ceil(temp.length / LINES_PER_SLIDE);
+    for (let i = 0; i < cnt; i++) {
+      result.push(temp.splice(0, LINES_PER_SLIDE));
+    }
+    result = result.map((e) => e.join('\n')).join('\n\n');
+    return result;
+  }
+
+  div.appendChild(modifyLyricsBtn);
+  hymnCardBody.appendChild(div);
 
   for (const key in verses) {
     const p = document.createElement('p');
@@ -89,11 +194,11 @@ function renderHymnLyrics(data) {
   }
 
   // select button
-  const a = document.createElement('a');
-  a.href = '#';
-  a.className = 'btn btn-primary';
-  a.innerHTML = `가사 선택`;
-  a.onclick = (e) => {
+  const selectLyricsBtn = document.createElement('selectLyricsBtn');
+  selectLyricsBtn.href = '#';
+  selectLyricsBtn.className = 'btn btn-primary';
+  selectLyricsBtn.innerHTML = `가사 선택`;
+  selectLyricsBtn.onclick = (e) => {
     e.preventDefault();
 
     // convert hymn verses to lyrics string
@@ -111,7 +216,7 @@ function renderHymnLyrics(data) {
     });
     renderSetlist();
   };
-  hymnCardBody.appendChild(a);
+  hymnCardBody.appendChild(selectLyricsBtn);
 }
 
 function renderHymnImages(data) {
@@ -201,4 +306,5 @@ async function setHymnSelectOptions() {
 }
 
 setHymnSelectOptions();
+hymnSelect.value = '';
 hymnSelect.dispatchEvent(new Event('change'));
