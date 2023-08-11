@@ -16,11 +16,12 @@ module.exports = () => {
         try {
           const exUser = await prisma.user.findUnique({ where: { email } });
           if (!exUser) {
-            return done(null, false, { message: 'incorrect email' });
+            return done(null, false, { message: 'Invalid username or password.' });
           }
+
           const result = await bcrypt.compare(password, exUser.password);
           if (!result) {
-            return done(null, false, { message: 'incorrect password' });
+            return done(null, false, { message: 'Invalid username or password.' });
           }
 
           return done(null, exUser);
