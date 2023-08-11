@@ -10,59 +10,76 @@ function getSpaceIgnoreRegex(str) {
         .join('[[:space:]]?');
 }
 
-exports.getTotalCount = async (req, res, next) => {
-  const { title } = req.query;
-  const titleRegex = getSpaceIgnoreRegex(title);
-  try {
-    const result = await prisma.$queryRaw`
-      SELECT COUNT(*)::integer as count 
-      FROM jeil."Song"
-      WHERE title ~* ${titleRegex}
-    `;
-
-    res.json(result[0]);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 exports.getSongs = async (req, res, next) => {
-  const SONGS_PER_PAGE = 10;
-  const { title, page } = req.query;
-  const titleRegex = getSpaceIgnoreRegex(title);
-  try {
-    // 공백포함 검색을 위한 raw query 사용
-    const songs = await prisma.$queryRaw`
-      SELECT id, title, type
-      FROM jeil."Song"
-      WHERE title ~* ${titleRegex}
-      ORDER BY id DESC
-      LIMIT ${SONGS_PER_PAGE} 
-      OFFSET ${(page - 1) * SONGS_PER_PAGE}
-    `;
-    // const songs = await prisma.$queryRaw`
-    //   SELECT id, title, type
-    //   FROM jeil."Song"
-    //   WHERE REPLACE(title, ' ', '') ILIKE '%' || REPLACE(${title}, ' ', '') || '%'
-    //   ORDER BY id DESC
-    //   LIMIT ${SONGS_PER_PAGE}
-    //   OFFSET ${(page - 1) * SONGS_PER_PAGE}
-    // `;
+  const title = req.query.title || '';
+  const lyrics = req.query.lyrics || '';
+  const page = Number(req.query.page) || 1;
+  const itemsPerPage = Number(req.query.limit) || 10;
 
+  try {
     // const songs = await prisma.song.findMany({
     //   select: { id: true, title: true, lyrics: true, type: true },
     //   where: {
-    //     title: {
-    //       contains: `${title}`,
-    //       mode: 'insensitive',
-    //     },
+    //     title: { contains: `${title}`, mode: 'insensitive'}
     //   },
-    //   skip: (Number(page) - 1) * SONGS_PER_PAGE,
-    //   take: SONGS_PER_PAGE,
+    //   skip: (Number(page) - 1) * itemsPerPage,
+    //   take: itemsPerPage,
     //   orderBy: [{ id: 'desc' }],
     // });
 
-    res.json(songs);
+    // 공백포함 검색을 위한 raw query 사용
+    // const songs = await prisma.$queryRaw`
+    //   SELECT id, title, type
+    //   FROM jeil."Song"
+    //   WHERE title ~* ${titleRegex}
+    //     OR lyrics  ${lyricsRegex}
+    //   ORDER BY "createdAt" DESC
+    //   LIMIT ${itemsPerPage}
+    //   OFFSET ${(page - 1) * itemsPerPage}
+    // `;
+
+    let songs;
+    let totalCount;
+
+    if (title !== '') {
+      // search by title
+      const titleRegex = getSpaceIgnoreRegex(title);
+
+      songs = await prisma.$queryRaw`
+      SELECT id, title, type
+      FROM jeil."Song"
+      WHERE title ~* ${titleRegex}
+      ORDER BY "createdAt" DESC
+      LIMIT ${itemsPerPage}
+      OFFSET ${(page - 1) * itemsPerPage}
+    `;
+
+      totalCount = await prisma.$queryRaw`
+        SELECT COUNT(*)::integer as count 
+        FROM jeil."Song"
+        WHERE title ~* ${titleRegex}
+      `;
+    } else {
+      // search by lyrics
+      const lyricsRegex = getSpaceIgnoreRegex(lyrics);
+
+      songs = await prisma.$queryRaw`
+        SELECT id, title, type
+        FROM jeil."Song"
+        WHERE lyrics ~* ${lyricsRegex}
+        ORDER BY "createdAt" DESC
+        LIMIT ${itemsPerPage}
+        OFFSET ${(page - 1) * itemsPerPage}
+      `;
+
+      totalCount = await prisma.$queryRaw`
+        SELECT COUNT(*)::integer as count 
+        FROM jeil."Song"
+        WHERE lyrics ~* ${lyricsRegex}
+      `;
+    }
+
+    res.json({ songs, totalCount: totalCount[0].count });
   } catch (error) {
     console.error(error);
     next(error);
