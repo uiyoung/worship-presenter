@@ -74,9 +74,9 @@
               <div class="input-group my-3">
                 <div class="col-auto">
                   <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-                  <select class="form-select" id="specificSizeSelect">
+                  <select class="form-select" id="search-type-select">
                     <option value="title" selected="selected">제목</option>
-                    <option value="lyrics" disabled>가사</option>
+                    <option value="lyrics">가사</option>
                   </select>
                 </div>
                 <input type="text" class="form-control" id="search-input" />
@@ -297,14 +297,14 @@
   </div>
 </div>
 
-<!-- song detail modal -->
+<!-- lyrics detail modal -->
 <div class="modal fade" id="songDetailModal" tabindex="-1" aria-labelledby="songDetailModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <div class="d-flex align-items-center text-truncate">
           <h1 class="modal-title fs-5" id="songDetailModalLabel">New Song</h1>
-          <button type="button" class="btn btn-sm btn-danger mx-3" id="song-delete-btn" hidden>삭제</button>
+          <!-- <button type="button" class="btn btn-sm btn-danger mx-3" id="song-delete-btn" hidden>삭제</button> -->
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -342,31 +342,62 @@
                 <label for="modal-memo" class="col-form-label">메모</label>
                 <textarea class="form-control" id="modal-memo" rows="1"></textarea>
               </div>
-              <div class="mb-3">
-                <select
-                  style="width: 30%; display: inline"
-                  name="lines-per-slide"
-                  class="form-select form-select-sm"
-                  id="lines-per-slide"
-                >
-                  <option value="1" disabled>1줄 씩</option>
-                  <option value="2" selected="selected">2줄 씩</option>
-                  <option value="3" disabled>3줄 씩</option>
-                  <option value="4" disabled>4줄 씩</option>
-                  <option value="5" disabled>5줄 씩</option>
-                  <option value="6" disabled>6줄 씩</option>
-                </select>
-                <button type="button" class="btn btn-outline-primary btn-sm" id="auto-align-btn" onclick="autoAlign()">
-                  정렬
+              <div class="mt-4">
+                <button type="button" class="btn btn-outline-danger w-100" id="song-delete-btn" hidden>
+                  가사 삭제하기
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <div class="modal-footer justify-content-between">
+        <div class="d-flex align-items-center">
+          <select style="width: 70%" name="lines-per-slide" class="form-select me-1" id="lines-per-slide">
+            <option value="1">1줄 씩</option>
+            <option value="2" selected>2줄 씩</option>
+            <option value="3">3줄 씩</option>
+            <option value="4">4줄 씩</option>
+            <option value="5">5줄 씩</option>
+            <option value="6">6줄 씩</option>
+          </select>
+          <button type="button" class="btn btn-outline-primary flex-shrink-0" id="auto-align-btn" onclick="autoAlign()">
+            정렬
+          </button>
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary" id="modal-save-btn">저장</button>
+          <button type="button" class="btn btn-primary" id="modal-modify-btn" hidden>수정</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- hymn lyrics modal -->
+<div class="modal fade" id="hymnLyricsModal" tabindex="-1" aria-labelledby="hymnLyricsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="d-flex align-items-center text-truncate">
+          <h1 class="modal-title fs-5" id="hymnLyricsModalLabel">Hymn Title</h1>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="hymn-modal-body">
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">1절</label>
+          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">2절</label>
+          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+      </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="modal-save-btn">저장</button>
-        <button type="button" class="btn btn-primary" id="modal-modify-btn" hidden>수정</button>
+        <button type="button" class="btn btn-primary" id="hymn-modal-auto-align-btn">2줄씩 정렬</button>
+        <button type="button" class="btn btn-primary" id="hymn-modal-modify-btn">수정</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
