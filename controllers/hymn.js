@@ -26,3 +26,20 @@ exports.getHymnImagesById = async (req, res, next) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.updateLyrics = async (req, res, next) => {
+  try {
+    const { no } = req.params;
+    const newVerses = req.body;
+
+    const hymn = await fs.readFile(`public/hymn/lyrics/${no}.json`, 'utf8');
+    const hymnObj = JSON.parse(hymn);
+    const newHymn = { ...hymnObj, verses: newVerses };
+    await fs.writeFile(`public/hymn/lyrics/${no}.json`, JSON.stringify(newHymn));
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
