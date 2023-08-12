@@ -341,6 +341,10 @@
                 <label for="modal-memo" class="col-form-label">메모</label>
                 <textarea class="form-control" id="modal-memo" rows="1"></textarea>
               </div>
+              <div class="mb-3">
+                <div class="text-end small opacity-50" id="modal-created-at" hidden></div>
+                <div class="text-end small opacity-50" id="modal-updated-at" hidden></div>
+              </div>
               <div class="mt-4">
                 <button type="button" class="btn btn-outline-danger w-100" id="song-delete-btn" hidden>삭제하기</button>
               </div>
@@ -358,7 +362,7 @@
             <option value="5">5줄 씩</option>
             <option value="6">6줄 씩</option>
           </select>
-          <button type="button" class="btn btn-outline-primary flex-shrink-0" id="auto-align-btn" onclick="autoAlign()">
+          <button type="button" class="btn btn-outline-primary flex-shrink-0" id="song-modal-auto-align-btn">
             정렬
           </button>
         </div>
@@ -392,10 +396,25 @@
           <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="hymn-modal-auto-align-btn">2줄씩 정렬</button>
-        <button type="button" class="btn btn-primary" id="hymn-modal-modify-btn">수정</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+      <div class="modal-footer justify-content-between">
+        <div class="d-flex align-items-center">
+          <select style="width: 70%" name="hymn-lines-per-slide" class="form-select me-1" id="hymn-lines-per-slide">
+            <option value="1">1줄 씩</option>
+            <option value="2" selected>2줄 씩</option>
+            <option value="3">3줄 씩</option>
+            <option value="4">4줄 씩</option>
+            <option value="5">5줄 씩</option>
+            <option value="6">6줄 씩</option>
+          </select>
+          <button type="button" class="btn btn-outline-primary flex-shrink-0" id="hymn-modal-auto-align-btn">
+            정렬
+          </button>
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary" id="hymn-modal-modify-btn">수정</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+        </div>
       </div>
     </div>
   </div>

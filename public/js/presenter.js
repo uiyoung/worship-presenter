@@ -19,6 +19,8 @@ function showNewSongModal() {
   const modalLyrics = document.querySelector('#modal-lyrics');
   const modalSongTypes = document.querySelectorAll('input[name=song-type]');
   const modalMemo = document.querySelector('#modal-memo');
+  const modalCreatedAt = document.querySelector('#modal-created-at');
+  const modalUpdatedAt = document.querySelector('#modal-updated-at');
   const modalSaveBtn = document.querySelector('#modal-save-btn');
   const modalModifyBtn = document.querySelector('#modal-modify-btn');
   const modalDeleteBtn = document.querySelector('#song-delete-btn');
@@ -29,6 +31,10 @@ function showNewSongModal() {
   modalLyrics.rows = 14;
   modalSongTypes.forEach((e) => (e.checked = false));
   modalMemo.value = '';
+  modalCreatedAt.innerHTML = '';
+  modalCreatedAt.hidden = true;
+  modalUpdatedAt.innerHTML = '';
+  modalUpdatedAt.hidden = true;
 
   modalSaveBtn.onclick = () => {
     const title = modalTitle.value.trim();
@@ -70,12 +76,14 @@ async function showSongDetailModal(id) {
   const modalLyrics = document.querySelector('#modal-lyrics');
   const modalMemo = document.querySelector('#modal-memo');
   const modalSongTypes = document.querySelectorAll('input[name=song-type]');
+  const modalCreatedAt = document.querySelector('#modal-created-at');
+  const modalUpdatedAt = document.querySelector('#modal-updated-at');
   const modalSaveBtn = document.querySelector('#modal-save-btn');
   const modalModifyBtn = document.querySelector('#modal-modify-btn');
   const modalDeleteBtn = document.querySelector('#song-delete-btn');
 
   try {
-    const { type, title, lyrics, memo } = await getSongById(id);
+    const { type, title, lyrics, memo, createdAt, updatedAt } = await getSongById(id);
 
     modalHeader.innerHTML = title;
     modalHeader.classList = 'modal-title fs-5 text-truncate';
@@ -85,6 +93,16 @@ async function showSongDetailModal(id) {
     modalLyrics.rows = lyrics.split('\n').length;
     modalMemo.value = memo;
     Array.from(modalSongTypes).find((e) => e.value === type).checked = true;
+    modalCreatedAt.innerHTML = `등록일 : ${new Intl.DateTimeFormat('ko', {
+      dateStyle: 'long',
+      timeStyle: 'short',
+    }).format(new Date(createdAt))}`;
+    modalCreatedAt.hidden = false;
+    modalUpdatedAt.innerHTML = `수정일 : ${new Intl.DateTimeFormat('ko', {
+      dateStyle: 'long',
+      timeStyle: 'short',
+    }).format(new Date(updatedAt))}`;
+    modalUpdatedAt.hidden = false;
 
     modalSaveBtn.onclick = null;
     modalSaveBtn.hidden = true;
@@ -216,33 +234,37 @@ async function modifySong(id, modifiedSong) {
   }
 }
 
-// todo : refactoring - get dirty value from parameter and return refined one
-// todo : merge with hymn autoAlign
-function autoAlign() {
-  const lyricsTextArea = document.querySelector('#modal-lyrics');
+const autoAlignBtn = document.querySelector('#song-modal-auto-align-btn');
+if (autoAlignBtn) {
+  autoAlignBtn.addEventListener('click', () => {
+    const lyricsTextArea = document.querySelector('#modal-lyrics');
+    if (lyricsTextArea.value.trim().length <= 0) {
+      alert('가사를 입력해주세요.');
+      lyricsTextArea.focus();
+      return;
+    }
 
-  const lines = lyricsTextArea.value
+    const linesPerSlide = Number(document.querySelector('#lines-per-slide').value) || 2;
+    lyricsTextArea.value = autoAlign(lyricsTextArea.value, linesPerSlide);
+    lyricsTextArea.rows = lyricsTextArea.value.split('\n').length;
+    lyricsTextArea.focus();
+  });
+}
+
+function autoAlign(text, linesPerSlide) {
+  const lines = text
     .split('\n')
     .map((e) => e.replace(/[\s\u200B]+/g, ' ').trim()) // ZWSP공백 제거, 문자열 내의 연속된 공백을 하나의 공백으로 대체
     .filter((e) => e !== '');
 
-  if (lines.length <= 0) {
-    alert('가사를 입력해주세요.');
-    lyricsTextArea.focus();
-    return;
-  }
-
-  const LINES_PER_SLIDE = Number(document.querySelector('#lines-per-slide').value) || 2;
+  // linesPerSlide 만큼 묶어서 result에 담기
   let result = [];
-  const temp = [...lines];
-  const cnt = Math.ceil(temp.length / LINES_PER_SLIDE);
-  for (let i = 0; i < cnt; i++) {
-    result.push(temp.splice(0, LINES_PER_SLIDE));
+  while (lines.length > 0) {
+    result.push(lines.splice(0, linesPerSlide));
   }
-  result = result.map((e) => e.join('\n')).join('\n\n');
 
-  lyricsTextArea.value = result;
-  lyricsTextArea.focus();
+  result = result.map((e) => e.join('\n')).join('\n\n');
+  return result;
 }
 
 const searchInput = document.querySelector('#search-input');

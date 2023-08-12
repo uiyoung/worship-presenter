@@ -140,32 +140,16 @@ function renderHymnLyrics(data) {
       }
     };
 
-    const autoAlignBtn = document.querySelector('#hymn-modal-auto-align-btn');
-    autoAlignBtn.onclick = () => {
-      const textareas = document.querySelectorAll('.hymn-textarea');
-      textareas.forEach((textarea) => {
-        const alignedText = autoAlign(textarea.value);
-        textarea.value = alignedText;
+    const hymnAutoAlignBtn = document.querySelector('#hymn-modal-auto-align-btn');
+    hymnAutoAlignBtn.onclick = () => {
+      const hymnTextAreas = document.querySelectorAll('.hymn-textarea');
+      const linesPerSlide = Number(document.querySelector('#hymn-lines-per-slide').value) || 2;
+      hymnTextAreas.forEach((textarea) => {
+        textarea.value = autoAlign(textarea.value, linesPerSlide);
+        textarea.rows = textarea.value.split('\n').length;
       });
     };
   };
-
-  function autoAlign(text) {
-    const lines = text
-      .split('\n')
-      .filter((e) => e != '')
-      .map((e) => e.trim().replace(/\s+/g, ' '));
-
-    const LINES_PER_SLIDE = 2;
-    let result = [];
-    const temp = [...lines];
-    const cnt = Math.ceil(temp.length / LINES_PER_SLIDE);
-    for (let i = 0; i < cnt; i++) {
-      result.push(temp.splice(0, LINES_PER_SLIDE));
-    }
-    result = result.map((e) => e.join('\n')).join('\n\n');
-    return result;
-  }
 
   div.appendChild(modifyLyricsBtn);
   hymnCardBody.appendChild(div);
