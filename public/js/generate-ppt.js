@@ -445,7 +445,7 @@ generateBtn.addEventListener('click', (e) => {
             ],
             {
               x: 0.2,
-              y: 1.35,
+              y: 1.3,
               w: '6%',
               h: '10%',
               align: 'right',
@@ -482,7 +482,9 @@ generateBtn.addEventListener('click', (e) => {
   });
 
   // 4. Save the Presentation
-  const worshipName = prompt('워십의 이름을 적어주세요.');
+  const now = new Date();
+  const today = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+  const worshipName = prompt('워십의 이름을 적어주세요.', `${today}_`);
   if (!worshipName) {
     generateBtn.innerHTML = originalBtnText;
     generateBtn.disabled = false;
