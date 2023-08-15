@@ -16,6 +16,9 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
     />
+    <!-- Choices.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+
     <style>
       * {
         font-family: 'Noto Sans KR', sans-serif;
@@ -49,6 +52,28 @@
       .draggable.dragging {
         opacity: 0.5;
         cursor: move;
+      }
+
+      .choices__inner {
+        background-color: #fff;
+        border-color: #d1d5db;
+        border-radius: 0.5rem;
+      }
+      .choices__list.choices__list--dropdown {
+        border-color: #d1d5db;
+        margin-top: 0.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      }
+      .choices.is-focused .choices__inner,
+      .choices .is-open .choices__inner {
+        background-color: #fff;
+        border-color: #d1d5db;
+        border-radius: 0.5rem;
+      }
+      .choices__list--multiple .choices__item.is-highlighted {
+        background-color: #e5e7eb;
+        border-color: #d1d5db;
       }
     </style>
     {% block css%} {% endblock %}
@@ -263,6 +288,8 @@
       integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
       crossorigin="anonymous"
     ></script>
+    <!-- Choices.js  -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
     <script src="/js/layout.js"></script>
 

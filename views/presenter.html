@@ -1,6 +1,6 @@
 {% extends 'layout.html' %} {% block content %}
 
-<div class="container-xxl mt-4">
+<div class="container-xxl mt-2">
   <div class="row justify-content-center">
     <!-- set list -->
     <div class="col-lg-4 my-2">
@@ -106,7 +106,9 @@
 
             <!-- hymn search tab-->
             <div class="tab-pane fade" id="pills-hymn" role="tabpanel" aria-labelledby="pills-hymn-tab" tabindex="0">
-              <select class="form-select mb-3" id="hymn-select"></select>
+              <select class="form-select mb-3" id="hymn-select">
+                <option value="">찬송가 선택</option>
+              </select>
 
               <!-- hymn image slide -->
               <div class="carousel carousel-dark slide my-1" id="hymn-carousel">
@@ -160,10 +162,10 @@
                   <span class="visually-hidden">Next</span>
                 </button>
               </div>
-              <div id="hymn-image-btn"></div>
+              <div id="hymn-image-btn" class="mb-2"></div>
 
               <!-- hymn lyrics -->
-              <div class="card mt-2">
+              <div class="card">
                 <div class="card-body" id="hymn-card-body">
                   <p class="card-text text-body-secondary text-center">찬송가를 선택해 주세요.</p>
                 </div>
@@ -178,72 +180,76 @@
 
               <div class="input-group my-3">
                 <select class="form-select" id="book" name="book">
-                  <option value="1">창세기</option>
-                  <option value="2">출애굽기</option>
-                  <option value="3">레위기</option>
-                  <option value="4">민수기</option>
-                  <option value="5">신명기</option>
-                  <option value="6">여호수아</option>
-                  <option value="7">사사기</option>
-                  <option value="8">룻기</option>
-                  <option value="9">사무엘상</option>
-                  <option value="10">사무엘하</option>
-                  <option value="11">열왕기상</option>
-                  <option value="12">열왕기하</option>
-                  <option value="13">역대상</option>
-                  <option value="14">역대하</option>
-                  <option value="15">에스라</option>
-                  <option value="16">느헤미야</option>
-                  <option value="17">에스더</option>
-                  <option value="18">욥기</option>
-                  <option value="19">시편</option>
-                  <option value="20">잠언</option>
-                  <option value="21">전도서</option>
-                  <option value="22">아가</option>
-                  <option value="23">이사야</option>
-                  <option value="24">예레미야</option>
-                  <option value="25">예레미야애가</option>
-                  <option value="26">에스겔</option>
-                  <option value="27">다니엘</option>
-                  <option value="28">호세아</option>
-                  <option value="29">요엘</option>
-                  <option value="30">아모스</option>
-                  <option value="31">오바댜</option>
-                  <option value="32">요나</option>
-                  <option value="33">미가</option>
-                  <option value="34">나훔</option>
-                  <option value="35">하박국</option>
-                  <option value="36">스바냐</option>
-                  <option value="37">학개</option>
-                  <option value="38">스가랴</option>
-                  <option value="39">말라기</option>
-                  <option value="40">마태복음</option>
-                  <option value="41">마가복음</option>
-                  <option value="42">누가복음</option>
-                  <option value="43">요한복음</option>
-                  <option value="44">사도행전</option>
-                  <option value="45">로마서</option>
-                  <option value="46">고린도전서</option>
-                  <option value="47">고린도후서</option>
-                  <option value="48">갈라디아서</option>
-                  <option value="49">에베소서</option>
-                  <option value="50">빌립보서</option>
-                  <option value="51">골로새서</option>
-                  <option value="52">데살로니가전서</option>
-                  <option value="53">데살로니가후서</option>
-                  <option value="54">디모데전서</option>
-                  <option value="55">디모데후서</option>
-                  <option value="56">디도서</option>
-                  <option value="57">빌레몬서</option>
-                  <option value="58">히브리서</option>
-                  <option value="59">야고보서</option>
-                  <option value="60">베드로전서</option>
-                  <option value="61">베드로후서</option>
-                  <option value="62">요한1서</option>
-                  <option value="63">요한2서</option>
-                  <option value="64">요한3서</option>
-                  <option value="65">유다서</option>
-                  <option value="66">요한계시록</option>
+                  <optgroup label="구약">
+                    <option value="1">창세기</option>
+                    <option value="2">출애굽기</option>
+                    <option value="3">레위기</option>
+                    <option value="4">민수기</option>
+                    <option value="5">신명기</option>
+                    <option value="6">여호수아</option>
+                    <option value="7">사사기</option>
+                    <option value="8">룻기</option>
+                    <option value="9">사무엘상</option>
+                    <option value="10">사무엘하</option>
+                    <option value="11">열왕기상</option>
+                    <option value="12">열왕기하</option>
+                    <option value="13">역대상</option>
+                    <option value="14">역대하</option>
+                    <option value="15">에스라</option>
+                    <option value="16">느헤미야</option>
+                    <option value="17">에스더</option>
+                    <option value="18">욥기</option>
+                    <option value="19">시편</option>
+                    <option value="20">잠언</option>
+                    <option value="21">전도서</option>
+                    <option value="22">아가</option>
+                    <option value="23">이사야</option>
+                    <option value="24">예레미야</option>
+                    <option value="25">예레미야애가</option>
+                    <option value="26">에스겔</option>
+                    <option value="27">다니엘</option>
+                    <option value="28">호세아</option>
+                    <option value="29">요엘</option>
+                    <option value="30">아모스</option>
+                    <option value="31">오바댜</option>
+                    <option value="32">요나</option>
+                    <option value="33">미가</option>
+                    <option value="34">나훔</option>
+                    <option value="35">하박국</option>
+                    <option value="36">스바냐</option>
+                    <option value="37">학개</option>
+                    <option value="38">스가랴</option>
+                    <option value="39">말라기</option>
+                  </optgroup>
+                  <optgroup label="신약">
+                    <option value="40">마태복음</option>
+                    <option value="41">마가복음</option>
+                    <option value="42">누가복음</option>
+                    <option value="43">요한복음</option>
+                    <option value="44">사도행전</option>
+                    <option value="45">로마서</option>
+                    <option value="46">고린도전서</option>
+                    <option value="47">고린도후서</option>
+                    <option value="48">갈라디아서</option>
+                    <option value="49">에베소서</option>
+                    <option value="50">빌립보서</option>
+                    <option value="51">골로새서</option>
+                    <option value="52">데살로니가전서</option>
+                    <option value="53">데살로니가후서</option>
+                    <option value="54">디모데전서</option>
+                    <option value="55">디모데후서</option>
+                    <option value="56">디도서</option>
+                    <option value="57">빌레몬서</option>
+                    <option value="58">히브리서</option>
+                    <option value="59">야고보서</option>
+                    <option value="60">베드로전서</option>
+                    <option value="61">베드로후서</option>
+                    <option value="62">요한1서</option>
+                    <option value="63">요한2서</option>
+                    <option value="64">요한3서</option>
+                    <option value="65">유다서</option>
+                    <option value="66">요한계시록</option>
+                  </optgroup>
                 </select>
                 <select class="form-select" id="chapter"></select>
                 <select class="form-select" id="verse"></select>
@@ -346,7 +352,12 @@
                 <li class="small opacity-50" id="modal-updated-at" hidden></li>
               </ul>
               <div>
-                <button type="button" class="btn btn-outline-danger w-100" id="song-delete-btn" hidden>삭제하기</button>
+                <button type="button" class="btn btn-outline-primary w-100 mb-2" id="modal-select-btn" hidden>
+                  선택하기
+                </button>
+                <button type="button" class="btn btn-outline-danger w-100" id="modal-delete-btn" hidden>
+                  삭제하기
+                </button>
               </div>
             </div>
           </div>

@@ -269,9 +269,9 @@ function renderHymnImages(data) {
 }
 
 async function setHymnSelectOptions() {
-  const option = document.createElement('option');
-  option.label = '찬송가 선택';
-  hymnSelect.appendChild(option);
+  // const option = document.createElement('option');
+  // option.label = '찬송가 선택';
+  // hymnSelect.appendChild(option);
 
   try {
     const response = await fetch('/hymn/index.json');
@@ -283,6 +283,38 @@ async function setHymnSelectOptions() {
       option.innerHTML = `${no}장. ${title}`;
       hymnSelect.appendChild(option);
     }
+    
+    const choices = new Choices(hymnSelect, {
+      silent: false,
+      choices: [],
+      renderChoiceLimit: -1,
+      removeItemButton: false,
+      allowHTML: false,
+      searchEnabled: true,
+      searchChoices: true,
+      searchFields: ['label', 'value'],
+      searchFloor: 1,
+      searchResultLimit: 10,
+      position: 'auto',
+      shouldSort: false,
+      searchPlaceholderValue: null,
+      prependValue: null,
+      appendValue: null,
+      loadingText: 'Loading...',
+      noResultsText: 'No results found',
+      itemSelectText: 'Press to select',
+      customAddItemText: 'Only values matching specific conditions can be added',
+      valueComparer: (value1, value2) => {
+        return value1 === value2;
+      },
+      // Choices uses the great Fuse library for searching. You can find more options here: https://fusejs.io/api/options.html
+      fuseOptions: {
+        includeScore: true,
+      },
+      labelId: '',
+      callbackOnInit: null,
+      callbackOnCreateTemplates: null,
+    });
   } catch (error) {
     console.error(error);
   }
