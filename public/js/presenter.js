@@ -23,7 +23,8 @@ function showNewSongModal() {
   const modalUpdatedAt = document.querySelector('#modal-updated-at');
   const modalSaveBtn = document.querySelector('#modal-save-btn');
   const modalModifyBtn = document.querySelector('#modal-modify-btn');
-  const modalDeleteBtn = document.querySelector('#song-delete-btn');
+  const modalSelectBtn = document.querySelector('#modal-select-btn');
+  const modalDeleteBtn = document.querySelector('#modal-delete-btn');
 
   modalHeader.innerHTML = '새로 등록하기';
   modalTitle.value = '';
@@ -35,6 +36,11 @@ function showNewSongModal() {
   modalCreatedAt.hidden = true;
   modalUpdatedAt.innerHTML = '';
   modalUpdatedAt.hidden = true;
+
+  modalSelectBtn.onclick = null;
+  modalSelectBtn.hidden = true;
+  modalDeleteBtn.onclick = null;
+  modalDeleteBtn.hidden = true;
 
   modalSaveBtn.onclick = () => {
     const title = modalTitle.value.trim();
@@ -63,8 +69,6 @@ function showNewSongModal() {
   modalSaveBtn.hidden = false;
   modalModifyBtn.onclick = null;
   modalModifyBtn.hidden = true;
-  modalDeleteBtn.onclick = null;
-  modalDeleteBtn.hidden = true;
 
   songDetailModal.show();
 }
@@ -78,9 +82,10 @@ async function showSongDetailModal(id) {
   const modalSongTypes = document.querySelectorAll('input[name=song-type]');
   const modalCreatedAt = document.querySelector('#modal-created-at');
   const modalUpdatedAt = document.querySelector('#modal-updated-at');
+  const modalSelectBtn = document.querySelector('#modal-select-btn');
+  const modalDeleteBtn = document.querySelector('#modal-delete-btn');
   const modalSaveBtn = document.querySelector('#modal-save-btn');
   const modalModifyBtn = document.querySelector('#modal-modify-btn');
-  const modalDeleteBtn = document.querySelector('#song-delete-btn');
 
   try {
     const { type, title, lyrics, memo, createdAt, updatedAt } = await getSongById(id);
@@ -103,6 +108,14 @@ async function showSongDetailModal(id) {
       timeStyle: 'short',
     }).format(new Date(updatedAt))}`;
     modalUpdatedAt.hidden = false;
+
+    modalSelectBtn.onclick = () => {
+      selectLyrics(id);
+      songDetailModal.hide();
+    };
+    modalSelectBtn.hidden = false;
+    modalDeleteBtn.onclick = () => deleteSong(id);
+    modalDeleteBtn.hidden = false;
 
     modalSaveBtn.onclick = null;
     modalSaveBtn.hidden = true;
@@ -130,8 +143,6 @@ async function showSongDetailModal(id) {
       modifySong(id, modifiedSong);
     };
     modalModifyBtn.hidden = false;
-    modalDeleteBtn.onclick = () => deleteSong(id);
-    modalDeleteBtn.hidden = false;
 
     songDetailModal.show();
   } catch (error) {
@@ -218,8 +229,8 @@ async function modifySong(id, modifiedSong) {
     }
 
     alert(`수정되었습니다.`);
+    render(searchInput.value, 1);
     songDetailModal.hide();
-    render('%', 1);
 
     // setlist에 선택되어있는 경우 selectedList 값 업데이트
     const targetItem = selectedList.find((item) => item.type === 'lyrics' && item.id === id);
@@ -490,7 +501,6 @@ function renderSearchInfo(query, totalCount) {
   const span = document.createElement('span');
   span.className = 'small';
   span.innerHTML = `'${query}' 검색결과 : 총 ${totalCount} 건`;
-  // span.className = 'small col-auto';
   resultInfo.appendChild(span);
 
   const button = document.createElement('button');
@@ -632,16 +642,9 @@ async function getSongById(id) {
 }
 
 async function selectLyrics(id) {
-  // const result = selectedList.some((song) => song.id === id);
-  // if (result) {
-  //   alert('이미 선택된 곡입니다.');
-  //   return;
-  // }
-
   const selectedSong = await getSongById(id);
   const { title, lyrics } = selectedSong;
   selectedList.push({ no: selectedList.length + 1, type: 'lyrics', id, title, lyrics });
-  console.log(selectedList);
   renderSetlist();
 }
 
