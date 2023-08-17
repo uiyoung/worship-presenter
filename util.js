@@ -1,5 +1,60 @@
 const fs = require('fs');
 
+// search bible
+// 창 1:3-7
+// 요일, 요1, 요이, 요2 전부 검색가능해야한다!
+// 창 1로 검색했을 때 창세기 1장 1절부터 끝까지 나오기
+
+// const search = '창 1:3-7';
+// const search = '창 1:3-100'; // 끝절보다 큰 수 입력한 경우
+// const search = '창 1:7-7'; // endVerse == startVerse 인 경우
+// const search = '창 1:7-4'; // endVerse > startVerse 인 경우
+// const search = '창 1:3'; // endVerse 없는 경우
+const search = '창세기 1'; // verseRange 없는 경우
+// const search = '창 1:'; // verseRange 없는 경우
+// const search = '창 1:asdf'; // verseRange 없는 경우
+// const inputRegex = /^.+ \d+:\d+(?:-\d+)?$/;
+const inputRegex = /^.+ \d+(?::\d+(?:-\d+)?)?$/;
+
+if (!inputRegex.test(search)) {
+  console.log('올바른 형식을 입력해주세요.');
+  return;
+}
+
+// 1. book 분리
+const parts = search.split(' ');
+const bookName = parts[0];
+
+const { books } = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/index.json`));
+const { no, verseNos } = books.find((book) => book.abbrevTitle === bookName || book.title === bookName);
+
+// 2. chapter 분리
+const chapterVerse = parts[1].split(':');
+const chapter = chapterVerse[0];
+const maxVerseNo = verseNos[chapter - 1];
+
+// 3. verse 분리
+const verseRange = chapterVerse[1]?.split('-') || [1, maxVerseNo];
+const startVerse = verseRange[0];
+const endVerse = Math.min(verseRange[1], maxVerseNo) || startVerse;
+
+if (Number(startVerse) > Number(endVerse)) {
+  console.log('시작절이 끝절 보다 큽니다.');
+  return;
+}
+
+console.log('책:', bookName);
+console.log('장:', chapter);
+console.log('시작 절:', startVerse);
+console.log('끝 절:', endVerse);
+
+const { verses } = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/${no}/${chapter}.json`));
+const results = {};
+for (let i = startVerse; i <= endVerse; i++) {
+  results[i] = verses[i];
+}
+console.log(results);
+
 // const song = JSON.parse(fs.readFileSync(`./public/hymn/lyrics/10.json`));
 // for (let key in song.verses) {
 //   console.log(key, song.verses[key]);
