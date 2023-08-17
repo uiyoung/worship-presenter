@@ -58,10 +58,6 @@ function renderResponsiveReading(data) {
 }
 
 async function setResponsiveReadingSelectOptions() {
-  const option = document.createElement('option');
-  option.label = '교독문 선택';
-  rrSelect.appendChild(option);
-
   try {
     const response = await fetch('/responsive-reading/index.json');
     const data = await response.json();
@@ -72,6 +68,37 @@ async function setResponsiveReadingSelectOptions() {
       option.innerHTML = `${no}번. ${title}`;
       rrSelect.appendChild(option);
     }
+    const choices = new Choices(rrSelect, {
+      silent: false,
+      choices: [],
+      renderChoiceLimit: -1,
+      removeItemButton: false,
+      allowHTML: false,
+      searchEnabled: true,
+      searchChoices: true,
+      searchFields: ['label', 'value'],
+      searchFloor: 1,
+      searchResultLimit: 10,
+      position: 'auto',
+      shouldSort: false,
+      searchPlaceholderValue: null,
+      prependValue: null,
+      appendValue: null,
+      loadingText: 'Loading...',
+      noResultsText: 'No results found',
+      itemSelectText: 'Press to select',
+      customAddItemText: 'Only values matching specific conditions can be added',
+      valueComparer: (value1, value2) => {
+        return value1 === value2;
+      },
+      // Choices uses the great Fuse library for searching. You can find more options here: https://fusejs.io/api/options.html
+      fuseOptions: {
+        includeScore: true,
+      },
+      labelId: '',
+      callbackOnInit: null,
+      callbackOnCreateTemplates: null,
+    });
   } catch (error) {
     console.error(error);
   }

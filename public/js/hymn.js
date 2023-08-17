@@ -269,10 +269,6 @@ function renderHymnImages(data) {
 }
 
 async function setHymnSelectOptions() {
-  // const option = document.createElement('option');
-  // option.label = '찬송가 선택';
-  // hymnSelect.appendChild(option);
-
   try {
     const response = await fetch('/hymn/index.json');
     const data = await response.json();
@@ -283,7 +279,7 @@ async function setHymnSelectOptions() {
       option.innerHTML = `${no}장. ${title}`;
       hymnSelect.appendChild(option);
     }
-    
+
     const choices = new Choices(hymnSelect, {
       silent: false,
       choices: [],
