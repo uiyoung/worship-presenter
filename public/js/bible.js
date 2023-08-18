@@ -3,50 +3,131 @@ let bibleInfo;
 const bookSelect = document.querySelector('#book');
 const chapterSelect = document.querySelector('#chapter');
 const verseSelect = document.querySelector('#verse');
+const searchBibleBtn = document.querySelector('#search-bible-btn');
 
 bookSelect.addEventListener('change', (e) => {
   const bookIndex = e.target.value;
-  setChapter(bookIndex);
-  getBible(bookIndex, 1, 1);
+  setChapterSelect(bookIndex);
 });
 
-chapterSelect.addEventListener('change', (e) => {
+chapterSelect.addEventListener('change', async (e) => {
   const bookIndex = bookSelect.value;
-  const chapterIndex = Number(chapterSelect.value);
-  setVerse(bookIndex, chapterIndex);
-  getBible(bookIndex, chapterIndex, 1);
+  const chapterIndex = e.target.value;
+  setVerseSelect(bookIndex, chapterIndex);
+  if (bookIndex === '' || chapterIndex === '') {
+    return;
+  }
+  const bibleData = await getBible(bookIndex, chapterIndex);
+  renderBible(bibleData);
 });
 
-verseSelect.addEventListener('change', (e) => {
+verseSelect.addEventListener('change', async (e) => {
   const bookIndex = bookSelect.value;
   const chapterIndex = chapterSelect.value;
   const verseIndex = e.target.value;
-  getBible(bookIndex, chapterIndex, verseIndex);
-  location.href = `#verse${verseIndex}`;
+
+  const bibleData = await getBible(bookIndex, chapterIndex);
+  if (verseIndex === '') {
+    renderBible(bibleData);
+    return;
+  }
+
+  const selectedVerse = {};
+  selectedVerse[verseIndex] = bibleData.verses[verseIndex];
+  const filteredBibleData = { ...bibleData, verses: selectedVerse };
+
+  renderBible(filteredBibleData, verseIndex);
+
+  // location.href = `#verse${verseIndex}`;
 });
 
-async function setChapter(bookIndex) {
-  // const response = await fetch('/bibles/NKRV/index.json');
-  // const result = await response.json();
+searchBibleBtn.addEventListener('click', async () => {
+  const search = document.querySelector('#bible-input').value.trim();
+  const inputRegex = /^.+ \d+(?::\d+(?:-\d+)?)?$/;
+
+  if (!inputRegex.test(search)) {
+    alert('올바른 형식을 입력해주세요.\n\ne.g. 창 3, 창 3:4, 창 3:4-7\ne.g. 창세기 3, 창세기 3:4, 창세기 3:4-7');
+    document.querySelector('#bible-input').focus();
+    return;
+  }
+
+  // 1. book 분리
+  const parts = search.split(' ');
+  const bookName = parts[0];
+  const { books } = bibleInfo;
+  const book = books.find((book) => book.abbrevTitle === bookName || book.title === bookName);
+  if (!book) {
+    alert(`${bookName}을(를) 찾을 수 없습니다.`);
+    return;
+  }
+  const { no: bookIndex, chapterNo: maxChapterNo, verseNos } = book;
+
+  // 2. chapter 분리
+  const chapterVerse = parts[1].split(':');
+  const chapter = chapterVerse[0];
+  if (Number(chapter) > Number(maxChapterNo)) {
+    alert(`${book.title} ${chapter}장을 찾을 수 없습니다.\n(${book.title}의 마지막 장 : ${maxChapterNo})`);
+    return;
+  }
+  const maxVerseNo = verseNos[chapter - 1];
+
+  // 3. verse 분리
+  const verseRange = chapterVerse[1]?.split('-') || [1, maxVerseNo];
+  const startVerse = verseRange[0];
+  const endVerse = Math.min(verseRange[1], maxVerseNo) || startVerse;
+
+  if (Number(startVerse) > Number(endVerse)) {
+    alert('시작하는 절이 끝나는 절 보다 큽니다.');
+    return;
+  }
+
+  console.log('책:', bookName);
+  console.log('장:', chapter);
+  console.log('시작 절:', startVerse);
+  console.log('끝 절:', endVerse);
+
+  const response = await fetch(`/bibles/NKRV/${bookIndex}/${chapter}.json`);
+  const { verses } = await response.json();
+
+  const result = {};
+  for (let i = startVerse; i <= endVerse; i++) {
+    result[i] = verses[i];
+  }
+
+  const bibleData = { title: book.title, chapter, verses: { ...result } };
+  console.log(bibleData);
+  renderBible(bibleData);
+});
+
+function setChapterSelect(bookIndex) {
+  chapterSelect.innerHTML = '';
+  const chapterOrSection = bookIndex === '19' ? '편' : '장';
+  const option = document.createElement('option');
+  option.label = `${chapterOrSection} 선택`;
+  chapterSelect.appendChild(option);
 
   const maxChapterNo = bibleInfo.books.find((book) => book.no === bookIndex).chapterNo;
 
-  chapterSelect.innerHTML = '';
   for (let i = 1; i <= maxChapterNo; i++) {
     const option = document.createElement('option');
     option.value = i;
-    option.innerHTML = `${i}장`;
+    option.innerHTML = `${i}${chapterOrSection}`;
     chapterSelect.appendChild(option);
   }
 }
 
-async function setVerse(bookIndex, chapterIndex) {
-  // const response = await fetch('/bibles/NKRV/index.json');
-  // const result = await response.json();
+function setVerseSelect(bookIndex, chapterIndex) {
+  verseSelect.innerHTML = '';
+
+  const option = document.createElement('option');
+  option.label = '전체';
+  verseSelect.appendChild(option);
+
+  if (bookIndex === '' || chapterIndex === '') {
+    return;
+  }
 
   const verseNo = bibleInfo.books.find((book) => book.no === bookIndex).verseNos[chapterIndex - 1];
-
-  verseSelect.innerHTML = '';
   for (let i = 1; i <= verseNo; i++) {
     const option = document.createElement('option');
     option.value = i;
@@ -55,37 +136,60 @@ async function setVerse(bookIndex, chapterIndex) {
   }
 }
 
-async function getBible(bookIndex, chapterIndex, verseIndex) {
-  const response = await fetch(`/bibles/NKRV/${bookIndex}/${chapterIndex}.json`);
-  const result = await response.json();
+function renderBible(bibleData) {
+  const { title: bookName, chapter, verses } = bibleData;
+
+  const sortedKeys = Object.keys(verses).sort((a, b) => a - b);
+  const startVerseNo = sortedKeys[0];
+  const endVerseNo = sortedKeys[sortedKeys.length - 1];
+  let verseInfo = `${startVerseNo}-${endVerseNo}`;
+  if (sortedKeys.length === 1) {
+    verseInfo = `${startVerseNo}`;
+  }
+  const title = `${bookName} ${chapter}${bookName === '시편' ? '편' : '장'} ${verseInfo}절`;
 
   const bibleTitle = document.querySelector('#bible-title');
-  bibleTitle.innerHTML = `${result.title} ${result.chapter}${+bookIndex === 19 ? '편' : '장'}`;
+  bibleTitle.innerHTML = title;
+  const bibleSelectAllBtn = document.querySelector('#bible-select-all');
+  bibleSelectAllBtn.hidden = false;
+  bibleSelectAllBtn.onclick = () => {
+    selectedList.push({
+      no: selectedList.length + 1,
+      type: 'bible',
+      title,
+      data: {
+        bookName,
+        chapter,
+        verses,
+      },
+    });
+    renderSetlist();
+  };
 
   const bibleList = document.querySelector('#bible-list');
   bibleList.innerHTML = '';
 
-  for (let i = 1; i <= Object.keys(result.verses).length; i++) {
+  for (const key of sortedKeys) {
     const li = document.createElement('li');
     li.classList = 'list-group-item d-flex justify-content-between';
-    li.id = `verse${i}`;
+    li.id = `verse${key}`;
 
     const span = document.createElement('span');
     span.classList = 'me-1 d-flex';
 
     const verseNo = document.createElement('a');
-    verseNo.href = `#verse${i}`;
-    verseNo.onclick = () => {
-      verseSelect.value = i;
-      verseSelect.dispatchEvent(new Event('change'));
-    };
+    // verseNo.href = `#verse${key}`;
+    // verseNo.onclick = () => {
+    //   verseSelect.value = key;
+    //   verseSelect.dispatchEvent(new Event('change'));
+    // };
     verseNo.classList = 'me-2 opacity-75 text-success-emphasis';
-    verseNo.innerHTML = i;
+    verseNo.innerHTML = key;
     span.appendChild(verseNo);
 
     const verse = document.createElement('span');
-    verse.classList = i === Number(verseIndex) ? 'fw-bold' : '';
-    verse.innerHTML = result.verses[i];
+    verse.classList = 'keep-all';
+    verse.innerHTML = verses[key];
     span.appendChild(verse);
     li.appendChild(span);
 
@@ -97,27 +201,45 @@ async function getBible(bookIndex, chapterIndex, verseIndex) {
       selectedList.push({
         no: selectedList.length + 1,
         type: 'bible',
-        title: `${result.title} ${result.chapter}:${i}`,
-        book: result.title,
-        chapterNo: result.chapter,
-        verseNo: i,
-        verse: result.verses[i],
+        title: `${bookName} ${chapter}${bookName === '시편' ? '편' : '장'} ${key}절`,
+        data: {
+          bookName,
+          chapter,
+          verses: { [key]: verses[key] },
+        },
       });
       renderSetlist();
     };
-    li.appendChild(selectBtn);
 
+    li.appendChild(selectBtn);
     bibleList.appendChild(li);
   }
+}
+
+async function getBible(bookIndex, chapterIndex) {
+  if (bookIndex === '') {
+    alert('성경을 선택해주세요.');
+    return;
+  }
+  if (chapterIndex === '') {
+    alert('장을 선택해주세요.');
+    return;
+  }
+
+  const response = await fetch(`/bibles/NKRV/${bookIndex}/${chapterIndex}.json`);
+  const result = await response.json();
+  return result;
 }
 
 async function init() {
   try {
     const response = await fetch('/bibles/NKRV/index.json');
     bibleInfo = await response.json();
-    setChapter('1');
-    setVerse('1', 1);
-    getBible(1, 1, 1);
+
+    // setChapterSelect('1');
+    // setVerseSelect('1', 1);
+    // const bible = await getBible(1, 1);
+    // renderBible(bible, 1);
   } catch (error) {
     console.error(error);
   }

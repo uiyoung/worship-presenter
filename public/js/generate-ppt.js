@@ -347,6 +347,7 @@ generateBtn.addEventListener('click', (e) => {
         });
         break;
       case 'bible':
+        const { bookName, chapter, verses } = item.data;
         // todo : bible coverslide master
         pptx.defineSlideMaster({
           title: 'BIBLE_COVER',
@@ -414,65 +415,68 @@ generateBtn.addEventListener('click', (e) => {
         //   .addText(`${item.title}`, { placeholder: 'rr-subtitle' });
 
         // bible slide
-        const bibleSlide = pptx.addSlide({ masterName: 'BIBLE_SLIDE', sectionTitle });
-        bibleSlide
-          // subtitle
-          .addText(
-            [
+        const sortedKeys = Object.keys(verses).sort((a, b) => a - b);
+        for (const key of sortedKeys) {
+          const bibleSlide = pptx.addSlide({ masterName: 'BIBLE_SLIDE', sectionTitle });
+          bibleSlide
+            // bible info
+            .addText(
+              [
+                {
+                  text: item.title,
+                  options: { ...bibleOptions.fullScreenSubtitleOptions },
+                },
+              ],
               {
-                text: `${item.book} ${item.chapterNo}${item.book === '시편' ? '편' : '장'} ${item.verseNo}절`,
-                options: { ...bibleOptions.fullScreenSubtitleOptions },
-              },
-            ],
-            {
-              x: 0.4,
-              y: 0.2,
-              w: '30%',
-              h: '10%',
-              align: 'left',
-              valign: 'center',
-              margin: [0, 30, 100, 100],
-              wrap: true,
-            }
-          )
-          // verse no
-          .addText(
-            [
+                x: 0.4,
+                y: 0.2,
+                w: '30%',
+                h: '10%',
+                align: 'left',
+                valign: 'center',
+                margin: [0, 30, 100, 100],
+                wrap: true,
+              }
+            )
+            // verse no
+            .addText(
+              [
+                {
+                  text: `${key}.`,
+                  options: { ...bibleOptions.fullScreenSubtitleOptions, fontSize: 32 },
+                },
+              ],
               {
-                text: `${item.verseNo}.`,
-                options: { ...bibleOptions.fullScreenSubtitleOptions, fontSize: 32 },
-              },
-            ],
-            {
-              x: 0.2,
-              y: 1.3,
-              w: '6%',
-              h: '10%',
-              align: 'right',
-              valign: 'center',
-              margin: [0, 0, 0, 0],
-              wrap: true,
-            }
-          )
-          // verse
-          .addText(
-            [
+                x: 0.2,
+                y: 1.34,
+                w: '6%',
+                h: '10%',
+                align: 'right',
+                valign: 'center',
+                margin: [0, 0, 0, 0],
+                wrap: true,
+              }
+            )
+            // verse
+            .addText(
+              [
+                {
+                  text: verses[key],
+                  options: { ...bibleOptions.fullScreenVerseOptions },
+                },
+              ],
               {
-                text: item.verse,
-                options: { ...bibleOptions.fullScreenVerseOptions },
-              },
-            ],
-            {
-              x: 1.2,
-              y: 0,
-              w: '90%',
-              h: '100%',
-              align: 'left',
-              valign: 'top',
-              margin: [0, 30, 100, 100],
-              wrap: true,
-            }
-          );
+                x: 1.2,
+                y: 0,
+                w: '90%',
+                h: '100%',
+                align: 'left',
+                valign: 'top',
+                margin: [0, 30, 100, 100],
+                wrap: true,
+              }
+            );
+        }
 
         break;
 
