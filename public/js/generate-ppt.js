@@ -423,7 +423,8 @@ generateBtn.addEventListener('click', (e) => {
             .addText(
               [
                 {
-                  text: item.title,
+                  // text: item.title,
+                  text: `${bookName} ${chapter}${bookName === '시편' ? '편' : '장'} ${key}절`,
                   options: { ...bibleOptions.fullScreenSubtitleOptions },
                 },
               ],
