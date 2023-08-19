@@ -3,6 +3,7 @@ let bibleInfo;
 const bookSelect = document.querySelector('#book');
 const chapterSelect = document.querySelector('#chapter');
 const verseSelect = document.querySelector('#verse');
+const bibleInput = document.querySelector('#bible-input');
 const searchBibleBtn = document.querySelector('#search-bible-btn');
 
 bookSelect.addEventListener('change', (e) => {
@@ -37,17 +38,21 @@ verseSelect.addEventListener('change', async (e) => {
   const filteredBibleData = { ...bibleData, verses: selectedVerse };
 
   renderBible(filteredBibleData, verseIndex);
+});
 
-  // location.href = `#verse${verseIndex}`;
+bibleInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    searchBibleBtn.dispatchEvent(new Event('click'));
+  }
 });
 
 searchBibleBtn.addEventListener('click', async () => {
-  const search = document.querySelector('#bible-input').value.trim();
+  const search = bibleInput.value.trim();
   const inputRegex = /^.+ \d+(?::\d+(?:-\d+)?)?$/;
 
   if (!inputRegex.test(search)) {
     alert('올바른 형식을 입력해주세요.\n\ne.g. 창 3, 창 3:4, 창 3:4-7\ne.g. 창세기 3, 창세기 3:4, 창세기 3:4-7');
-    document.querySelector('#bible-input').focus();
+    bibleInput.focus();
     return;
   }
 
@@ -80,12 +85,6 @@ searchBibleBtn.addEventListener('click', async () => {
     alert('시작하는 절이 끝나는 절 보다 큽니다.');
     return;
   }
-
-  console.log('책:', bookName);
-  console.log('장:', chapter);
-  console.log('시작 절:', startVerse);
-  console.log('끝 절:', endVerse);
-
   const response = await fetch(`/bibles/NKRV/${bookIndex}/${chapter}.json`);
   const { verses } = await response.json();
 
