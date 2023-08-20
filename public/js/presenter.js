@@ -138,6 +138,9 @@ async function showSongDetailModal(id) {
         return;
       }
       const memo = modalMemo.value.trim();
+      if (!confirm('수정 하시겠습니까?')) {
+        return;
+      }
 
       const modifiedSong = { title, lyrics, type, memo };
       modifySong(id, modifiedSong);
