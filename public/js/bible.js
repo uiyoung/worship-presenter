@@ -94,8 +94,11 @@ searchBibleBtn.addEventListener('click', async () => {
   }
 
   const bibleData = { title: book.title, chapter, verses: { ...result } };
-  console.log(bibleData);
   renderBible(bibleData);
+
+  bookSelect.value = '';
+  chapterSelect.value = '';
+  verseSelect.value = '';
 });
 
 function setChapterSelect(bookIndex) {
