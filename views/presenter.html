@@ -111,58 +111,62 @@
               </select>
 
               <!-- hymn image slide -->
-              <div class="carousel carousel-dark slide my-1" id="hymn-carousel">
-                <div class="carousel-indicators" id="hymn-indicators">
-                  <button
-                    type="button"
-                    data-bs-target="#hymn-carousel"
-                    data-bs-slide-to="0"
-                    class="active"
-                    aria-current="true"
-                    aria-label="Slide 1"
-                  ></button>
-                  <button
-                    type="button"
-                    data-bs-target="#hymn-carousel"
-                    data-bs-slide-to="1"
-                    aria-label="Slide 2"
-                  ></button>
-                  <button
-                    type="button"
-                    data-bs-target="#hymn-carousel"
-                    data-bs-slide-to="2"
-                    aria-label="Slide 3"
-                  ></button>
-                </div>
-                <div class="carousel-inner" id="hymn-slide">
-                  <div class="carousel-item active">
-                    <!-- <img src="default-image.jpg" alt="Default Image"> -->
-                    <div class="carousel-caption">
-                      <h5>Default Content</h5>
-                      <p>This is the default content to be displayed when there is no data available.</p>
+              <div class="card mb-2">
+                <div class="card-body">
+                  <div class="carousel carousel-dark slide my-1" id="hymn-carousel">
+                    <div class="carousel-indicators" id="hymn-indicators">
+                      <button
+                        type="button"
+                        data-bs-target="#hymn-carousel"
+                        data-bs-slide-to="0"
+                        class="active"
+                        aria-current="true"
+                        aria-label="Slide 1"
+                      ></button>
+                      <button
+                        type="button"
+                        data-bs-target="#hymn-carousel"
+                        data-bs-slide-to="1"
+                        aria-label="Slide 2"
+                      ></button>
+                      <button
+                        type="button"
+                        data-bs-target="#hymn-carousel"
+                        data-bs-slide-to="2"
+                        aria-label="Slide 3"
+                      ></button>
                     </div>
+                    <div class="carousel-inner" id="hymn-slide">
+                      <div class="carousel-item active">
+                        <!-- <img src="default-image.jpg" alt="Default Image"> -->
+                        <div class="carousel-caption">
+                          <h5>Default Content</h5>
+                          <p>This is the default content to be displayed when there is no data available.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      class="carousel-control-prev"
+                      type="button"
+                      data-bs-target="#hymn-carousel"
+                      data-bs-slide="prev"
+                    >
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button
+                      class="carousel-control-next"
+                      type="button"
+                      data-bs-target="#hymn-carousel"
+                      data-bs-slide="next"
+                    >
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
                   </div>
+                  <div id="hymn-image-btn"></div>
                 </div>
-                <button
-                  class="carousel-control-prev"
-                  type="button"
-                  data-bs-target="#hymn-carousel"
-                  data-bs-slide="prev"
-                >
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Previous</span>
-                </button>
-                <button
-                  class="carousel-control-next"
-                  type="button"
-                  data-bs-target="#hymn-carousel"
-                  data-bs-slide="next"
-                >
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Next</span>
-                </button>
               </div>
-              <div id="hymn-image-btn" class="mb-2"></div>
 
               <!-- hymn lyrics -->
               <div class="card">
@@ -330,11 +334,11 @@
           <div class="row">
             <div class="col-lg-6">
               <form>
-                <div class="form-floating mb-3">
+                <div class="form-floating mb-2">
                   <input type="text" class="form-control" id="modal-title" placeholder="제목을 입력해주세요." />
                   <label for="modal-title">제목</label>
                 </div>
-                <div class="form-floating mb-3">
+                <div class="form-floating">
                   <textarea
                     class="form-control"
                     placeholder="가사를 입력해주세요."
@@ -346,7 +350,7 @@
               </form>
             </div>
             <div class="col-lg-6">
-              <div class="mb-3">
+              <div class="mb-2">
                 <input
                   type="radio"
                   class="btn-check"
@@ -360,12 +364,12 @@
                 <label class="btn btn-sm btn-outline-success" for="ccm-radio">CCM</label>
               </div>
 
-              <div class="form-floating mb-3">
+              <div class="form-floating mb-2">
                 <textarea class="form-control" placeholder="메모를 입력해주세요." id="modal-memo"></textarea>
                 <label for="modal-memo">메모</label>
               </div>
 
-              <ul class="mb-3">
+              <ul class="mb-2">
                 <li class="small opacity-50" id="modal-created-at" hidden></li>
                 <li class="small opacity-50" id="modal-updated-at" hidden></li>
               </ul>
