@@ -270,9 +270,9 @@
                 <button class="btn btn-outline-primary" type="button" id="search-bible-btn">검색</button>
               </div>
 
-              <div class="card">
+              <div class="card border-primary border-2 border-opacity-50">
                 <div class="card-header d-flex align-items-center">
-                  <span class="fw-bold fs-5" id="bible-title"></span>
+                  <span class="fw-bold fs-5" id="bible-title">&nbsp;</span>
                   <button class="btn btn-primary btn-sm ms-2" id="bible-select-all" hidden>전체 선택</button>
                 </div>
                 <div class="card-body">
@@ -283,15 +283,6 @@
                   </ul>
                 </div>
               </div>
-
-              <!-- <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title" id="bible-title"></h5>
-                  <ul class="list-group list-group-flush" id="bible-list">
-                    <li class="list-group-item text-body-secondary text-center">성경을 선택해 주세요.</li>
-                  </ul>
-                </div>
-              </div> -->
             </div>
 
             <!-- responsive reading search tab-->
@@ -339,13 +330,18 @@
           <div class="row">
             <div class="col-lg-6">
               <form>
-                <div class="mb-3">
-                  <label for="modal-title" class="col-form-label">제목</label>
-                  <input type="text" class="form-control" id="modal-title" />
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="modal-title" placeholder="제목을 입력해주세요." />
+                  <label for="modal-title">제목</label>
                 </div>
-                <div class="mb-3">
-                  <label for="modal-lyrics" class="col-form-label">가사</label>
-                  <textarea class="form-control" id="modal-lyrics" rows="14"></textarea>
+                <div class="form-floating mb-3">
+                  <textarea
+                    class="form-control"
+                    placeholder="가사를 입력해주세요."
+                    id="modal-lyrics"
+                    style="height: 280px"
+                  ></textarea>
+                  <label for="modal-lyrics">가사</label>
                 </div>
               </form>
             </div>
@@ -364,10 +360,11 @@
                 <label class="btn btn-sm btn-outline-success" for="ccm-radio">CCM</label>
               </div>
 
-              <div class="mb-3">
-                <label for="modal-memo" class="col-form-label">메모</label>
-                <textarea class="form-control" id="modal-memo" rows="1"></textarea>
+              <div class="form-floating mb-3">
+                <textarea class="form-control" placeholder="메모를 입력해주세요." id="modal-memo"></textarea>
+                <label for="modal-memo">메모</label>
               </div>
+
               <ul class="mb-3">
                 <li class="small opacity-50" id="modal-created-at" hidden></li>
                 <li class="small opacity-50" id="modal-updated-at" hidden></li>

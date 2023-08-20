@@ -29,7 +29,7 @@ function showNewSongModal() {
   modalHeader.innerHTML = '새로 등록하기';
   modalTitle.value = '';
   modalLyrics.value = '';
-  modalLyrics.rows = 14;
+  modalLyrics.style.height = '280px';
   modalSongTypes.forEach((e) => (e.checked = false));
   modalMemo.value = '';
   modalCreatedAt.innerHTML = '';
@@ -95,7 +95,7 @@ async function showSongDetailModal(id) {
 
     modalTitle.value = title;
     modalLyrics.value = lyrics;
-    modalLyrics.rows = lyrics.split('\n').length;
+    modalLyrics.style.height = `${lyrics.split('\n').length * 20 + 38}px`;
     modalMemo.value = memo;
     Array.from(modalSongTypes).find((e) => e.value === type).checked = true;
     modalCreatedAt.innerHTML = `등록일 : ${new Intl.DateTimeFormat('ko', {
@@ -248,17 +248,17 @@ async function modifySong(id, modifiedSong) {
 const autoAlignBtn = document.querySelector('#song-modal-auto-align-btn');
 if (autoAlignBtn) {
   autoAlignBtn.addEventListener('click', () => {
-    const lyricsTextArea = document.querySelector('#modal-lyrics');
-    if (lyricsTextArea.value.trim().length <= 0) {
+    const modalLyrics = document.querySelector('#modal-lyrics');
+    if (modalLyrics.value.trim().length <= 0) {
       alert('가사를 입력해주세요.');
-      lyricsTextArea.focus();
+      modalLyrics.focus();
       return;
     }
 
     const linesPerSlide = Number(document.querySelector('#lines-per-slide').value) || 2;
-    lyricsTextArea.value = autoAlign(lyricsTextArea.value, linesPerSlide);
-    lyricsTextArea.rows = lyricsTextArea.value.split('\n').length;
-    lyricsTextArea.focus();
+    modalLyrics.value = autoAlign(modalLyrics.value, linesPerSlide);
+    modalLyrics.style.height = `${modalLyrics.value.split('\n').length * 20 + 38}px`;
+    modalLyrics.focus();
   });
 }
 
