@@ -111,6 +111,7 @@ async function showSongDetailModal(id) {
     modalMemo.value = memo;
     // Array.from(modalSongTypes).find((e) => e.value === type).checked = true;
     modalSongDetails.hidden = false;
+    modalSongDetails.open = false;
     modalCreatedAt.innerHTML = `등록 : ${new Intl.DateTimeFormat('ko', {
       dateStyle: 'long',
       timeStyle: 'short',
