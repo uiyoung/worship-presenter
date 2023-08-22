@@ -24,6 +24,7 @@ function showNewSongModal() {
   const modalLyrics = document.querySelector('#modal-lyrics');
   // const modalSongTypes = document.querySelectorAll('input[name=song-type]');
   const modalMemo = document.querySelector('#modal-memo');
+  const modalSongDetails = document.querySelector('#modal-song-details');
   const modalCreatedAt = document.querySelector('#modal-created-at');
   const modalUpdatedAt = document.querySelector('#modal-updated-at');
   const modalAuthor = document.querySelector('#modal-author-username');
@@ -38,6 +39,7 @@ function showNewSongModal() {
   modalLyrics.style.height = '280px';
   // modalSongTypes.forEach((e) => (e.checked = false));
   modalMemo.value = '';
+  modalSongDetails.hidden = true;
   modalCreatedAt.innerHTML = '';
   modalCreatedAt.hidden = true;
   modalUpdatedAt.innerHTML = '';
@@ -88,6 +90,7 @@ async function showSongDetailModal(id) {
   const modalLyrics = document.querySelector('#modal-lyrics');
   const modalMemo = document.querySelector('#modal-memo');
   // const modalSongTypes = document.querySelectorAll('input[name=song-type]');
+  const modalSongDetails = document.querySelector('#modal-song-details');
   const modalCreatedAt = document.querySelector('#modal-created-at');
   const modalUpdatedAt = document.querySelector('#modal-updated-at');
   const modalAuthor = document.querySelector('#modal-author-username');
@@ -107,6 +110,7 @@ async function showSongDetailModal(id) {
     modalLyrics.style.height = `${Math.max(lyrics.split('\n').length * 20 + 38, 280)}px`;
     modalMemo.value = memo;
     // Array.from(modalSongTypes).find((e) => e.value === type).checked = true;
+    modalSongDetails.hidden = false;
     modalCreatedAt.innerHTML = `등록 : ${new Intl.DateTimeFormat('ko', {
       dateStyle: 'long',
       timeStyle: 'short',
