@@ -90,6 +90,7 @@ exports.getSongById = async (req, res, next) => {
   try {
     const song = await prisma.song.findUnique({
       where: { id: Number(req.params.id) },
+      include: { author: { select: { username: true } } },
     });
     res.json(song);
   } catch (err) {
@@ -101,13 +102,13 @@ exports.getSongById = async (req, res, next) => {
 exports.addSong = async (req, res, next) => {
   try {
     const { title, lyrics, type, memo } = req.body;
-    const newSong = await prisma.song.create({
+    await prisma.song.create({
       data: {
         title,
         lyrics,
         type,
         memo,
-        authorId: req.user.id,
+        authorId: Number(req.user.id),
       },
     });
     res.json({ success: true });
@@ -119,9 +120,9 @@ exports.addSong = async (req, res, next) => {
 
 exports.updateSong = async (req, res, next) => {
   try {
-    const { title, lyrics, type, memo } = req.body;
-    const updatedSong = await prisma.song.update({
-      data: { title, lyrics, type, memo, authorId: req.user.id },
+    const { title, lyrics, memo } = req.body;
+    await prisma.song.update({
+      data: { title, lyrics, memo },
       where: { id: Number(req.params.id) },
     });
     res.json({ success: true });
@@ -133,7 +134,7 @@ exports.updateSong = async (req, res, next) => {
 
 exports.deleteSong = async (req, res, next) => {
   try {
-    const deletedSong = await prisma.song.delete({
+    await prisma.song.delete({
       where: { id: Number(req.params.id) },
     });
     res.json({ success: true });
