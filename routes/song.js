@@ -2,15 +2,15 @@ const router = require('express').Router();
 const songController = require('../controllers/song');
 const { isLoggedIn } = require('../middlewares/');
 
-router.get('/new', songController.renderSongForm);
 router
   .route('/:id')
   .get(songController.getSongById)
   .patch(isLoggedIn, songController.updateSong)
   .delete(isLoggedIn, songController.deleteSong);
-router
-  .route('/') //
+
+router //
+  .route('/')
   .get(songController.getSongs)
-  .post(isLoggedIn, songController.addSong);
+  .post(isLoggedIn, songController.createSong);
 
 module.exports = router;
