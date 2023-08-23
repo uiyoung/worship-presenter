@@ -22,7 +22,6 @@ function showNewSongModal() {
   const modalHeader = document.querySelector('#songDetailModalLabel');
   const modalTitle = document.querySelector('#modal-title');
   const modalLyrics = document.querySelector('#modal-lyrics');
-  // const modalSongTypes = document.querySelectorAll('input[name=song-type]');
   const modalMemo = document.querySelector('#modal-memo');
   const modalSongDetails = document.querySelector('#modal-song-details');
   const modalCreatedAt = document.querySelector('#modal-created-at');
@@ -37,7 +36,6 @@ function showNewSongModal() {
   modalTitle.value = '';
   modalLyrics.value = '';
   modalLyrics.style.height = '280px';
-  // modalSongTypes.forEach((e) => (e.checked = false));
   modalMemo.value = '';
   modalSongDetails.hidden = true;
   modalCreatedAt.innerHTML = '';
@@ -59,20 +57,17 @@ function showNewSongModal() {
       modalTitle.focus();
       return;
     }
+
     const lyrics = modalLyrics.value.trim();
     if (lyrics === '') {
       alert('가사를 입력해주세요.');
       modalLyrics.focus();
       return;
     }
-    // const type = document.querySelector('input[name=song-type]:checked')?.value;
-    // if (type === undefined) {
-    //   alert('타입을 선택해주세요.');
-    //   return;
-    // }
+
     const memo = modalMemo.value.trim();
 
-    const song = { title, lyrics, type: 'CCM', memo };
+    const song = { title, lyrics, memo };
     saveSong(song);
   };
 
@@ -89,7 +84,6 @@ async function showSongDetailModal(id) {
   const modalTitle = document.querySelector('#modal-title');
   const modalLyrics = document.querySelector('#modal-lyrics');
   const modalMemo = document.querySelector('#modal-memo');
-  // const modalSongTypes = document.querySelectorAll('input[name=song-type]');
   const modalSongDetails = document.querySelector('#modal-song-details');
   const modalCreatedAt = document.querySelector('#modal-created-at');
   const modalUpdatedAt = document.querySelector('#modal-updated-at');
@@ -109,7 +103,6 @@ async function showSongDetailModal(id) {
     modalLyrics.value = lyrics;
     modalLyrics.style.height = `${Math.max(lyrics.split('\n').length * 20 + 38, 280)}px`;
     modalMemo.value = memo;
-    // Array.from(modalSongTypes).find((e) => e.value === type).checked = true;
     modalSongDetails.hidden = false;
     modalSongDetails.open = false;
     modalCreatedAt.innerHTML = `등록 : ${new Intl.DateTimeFormat('ko', {
@@ -148,11 +141,7 @@ async function showSongDetailModal(id) {
         modalLyrics.focus();
         return;
       }
-      // const type = document.querySelector('input[name=song-type]:checked')?.value;
-      // if (type === undefined) {
-      //   alert('타입을 선택해주세요.');
-      //   return;
-      // }
+
       const memo = modalMemo.value.trim();
       if (!confirm('수정 하시겠습니까?')) {
         return;
@@ -706,7 +695,7 @@ clearButton.addEventListener('click', () => {
     alert('선택된 곡이 없습니다.');
     return;
   }
-  if (!confirm('선택된 곡 목록을 초기화하시겠습니까?')) {
+  if (!confirm('선택된 목록을 비우시겠습니까?')) {
     return;
   }
 

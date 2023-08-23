@@ -99,14 +99,14 @@ exports.getSongById = async (req, res, next) => {
   }
 };
 
-exports.addSong = async (req, res, next) => {
+exports.createSong = async (req, res, next) => {
   try {
     const { title, lyrics, type, memo } = req.body;
     await prisma.song.create({
       data: {
         title,
         lyrics,
-        type,
+        type: 'CCM',
         memo,
         authorId: Number(req.user.id),
       },
@@ -142,8 +142,4 @@ exports.deleteSong = async (req, res, next) => {
     console.error(err);
     next(error);
   }
-};
-
-exports.renderSongForm = (req, res) => {
-  res.render('song-form', { title: 'song form - Worship Presenter' });
 };
