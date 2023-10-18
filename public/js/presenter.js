@@ -2,7 +2,9 @@ const ITEMS_PER_PAGE = 10;
 
 let selectedList = [];
 
-const songDetailModal = new bootstrap.Modal(document.querySelector('#songDetailModal'));
+const songDetailModal = new bootstrap.Modal(
+  document.querySelector('#songDetailModal')
+);
 
 const modalTitle = document.querySelector('#modal-title');
 modalTitle.addEventListener('keyup', (e) => {
@@ -94,14 +96,18 @@ async function showSongDetailModal(id) {
   const modalModifyBtn = document.querySelector('#modal-modify-btn');
 
   try {
-    const { title, lyrics, memo, createdAt, updatedAt, author } = await getSongById(id);
+    const { title, lyrics, memo, createdAt, updatedAt, author } =
+      await getSongById(id);
 
     modalHeader.innerHTML = title;
     modalHeader.classList = 'modal-title fs-5 text-truncate';
 
     modalTitle.value = title;
     modalLyrics.value = lyrics;
-    modalLyrics.style.height = `${Math.max(lyrics.split('\n').length * 20 + 38, 280)}px`;
+    modalLyrics.style.height = `${Math.max(
+      lyrics.split('\n').length * 20 + 38,
+      280
+    )}px`;
     modalMemo.value = memo;
     modalSongDetails.hidden = false;
     modalSongDetails.open = false;
@@ -233,7 +239,9 @@ async function modifySong(id, modifiedSong) {
     songDetailModal.hide();
 
     // setlist에 선택되어있는 경우 selectedList 값 업데이트
-    const targetItem = selectedList.find((item) => item.type === 'lyrics' && item.id === id);
+    const targetItem = selectedList.find(
+      (item) => item.type === 'lyrics' && item.id === id
+    );
     if (targetItem) {
       targetItem.title = modifiedSong.title;
       targetItem.lyrics = modifiedSong.lyrics;
@@ -255,9 +263,13 @@ if (autoAlignBtn) {
       return;
     }
 
-    const linesPerSlide = Number(document.querySelector('#lines-per-slide').value) || 2;
+    const linesPerSlide =
+      Number(document.querySelector('#lines-per-slide').value) || 2;
     modalLyrics.value = autoAlign(modalLyrics.value, linesPerSlide);
-    modalLyrics.style.height = `${Math.max(modalLyrics.value.split('\n').length * 20 + 38, 280)}px`;
+    modalLyrics.style.height = `${Math.max(
+      modalLyrics.value.split('\n').length * 20 + 38,
+      280
+    )}px`;
     modalLyrics.focus();
   });
 }
@@ -345,7 +357,9 @@ function renderSearchTable(songs, pageNum) {
     // type
     td = document.createElement('td');
     const span = document.createElement('span');
-    span.className = `badge rounded-pill ${song.type === 'HYMN' ? 'text-bg-warning' : 'text-bg-info'}`;
+    span.className = `badge rounded-pill ${
+      song.type === 'HYMN' ? 'text-bg-warning' : 'text-bg-info'
+    }`;
     span.innerHTML = song.type;
     td.appendChild(span);
     tr.appendChild(td);
@@ -416,8 +430,14 @@ function renderPagination(totalCount, currentPage, query) {
   li.appendChild(a);
   paginationElement.appendChild(li);
 
-  const pageStart = currentPage >= totalPage - 4 ? Math.max(totalPage - 7, 2) : Math.max(currentPage - 3, 2);
-  const pageEnd = currentPage <= 5 && totalPage > 8 ? 8 : Math.min(currentPage + 3, totalPage - 1);
+  const pageStart =
+    currentPage >= totalPage - 4
+      ? Math.max(totalPage - 7, 2)
+      : Math.max(currentPage - 3, 2);
+  const pageEnd =
+    currentPage <= 5 && totalPage > 8
+      ? 8
+      : Math.min(currentPage + 3, totalPage - 1);
 
   // ...
   if (pageStart > 2) {
@@ -475,7 +495,9 @@ function renderPagination(totalCount, currentPage, query) {
 
   // next
   li = document.createElement('li');
-  li.className = `page-item text-nowrap ${currentPage + 1 > totalPage ? 'disabled' : ''}`;
+  li.className = `page-item text-nowrap ${
+    currentPage + 1 > totalPage ? 'disabled' : ''
+  }`;
   a = document.createElement('a');
   a.className = 'page-link';
   a.innerHTML = '다음';
@@ -503,7 +525,7 @@ function renderSearchInfo(query, totalCount) {
   resultInfo.appendChild(span);
 
   const button = document.createElement('button');
-  button.innerHTML = 'x';
+  button.innerHTML = '&times;';
   button.className = 'btn btn-danger btn-sm ms-2';
   button.onclick = () => {
     searchInput.value = '';
@@ -533,7 +555,8 @@ function renderSetlist() {
 
   selectedList.forEach((item, idx) => {
     const li = document.createElement('li');
-    li.className = 'list-group-item rounded-3 border-1 d-flex justify-content-between align-items-center draggable';
+    li.className =
+      'list-group-item rounded-3 border-1 d-flex justify-content-between align-items-center draggable';
     li.draggable = true;
     li.setAttribute('no', idx);
     li.onclick = () => {
@@ -560,7 +583,10 @@ function renderSetlist() {
     li.addEventListener('dragend', () => {
       li.classList.remove('dragging');
       console.log('oldIdx:', idx, ', newIdx:', newIndexAfterDrag);
-      [selectedList[idx], selectedList[newIndexAfterDrag]] = [selectedList[newIndexAfterDrag], selectedList[idx]];
+      [selectedList[idx], selectedList[newIndexAfterDrag]] = [
+        selectedList[newIndexAfterDrag],
+        selectedList[idx],
+      ];
       selectedList.forEach((s, index) => {
         s.no = index + 1;
       });
@@ -643,7 +669,13 @@ async function getSongById(id) {
 async function selectLyrics(id) {
   const selectedSong = await getSongById(id);
   const { title, lyrics } = selectedSong;
-  selectedList.push({ no: selectedList.length + 1, type: 'lyrics', id, title, lyrics });
+  selectedList.push({
+    no: selectedList.length + 1,
+    type: 'lyrics',
+    id,
+    title,
+    lyrics,
+  });
   renderSetlist();
 }
 
@@ -663,7 +695,9 @@ setList.addEventListener('dragover', (e) => {
 
   if (draggingElement.getAttribute('no') > afterElement.getAttribute('no')) {
     newIndexAfterDrag = Number(afterElement.getAttribute('no'));
-  } else if (draggingElement.getAttribute('no') < afterElement.getAttribute('no')) {
+  } else if (
+    draggingElement.getAttribute('no') < afterElement.getAttribute('no')
+  ) {
     newIndexAfterDrag = Number(afterElement.getAttribute('no')) - 1;
   } else {
     newIndexAfterDrag = Number(draggingElement.getAttribute('no'));
@@ -673,7 +707,9 @@ setList.addEventListener('dragover', (e) => {
 });
 
 function getDragAfterElement(y) {
-  const notDraggedElements = [...setList.querySelectorAll('.draggable:not(.dragging)')];
+  const notDraggedElements = [
+    ...setList.querySelectorAll('.draggable:not(.dragging)'),
+  ];
 
   return notDraggedElements.reduce(
     (closest, child) => {
