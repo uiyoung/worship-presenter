@@ -639,9 +639,9 @@ function renderSetlist() {
     }
     li.appendChild(div);
 
-    const removeBtn = document.createElement('a');
-    removeBtn.href = '#';
-    removeBtn.innerHTML = '🗑️';
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'removeBtn';
+    removeBtn.innerHTML = '️&times;';
     removeBtn.onclick = (e) => {
       e.preventDefault();
       e.stopPropagation();
