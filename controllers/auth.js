@@ -39,12 +39,17 @@ exports.signup = async (req, res, next) => {
 };
 
 exports.logout = (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    res.json({ success: true });
-  });
+  try {
+    req.logout((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.status(200).json({ success: true });
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 };
 
 exports.renderLogin = (req, res, next) => {
