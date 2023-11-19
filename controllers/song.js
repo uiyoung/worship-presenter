@@ -90,7 +90,10 @@ exports.getSongById = async (req, res, next) => {
   try {
     const song = await prisma.song.findUnique({
       where: { id: Number(req.params.id) },
-      include: { author: { select: { username: true } } },
+      include: {
+        author: { select: { username: true } },
+        editor: { select: { username: true } },
+      },
     });
     res.json(song);
   } catch (err) {
@@ -109,6 +112,7 @@ exports.createSong = async (req, res, next) => {
         type: 'CCM',
         memo,
         authorId: Number(req.user.id),
+        editorId: Number(req.user.id),
       },
     });
     res.json({ success: true });
@@ -119,10 +123,20 @@ exports.createSong = async (req, res, next) => {
 };
 
 exports.updateSong = async (req, res, next) => {
+  const { title, lyrics, memo } = req.body;
+
   try {
-    const { title, lyrics, memo } = req.body;
     await prisma.song.update({
-      data: { title, lyrics, memo },
+      data: {
+        title,
+        lyrics,
+        memo,
+        editor: {
+          connect: {
+            id: req.user.id,
+          },
+        },
+      },
       where: { id: Number(req.params.id) },
     });
     res.json({ success: true });

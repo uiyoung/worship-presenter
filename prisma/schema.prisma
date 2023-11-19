@@ -8,11 +8,12 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  password String
-  username String?
-  songs    Song[]
+  id          Int     @id @default(autoincrement())
+  email       String  @unique
+  password    String
+  username    String?
+  songs       Song[]  @relation(name: "uploader")
+  editedSongs Song[]  @relation(name: "editor")
 }
 
 model Song {
@@ -20,11 +21,13 @@ model Song {
   title     String    @db.VarChar(255)
   lyrics    String
   memo      String?
+  type      SongType?
+  author    User      @relation(name: "uploader", fields: [authorId], references: [id])
   authorId  Int
+  editor    User?     @relation(name: "editor", fields: [editorId], references: [id])
+  editorId  Int?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  type      SongType?
-  author    User      @relation(fields: [authorId], references: [id])
 }
 
 enum SongType {

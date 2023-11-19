@@ -1,16 +1,22 @@
 const router = require('express').Router();
-const songController = require('../controllers/song');
+const {
+  getSongById,
+  getSongs,
+  createSong,
+  updateSong,
+  deleteSong,
+} = require('../controllers/song');
 const { isLoggedIn } = require('../middlewares/');
 
 router
   .route('/:id')
-  .get(songController.getSongById)
-  .patch(isLoggedIn, songController.updateSong)
-  .delete(isLoggedIn, songController.deleteSong);
+  .get(getSongById)
+  .patch(isLoggedIn, updateSong)
+  .delete(isLoggedIn, deleteSong);
 
 router //
   .route('/')
-  .get(songController.getSongs)
-  .post(isLoggedIn, songController.createSong);
+  .get(getSongs)
+  .post(isLoggedIn, createSong);
 
 module.exports = router;

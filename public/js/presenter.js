@@ -28,7 +28,6 @@ function showNewSongModal() {
   const modalSongDetails = document.querySelector('#modal-song-details');
   const modalCreatedAt = document.querySelector('#modal-created-at');
   const modalUpdatedAt = document.querySelector('#modal-updated-at');
-  const modalAuthor = document.querySelector('#modal-author-username');
   const modalSaveBtn = document.querySelector('#modal-save-btn');
   const modalModifyBtn = document.querySelector('#modal-modify-btn');
   const modalSelectBtn = document.querySelector('#modal-select-btn');
@@ -44,8 +43,6 @@ function showNewSongModal() {
   modalCreatedAt.hidden = true;
   modalUpdatedAt.innerHTML = '';
   modalUpdatedAt.hidden = true;
-  modalAuthor.innerHTML = '';
-  modalAuthor.hidden = true;
 
   modalSelectBtn.onclick = null;
   modalSelectBtn.hidden = true;
@@ -89,14 +86,13 @@ async function showSongDetailModal(id) {
   const modalSongDetails = document.querySelector('#modal-song-details');
   const modalCreatedAt = document.querySelector('#modal-created-at');
   const modalUpdatedAt = document.querySelector('#modal-updated-at');
-  const modalAuthor = document.querySelector('#modal-author-username');
   const modalSelectBtn = document.querySelector('#modal-select-btn');
   const modalDeleteBtn = document.querySelector('#modal-delete-btn');
   const modalSaveBtn = document.querySelector('#modal-save-btn');
   const modalModifyBtn = document.querySelector('#modal-modify-btn');
 
   try {
-    const { title, lyrics, memo, createdAt, updatedAt, author } =
+    const { title, lyrics, memo, createdAt, updatedAt, author, editor } =
       await getSongById(id);
 
     modalHeader.innerHTML = title;
@@ -114,15 +110,13 @@ async function showSongDetailModal(id) {
     modalCreatedAt.innerHTML = `등록 : ${new Intl.DateTimeFormat('ko', {
       dateStyle: 'long',
       timeStyle: 'short',
-    }).format(new Date(createdAt))}`;
+    }).format(new Date(createdAt))}, ${author.username}`;
     modalCreatedAt.hidden = false;
     modalUpdatedAt.innerHTML = `수정 : ${new Intl.DateTimeFormat('ko', {
       dateStyle: 'long',
       timeStyle: 'short',
-    }).format(new Date(updatedAt))}`;
+    }).format(new Date(updatedAt))}, ${editor?.username}`;
     modalUpdatedAt.hidden = false;
-    modalAuthor.innerHTML = `uploaded by ${author.username}`;
-    modalAuthor.hidden = false;
 
     modalSelectBtn.onclick = () => {
       selectLyrics(id);
