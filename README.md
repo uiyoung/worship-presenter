@@ -36,7 +36,3 @@ create ppt for worship and manage setlists
 ## todo
 
 - [trello](https://trello.com/b/7oiX5itL/todo)
-
-```
-
-```
