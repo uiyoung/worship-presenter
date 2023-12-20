@@ -1,8 +1,16 @@
-# worship-presenter
+# Worship Presenter
 https://worship.uiyoung.cf
 
-
 create ppt for worship and manage setlists
+
+## Features
+
+- CCM 가사 관리(생성, 조회, 수정, 삭제)
+- 원하는 자막 줄수에 맞게 변환
+- 찬송가 악보 이미지 또는 가사 선택
+- 성경 조회 및 선택
+- 교독문 조회 및 선택
+- 선택한 자료를 PPT로 다운로드
 
 ## How to Run
 
@@ -16,13 +24,6 @@ create ppt for worship and manage setlists
 
 3. `$ npm i`
 4. `$ npm start`
-
-## Features
-
-### 자막 PPT 생성
-
-- 찬송가, CCM 가사 관리(생성, 조회, 수정, 삭제)
-- 원하는 찬송가, CCM을 선택 후 자막 PPT 생성
 
 ## environments
 
