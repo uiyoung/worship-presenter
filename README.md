@@ -3,6 +3,10 @@ https://worship.uiyoung.cf
 
 create ppt for worship and manage setlists
 
+![Picture1](https://github.com/uiyoung/worship-presenter/assets/8945807/b76e6a5a-dc46-4bf5-961a-c1630f0c794b)
+![Picture2](https://github.com/uiyoung/worship-presenter/assets/8945807/8dc4c5ae-9f71-430f-8969-e445b3918113)
+
+
 ## Features
 
 - CCM 가사 관리(생성, 조회, 수정, 삭제)
@@ -10,7 +14,7 @@ create ppt for worship and manage setlists
 - 찬송가 악보 이미지 또는 가사 선택
 - 성경 조회 및 선택
 - 교독문 조회 및 선택
-- 선택한 자료를 PPT로 다운로드
+- 선택된 자료 목록 PPT로 다운로드
 
 ## How to Run
 
