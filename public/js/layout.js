@@ -10,9 +10,9 @@ if (logoutBtn) {
         window.location.href = '/';
       }
     } catch (error) {
+      console.error(error);
       alert('logout error');
       window.location.href = '/';
-      console.log(error);
     }
   });
 }

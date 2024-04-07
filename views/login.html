@@ -1,7 +1,10 @@
-{% extends 'layout.html' %} {% block css %}
-<link rel="stylesheet" href="/css/sign-in.css" />
-{% endblock %} {% block content %}
+{% extends 'layout.html' %} 
 
+{% block css %}
+<link rel="stylesheet" href="/css/sign-in.css" />
+{% endblock %} 
+
+{% block content %}
 <h1 class="text-center" id="app-title"></h1>
 <div class="d-flex align-items-center py-4 mt-5">
   <main class="form-signin w-100 m-auto">
@@ -48,6 +51,8 @@
       <!-- <p class="small text-center text-gray-soft mt-3">Don't have an account yet? <a href="/auth/signup">Sign up</a></p> -->
     </form>
   </main>
+  {% endblock %} 
 
-  {% endblock %} {% block script %} {% endblock %}
+  {% block script %} 
+  {% endblock %}
 </div>

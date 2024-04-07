@@ -1,11 +1,23 @@
 // PPT 생성
+const settingsBtn = document.querySelector('#settings-btn');
 const generateBtn = document.querySelector('#generate-btn');
-generateBtn.addEventListener('click', (e) => {
+
+settingsBtn.addEventListener('click', (e) => {
   if (selectedList.length <= 0) {
     alert('아이템을 먼저 선택해 주세요.');
     return;
   }
 
+  // set filename
+  const now = new Date();
+  const today = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+    .toISOString()
+    .split('T')[0];
+  const filenameInput = document.querySelector('#modal-filename');
+  filenameInput.value = `${today}_worship`;
+});
+
+generateBtn.addEventListener('click', (e) => {
   // add loading spinner to button
   const originalBtnText = e.target.innerHTML;
   e.target.innerHTML = '';
@@ -19,7 +31,14 @@ generateBtn.addEventListener('click', (e) => {
 
   // options
   const CM_1 = 28.346; // 1cm = 28.346pt
-  const shadowOptions = { type: 'outer', angle: 45, blur: 3, color: '000000', offset: 3, opacity: 0.57 };
+  const shadowOptions = {
+    type: 'outer',
+    angle: 45,
+    blur: 3,
+    color: '000000',
+    offset: 3,
+    opacity: 0.57,
+  };
 
   const lyricsOptions = {
     fontFace: '다음_SemiBold',
@@ -152,14 +171,20 @@ generateBtn.addEventListener('click', (e) => {
         pptx.addSection({ title: sectionTitle });
 
         // add title slide
-        const slide = pptx.addSlide({ masterName: 'LYRICS_TITLE_SLIDE', sectionTitle });
+        const slide = pptx.addSlide({
+          masterName: 'LYRICS_TITLE_SLIDE',
+          sectionTitle,
+        });
         slide.addText(item.title, { placeholder: 'song-title' });
 
         const lyricsPerSlideArr = item.lyrics.split('\n\n');
 
         // Add Lyrics Slide
         lyricsPerSlideArr.forEach((lyrics) => {
-          const slide = pptx.addSlide({ masterName: 'LYRICS_SLIDE', sectionTitle });
+          const slide = pptx.addSlide({
+            masterName: 'LYRICS_SLIDE',
+            sectionTitle,
+          });
 
           // Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
           slide.addText(lyrics, { placeholder: 'lyrics-body' });
@@ -214,7 +239,10 @@ generateBtn.addEventListener('click', (e) => {
 
         // add hymn title slide
         const [hymnNo, title] = item.title.split('-');
-        const hymnTitleSlide = pptx.addSlide({ masterName: 'HYMN_TITLE_SLIDE', sectionTitle });
+        const hymnTitleSlide = pptx.addSlide({
+          masterName: 'HYMN_TITLE_SLIDE',
+          sectionTitle,
+        });
         hymnTitleSlide.addText(hymnNo, { placeholder: 'hymn-no' });
         hymnTitleSlide.addText(title, { placeholder: 'hymn-title' });
 
@@ -276,20 +304,39 @@ generateBtn.addEventListener('click', (e) => {
         pptx.defineSlideMaster({
           title: 'RR_CONTENT_SLIDE',
           background: { path: '/backgrounds/rr-background.jpg' },
-          objects: [{ rect: { x: 0, y: 0, w: '100%', h: '100%', fill: { color: '000000', transparency: 50 } } }],
+          objects: [
+            {
+              rect: {
+                x: 0,
+                y: 0,
+                w: '100%',
+                h: '100%',
+                fill: { color: '000000', transparency: 50 },
+              },
+            },
+          ],
         });
 
         // sections by item
         pptx.addSection({ title: sectionTitle });
 
         // add rr title slide
-        const rrSlide = pptx.addSlide({ masterName: 'RR_TITLE_SLIDE', sectionTitle });
+        const rrSlide = pptx.addSlide({
+          masterName: 'RR_TITLE_SLIDE',
+          sectionTitle,
+        });
         rrSlide
           .addText('교독문', {
             placeholder: 'rr-title',
             shadow: shadowOptions,
           })
-          .addShape(pptx.ShapeType.rect, { fill: { color: 'FFFFFF' }, h: 0.07, w: 1.51, x: 5.91, y: 2.25 })
+          .addShape(pptx.ShapeType.rect, {
+            fill: { color: 'FFFFFF' },
+            h: 0.07,
+            w: 1.51,
+            x: 5.91,
+            y: 2.25,
+          })
           .addText(`${item.title}`, { placeholder: 'rr-subtitle' });
 
         // 교독문 두개씩 묶기
@@ -305,7 +352,10 @@ generateBtn.addEventListener('click', (e) => {
         }, []);
 
         pairs.map((pair) => {
-          const rrContentSlide = pptx.addSlide({ masterName: 'RR_CONTENT_SLIDE', sectionTitle });
+          const rrContentSlide = pptx.addSlide({
+            masterName: 'RR_CONTENT_SLIDE',
+            sectionTitle,
+          });
 
           if (pair.length == 1) {
             // console.log(`group2: ${pair[0]}`);
@@ -313,7 +363,10 @@ generateBtn.addEventListener('click', (e) => {
               [
                 {
                   text: pair[0],
-                  options: { ...rrContentOptions, color: rrContentColors.group2 },
+                  options: {
+                    ...rrContentOptions,
+                    color: rrContentColors.group2,
+                  },
                 },
               ],
               {
@@ -333,15 +386,29 @@ generateBtn.addEventListener('click', (e) => {
               [
                 {
                   text: pair[0],
-                  options: { ...rrContentOptions, color: rrContentColors.group1 },
+                  options: {
+                    ...rrContentOptions,
+                    color: rrContentColors.group1,
+                  },
                 },
                 { text: '\n\n' },
                 {
                   text: pair[1],
-                  options: { ...rrContentOptions, color: rrContentColors.group2 },
+                  options: {
+                    ...rrContentOptions,
+                    color: rrContentColors.group2,
+                  },
                 },
               ],
-              { x: 0, y: 0, w: '100%', h: '100%', align: 'left', valign: 'top', margin: [30, 30, 100, 100] }
+              {
+                x: 0,
+                y: 0,
+                w: '100%',
+                h: '100%',
+                align: 'left',
+                valign: 'top',
+                margin: [30, 30, 100, 100],
+              }
             );
           }
         });
@@ -417,14 +484,19 @@ generateBtn.addEventListener('click', (e) => {
         // bible slide
         const sortedKeys = Object.keys(verses).sort((a, b) => a - b);
         for (const key of sortedKeys) {
-          const bibleSlide = pptx.addSlide({ masterName: 'BIBLE_SLIDE', sectionTitle });
+          const bibleSlide = pptx.addSlide({
+            masterName: 'BIBLE_SLIDE',
+            sectionTitle,
+          });
           bibleSlide
             // bible info
             .addText(
               [
                 {
                   // text: item.title,
-                  text: `${bookName} ${chapter}${bookName === '시편' ? '편' : '장'} ${key}절`,
+                  text: `${bookName} ${chapter}${
+                    bookName === '시편' ? '편' : '장'
+                  } ${key}절`,
                   options: { ...bibleOptions.fullScreenSubtitleOptions },
                 },
               ],
@@ -444,7 +516,10 @@ generateBtn.addEventListener('click', (e) => {
               [
                 {
                   text: `${key}.`,
-                  options: { ...bibleOptions.fullScreenSubtitleOptions, fontSize: 32 },
+                  options: {
+                    ...bibleOptions.fullScreenSubtitleOptions,
+                    fontSize: 32,
+                  },
                 },
               ],
               {
@@ -487,15 +562,6 @@ generateBtn.addEventListener('click', (e) => {
   });
 
   // 4. Save the Presentation
-  const now = new Date();
-  const today = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
-  const worshipName = prompt('워십의 이름을 적어주세요.', `${today}_`);
-  if (!worshipName) {
-    generateBtn.innerHTML = originalBtnText;
-    generateBtn.disabled = false;
-    return;
-  }
-
   pptx.writeFile({ fileName: `${worshipName}.pptx` }).then((fileName) => {
     console.log(`created file: ${fileName}`);
     generateBtn.innerHTML = originalBtnText;
