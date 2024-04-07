@@ -11,8 +11,9 @@ modalTitle.addEventListener('keyup', (e) => {
   document.querySelector('#songDetailModalLabel').innerHTML = e.target.value;
 });
 
-// 새로 등록하기
 const newBtn = document.querySelector('#new-button');
+const clearButton = document.querySelector('#clear-button');
+
 if (newBtn) {
   newBtn.addEventListener('click', () => {
     showNewSongModal();
@@ -539,13 +540,15 @@ function renderSetlist() {
     li.className = 'text-center small opacity-50';
     li.innerHTML = '선택된 아이템이 없습니다.';
     setList.append(li);
-    generateBtn.disabled = true;
+    settingsBtn.disabled = true;
+    clearButton.disabled = true;
     return;
   }
 
-  console.log(selectedList);
+  // console.log(selectedList);
 
-  generateBtn.disabled = false;
+  settingsBtn.disabled = false;
+  clearButton.disabled = false;
 
   selectedList.forEach((item, idx) => {
     const li = document.createElement('li');
@@ -635,7 +638,8 @@ function renderSetlist() {
 
     const removeBtn = document.createElement('button');
     removeBtn.className = 'removeBtn';
-    removeBtn.innerHTML = '️&times;';
+    // removeBtn.innerHTML = '️&times;';
+    removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
     removeBtn.onclick = (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -719,13 +723,12 @@ function getDragAfterElement(y) {
   ).element;
 }
 
-const clearButton = document.querySelector('#clear-button');
 clearButton.addEventListener('click', () => {
   if (selectedList.length <= 0) {
     alert('선택된 곡이 없습니다.');
     return;
   }
-  if (!confirm('선택된 목록을 비우시겠습니까?')) {
+  if (!confirm('목록을 비우시겠습니까?')) {
     return;
   }
 
