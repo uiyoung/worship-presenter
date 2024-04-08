@@ -15,9 +15,7 @@ const newBtn = document.querySelector('#new-button');
 const clearButton = document.querySelector('#clear-button');
 
 if (newBtn) {
-  newBtn.addEventListener('click', () => {
-    showNewSongModal();
-  });
+  newBtn.addEventListener('click', () => showNewSongModal());
 }
 
 // modal : 등록
@@ -540,7 +538,7 @@ function renderSetlist() {
     li.className = 'text-center small opacity-50';
     li.innerHTML = '선택된 아이템이 없습니다.';
     setList.append(li);
-    settingsBtn.disabled = true;
+    // settingsBtn.disabled = true;
     clearButton.disabled = true;
     return;
   }
@@ -738,3 +736,6 @@ clearButton.addEventListener('click', () => {
 
 render('%', 1);
 searchInput.focus();
+// settingsModal.show();
+settingsBtn.click();
+filenameInput.focus();

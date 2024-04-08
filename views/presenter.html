@@ -10,8 +10,7 @@
           <!-- <div class="d-flex justify-content-between"> -->
           <h5 class="card-title fw-bold mb-3">선택된 목록</h5>
 
-          <button type="button" class="btn btn-link text-secondary position-absolute top-0 end-0 m-1" id="clear-button"
-            disabled>
+          <button type="button" class="btn btn-link text-secondary position-absolute top-0 end-0 m-1" id="clear-button">
             <i class="fa-solid fa-trash"></i>
           </button>
 
@@ -19,28 +18,10 @@
         </div>
 
         <div class="card-footer text-center">
-          <button type="button" class="btn btn-success w-100" id="settings-btn" data-bs-toggle="modal"
-            data-bs-target="#settingsModal" disabled>
+          <button type="button" class="btn btn-success w-100" id="settings-btn">
             <i class="fa-solid fa-file-powerpoint me-1"></i>
             PPT 생성
           </button>
-
-          <!-- <button
-            type="button"
-            class="btn btn-success w-75"
-            id="generate-btn"
-            disabled
-          >
-            PPT 다운로드
-          </button>
-          <button
-            type="button"
-            class="btn btn-outline-secondary w-auto"
-            data-bs-toggle="modal"
-            data-bs-target="#settingsModal"
-          >
-            ⚙️
-          </button> -->
         </div>
       </div>
     </div>
@@ -65,14 +46,9 @@
               <a class="nav-link" href="#" data-bs-toggle="pill" data-bs-target="#pills-responsive-reading"><i
                   class="fa-solid fa-scroll me-2"></i>교독문</a>
             </li>
+            <!-- TODO: implement text subtitle -->
             <!-- <li class="nav-item">
-              <a
-                class="nav-link disabled"
-                href="#"
-                data-bs-toggle="pill"
-                data-bs-target="#pills-text"
-                >텍스트</a
-              >
+              <a class="nav-link disabled" href="#" data-bs-toggle="pill" data-bs-target="#pills-text">텍스트</a>
             </li> -->
           </ul>
         </div>
@@ -335,7 +311,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <div class="d-flex align-items-center text-truncate">
-          <h1 class="modal-title fs-5" id="songDetailModalLabel">New Song</h1>
+          <h1 class="modal-title fw-bold fs-5" id="songDetailModalLabel">New Song</h1>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -430,7 +406,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <div class="d-flex align-items-center text-truncate">
-          <h1 class="modal-title fs-5" id="hymnLyricsModalLabel">Hymn Title</h1>
+          <h1 class="modal-title fw-bold fs-5" id="hymnLyricsModalLabel">Hymn Title</h1>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -477,65 +453,134 @@
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="songDetailModalLabel">PPT 설정 및 다운로드</h1>
+        <h1 class="modal-title fw-bold fs-5">PPT 설정 및 다운로드</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="container-fluid">
-          <div class="row">
-            <div class="col-lg-6">
-              <form>
-                <label for="modal-filename" class="col-form-label">파일명</label>
-                <div class="input-group input-group-sm mb-3">
-                  <input type="text" class="form-control" id="modal-filename" />
-                  <span class="input-group-text" id="basic-addon2">.pptx</span>
-                </div>
-                <div class="mb-3">
-                  <label for="modal-title" class="col-form-label">가사 설정</label>
-                  <div>
-                    <div class="col-6">
-                      <label for="exampleColorInput" class="form-label">배경색</label>
-                      <input type="color" class="form-control form-control-color" id="exampleColorInput" value="#563d7c"
-                        title="Choose your color" />
-                    </div>
-                    <div class="col-6">
-                      <label for="exampleColorInput" class="form-label">글자색</label>
-                      <input type="color" class="form-control form-control-color" id="exampleColorInput" value="#563d7c"
-                        title="Choose your color" />
-                    </div>
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <label for="modal-title" class="col-form-label">가사 위치</label>
-                  <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-                    <label class="btn btn-outline-primary" for="btnradio1">
-                      <i class="fa-solid fa-align-left"></i></label>
-
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio2">
-
-                      <i class="fa-solid fa-align-center"></i>
-                    </label>
-
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio3"><i
-                        class="fa-solid fa-align-right"></i></label>
-                  </div>
-                </div>
-              </form>
+          <!-- <div class="row"> -->
+          <form>
+            <label for="modal-filename" class="col-form-label fw-bold fs-5 mb-1">파일명</label>
+            <div class="input-group input-group-sm mb-3">
+              <input type="text" class="form-control" id="modal-filename" />
+              <span class="input-group-text" id="basic-addon2">.pptx</span>
             </div>
-            <div class="col-lg-6">
-              <div class="mb-3">
-                <label for="modal-preview" class="form-label">preview</label>
-                <div id="modal-preview">yoyo</div>
+
+            <div class="row">
+              <div class="col-lg-7">
+                <div>
+                  <label for="modal-title" class="col-form-label fw-bold fs-5 mb-1">가사 설정</label>
+                  <div>
+                    <label for="bg-color-input" class="form-label">배경색</label>
+                    <div class="d-flex col gap-1">
+                      <div>
+                        <input type="color" class="form-control form-control-color" id="bg-color-input"
+                          value="#563d7c" />
+                      </div>
+                      <div class="d-flex gap-1">
+                        <div class="flex-grow-1">
+                          <input type="radio" class="btn-check" name="bg-colorPicker" id="bg-color-1" autocomplete="off"
+                            checked>
+                          <label class="btn btn-outline-success w-100" for="bg-color-1">green</label>
+                        </div>
+                        <div class="flex-grow-1">
+                          <input type="radio" class="btn-check" name="bg-colorPicker" id="bg-color-2"
+                            autocomplete="off">
+                          <label class="btn btn-outline-dark w-100" for="bg-color-2">black</label>
+                        </div>
+                        <div class="flex-grow-1">
+                          <input type="radio" class="btn-check" name="bg-colorPicker" id="bg-color-custom"
+                            autocomplete="off">
+                          <label class="btn w-100" for="bg-color-custom">custom</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <label for="font-color-input" class="form-label">글자색</label>
+                    <div class="d-flex col gap-1">
+                      <div>
+                        <input type="color" class="form-control form-control-color" id="font-color-input"
+                          value="#563d7c" />
+                      </div>
+                      <div class="d-flex gap-1">
+                        <div class="flex-grow-1">
+                          <input type="radio" class="btn-check" name="font-colorPicker" id="font-color-1"
+                            autocomplete="off" checked>
+                          <label class="btn btn-outline-light" for="font-color-1">white</label>
+                        </div>
+                        <div class="flex-grow-1">
+                          <input type="radio" class="btn-check" name="font-colorPicker" id="font-color-2"
+                            autocomplete="off">
+                          <label class="btn btn-outline-dark" for="font-color-2">black</label>
+                        </div>
+                        <div class="flex-grow-1">
+                          <input type="radio" class="btn-check" name="font-colorPicker" id="font-color-custom"
+                            autocomplete="off">
+                          <label class="btn" for="font-color-custom">custom</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <label for="modal-title" class="col-form-label">가로 정렬</label>
+                  <div>
+                    <div class="btn-group">
+                      <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-left-input"
+                        autocomplete="off" checked>
+                      <label class="btn btn-sm btn-outline-secondary" for="horizontal-left-input">
+                        <i class="fa-solid fa-align-left"></i>
+                      </label>
+                      <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-center-input"
+                        autocomplete="off">
+                      <label class="btn btn-sm btn-outline-secondary" for="horizontal-center-input">
+                        <i class="fa-solid fa-align-center"></i>
+                      </label>
+                      <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-right-input"
+                        autocomplete="off">
+                      <label class="btn btn-sm btn-outline-secondary" for="horizontal-right-input">
+                        <i class="fa-solid fa-align-right"></i>
+                      </label>
+                    </div>
+                  </div>
+
+                  <label for="modal-title" class="col-form-label">수직 정렬</label>
+                  <div>
+                    <div class="btn-group">
+                      <input type="radio" class="btn-check" name="vertical-align" id="vertical-top-input"
+                        autocomplete="off" checked>
+                      <label class="btn btn-sm btn-outline-secondary" for="vertical-top-input">
+                        상
+                      </label>
+                      <input type="radio" class="btn-check" name="vertical-align" id="vertical-center-input"
+                        autocomplete="off">
+                      <label class="btn btn-sm btn-outline-secondary" for="vertical-center-input">
+                        중
+                      </label>
+                      <input type="radio" class="btn-check" name="vertical-align" id="vertical-bottom-input"
+                        autocomplete="off">
+                      <label class="btn btn-sm btn-outline-secondary" for="vertical-bottom-input">
+                        하
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-5">
+                <div>
+                  <label class="form-label fw-bold fs-5">preview</label>
+                  <div class="card ratio ratio-16x9" id="preview">
+                    <div class="card-body">
+                      <p class="card-text" id="preview-lyrics">첫번째줄 자막입니다<br />두번째줄 자막입니다</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
       <div class="modal-footer justify-content-center">
-        <button type="button" class="btn btn-success btn-lg w-100 mx-2" id="generate-btn">
+        <button type="button" class="btn btn-success btn-lg w-100 mx-2" id="download-btn">
           <i class="fa-solid fa-download"></i>
           다운로드
         </button>
@@ -546,6 +591,7 @@
 {% endblock %}
 
 {% block script %}
+<script src="/js/set-list.js"></script>
 <script src="/js/presenter.js"></script>
 <script src="/js/hymn.js"></script>
 <script src="/js/bible.js"></script>

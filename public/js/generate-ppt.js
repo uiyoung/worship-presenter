@@ -1,23 +1,157 @@
-// PPT 생성
-const settingsBtn = document.querySelector('#settings-btn');
-const generateBtn = document.querySelector('#generate-btn');
+const downloadBtn = document.querySelector('#download-btn');
 
-settingsBtn.addEventListener('click', (e) => {
-  if (selectedList.length <= 0) {
-    alert('아이템을 먼저 선택해 주세요.');
-    return;
-  }
+// options
+// TODO: 객체안으로 넣어서 정리하기
+const CM_1 = 28.346; // 1cm = 28.346pt
+const shadowOptions = {
+  type: 'outer',
+  angle: 45,
+  blur: 3,
+  color: '000000',
+  offset: 3,
+  opacity: 0.57,
+};
 
-  // set filename
-  const now = new Date();
-  const today = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-    .toISOString()
-    .split('T')[0];
-  const filenameInput = document.querySelector('#modal-filename');
-  filenameInput.value = `${today}_worship`;
-});
+const lyricsOptions = {
+  fontFace: '다음_SemiBold',
+  // const fontFace = '나눔스퀘어라운드 Bold';
+  //const fontFace = '나눔고딕 Bold';
+  fontSize: 48,
+  fontBold: false,
+  fontItalic: false,
+  fontUnderline: false,
+  fontColor: 'FFFFFF',
+  fontOutline: { size: 1.0, color: '000000' },
+  fontGlow: { size: 2, opacity: 1.0, color: '#000000' },
+  align: 'center', // align(left, center, right, justify)
+  valign: 'bottom', // vertical align(top, middle, bottom)
+};
 
-generateBtn.addEventListener('click', (e) => {
+const rrTitleOptions = {
+  fontFace: '나눔명조 ExtraBold',
+  fontSize: 20,
+  fontColor: 'FFFFFF',
+};
+
+const rrContentOptions = {
+  fontFace: '다음_SemiBold',
+  fontSize: 36,
+  breakLine: false,
+};
+
+const rrContentColors = {
+  group1: 'FFFFFF',
+  group2: 'FFE699',
+};
+
+const bibleOptions = {
+  fullScreenSubtitleOptions: {
+    fontFace: '마루 부리 중간',
+    fontSize: 20,
+    color: 'FFFFFF',
+  },
+  fullScreenVerseOptions: {
+    fontFace: '나눔명조 ExtraBold',
+    fontSize: 40,
+    color: 'FFFFFF',
+  },
+};
+
+const hymnTitleOptions = {
+  fontSize1: 18,
+  fontFace1: '마루 부리 조금굵은',
+  fontColor1: '210C00',
+  fontSize2: 36,
+  fontFace2: '마루 부리 굵은',
+  fontColor2: '431f00',
+};
+
+function generateLyrics(pptx, sectionTitle, item) {
+  // song title slide master
+  pptx.defineSlideMaster({
+    title: 'LYRICS_TITLE_SLIDE',
+    background: { color: '#009933' },
+    objects: [
+      {
+        placeholder: {
+          options: {
+            name: 'song-title',
+            type: 'title',
+            w: '100%',
+            h: '20%',
+            autoFit: true,
+            align: 'left',
+            valign: 'top',
+            fontSize: 32,
+            fontFace: lyricsOptions.fontFace,
+            color: lyricsOptions.fontColor,
+            outline: lyricsOptions.fontOutline,
+            glow: lyricsOptions.fontGlow,
+            margin: [CM_1, CM_1, CM_1, CM_1],
+          },
+          text: '(title here!)',
+        },
+      },
+    ],
+  });
+
+  // lyrics slide master
+  pptx.defineSlideMaster({
+    title: 'LYRICS_SLIDE',
+    background: { color: '009933' },
+    objects: [
+      {
+        placeholder: {
+          options: {
+            name: 'lyrics-body',
+            type: 'body',
+            w: '100%',
+            h: '100%',
+            autoFit: true,
+            align: lyricsOptions.align,
+            valign: lyricsOptions.valign,
+            bold: lyricsOptions.fontBold,
+            italic: lyricsOptions.fontItalic,
+            underline: lyricsOptions.fontUnderline,
+            fontSize: lyricsOptions.fontSize,
+            fontFace: lyricsOptions.fontFace,
+            color: lyricsOptions.fontColor,
+            outline: lyricsOptions.fontOutline,
+            glow: lyricsOptions.fontGlow,
+            lineSpacing: lyricsOptions.fontSize * 1.025,
+            margin: [1, 1, CM_1, CM_1],
+          },
+          text: '(lyrics here!)',
+        },
+      },
+    ],
+  });
+
+  // sections by item
+  pptx.addSection({ title: sectionTitle });
+
+  // add title slide
+  const slide = pptx.addSlide({
+    masterName: 'LYRICS_TITLE_SLIDE',
+    sectionTitle,
+  });
+  slide.addText(item.title, { placeholder: 'song-title' });
+
+  const lyricsPerSlideArr = item.lyrics.split('\n\n');
+
+  // Add Lyrics Slide
+  lyricsPerSlideArr.forEach((lyrics) => {
+    const slide = pptx.addSlide({
+      masterName: 'LYRICS_SLIDE',
+      sectionTitle,
+    });
+
+    // Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
+    slide.addText(lyrics, { placeholder: 'lyrics-body' });
+  });
+}
+
+downloadBtn.addEventListener('click', (e) => {
   // add loading spinner to button
   const originalBtnText = e.target.innerHTML;
   e.target.innerHTML = '';
@@ -29,71 +163,6 @@ generateBtn.addEventListener('click', (e) => {
   e.target.innerHTML += 'PPT 생성 중... ';
   e.target.disabled = true;
 
-  // options
-  const CM_1 = 28.346; // 1cm = 28.346pt
-  const shadowOptions = {
-    type: 'outer',
-    angle: 45,
-    blur: 3,
-    color: '000000',
-    offset: 3,
-    opacity: 0.57,
-  };
-
-  const lyricsOptions = {
-    fontFace: '다음_SemiBold',
-    // const fontFace = '나눔스퀘어라운드 Bold';
-    //const fontFace = '나눔고딕 Bold';
-    fontSize: 48,
-    fontBold: false,
-    fontItalic: false,
-    fontUnderline: false,
-    fontColor: 'FFFFFF',
-    fontOutline: { size: 1.0, color: '000000' },
-    fontGlow: { size: 2, opacity: 1.0, color: '#000000' },
-    align: 'center', // align(left, center, right, justify)
-    valign: 'bottom', // vertical align(top, middle, bottom)
-  };
-
-  const rrTitleOptions = {
-    fontFace: '나눔명조 ExtraBold',
-    fontSize: 20,
-    fontColor: 'FFFFFF',
-  };
-
-  const rrContentOptions = {
-    fontFace: '다음_SemiBold',
-    fontSize: 36,
-    breakLine: false,
-  };
-
-  const rrContentColors = {
-    group1: 'FFFFFF',
-    group2: 'FFE699',
-  };
-
-  const bibleOptions = {
-    fullScreenSubtitleOptions: {
-      fontFace: '마루 부리 중간',
-      fontSize: 20,
-      color: 'FFFFFF',
-    },
-    fullScreenVerseOptions: {
-      fontFace: '나눔명조 ExtraBold',
-      fontSize: 40,
-      color: 'FFFFFF',
-    },
-  };
-
-  const hymnTitleOptions = {
-    fontSize1: 18,
-    fontFace1: '마루 부리 조금굵은',
-    fontColor1: '210C00',
-    fontSize2: 36,
-    fontFace2: '마루 부리 굵은',
-    fontColor2: '431f00',
-  };
-
   // 1. Create a new Presentation
   const pptx = new PptxGenJS();
   pptx.layout = 'LAYOUT_WIDE';
@@ -103,92 +172,7 @@ generateBtn.addEventListener('click', (e) => {
 
     switch (item.type) {
       case 'lyrics':
-        // song title slide master
-        pptx.defineSlideMaster({
-          title: 'LYRICS_TITLE_SLIDE',
-          background: {
-            color: '009933',
-          },
-          objects: [
-            {
-              placeholder: {
-                options: {
-                  name: 'song-title',
-                  type: 'title',
-                  w: '100%',
-                  h: '20%',
-                  autoFit: true,
-                  align: 'left',
-                  valign: 'top',
-                  fontSize: 32,
-                  fontFace: lyricsOptions.fontFace,
-                  color: lyricsOptions.fontColor,
-                  outline: lyricsOptions.fontOutline,
-                  glow: lyricsOptions.fontGlow,
-                  margin: [CM_1, CM_1, CM_1, CM_1],
-                },
-                text: '(title here!)',
-              },
-            },
-          ],
-        });
-
-        // lyrics slide master
-        pptx.defineSlideMaster({
-          title: 'LYRICS_SLIDE',
-          background: {
-            color: '009933',
-          },
-          objects: [
-            {
-              placeholder: {
-                options: {
-                  name: 'lyrics-body',
-                  type: 'body',
-                  w: '100%',
-                  h: '100%',
-                  autoFit: true,
-                  align: lyricsOptions.align,
-                  valign: lyricsOptions.valign,
-                  bold: lyricsOptions.fontBold,
-                  italic: lyricsOptions.fontItalic,
-                  underline: lyricsOptions.fontUnderline,
-                  fontSize: lyricsOptions.fontSize,
-                  fontFace: lyricsOptions.fontFace,
-                  color: lyricsOptions.fontColor,
-                  outline: lyricsOptions.fontOutline,
-                  glow: lyricsOptions.fontGlow,
-                  lineSpacing: lyricsOptions.fontSize * 1.025,
-                  margin: [1, 1, CM_1, CM_1],
-                },
-                text: '(lyrics here!)',
-              },
-            },
-          ],
-        });
-
-        // sections by item
-        pptx.addSection({ title: sectionTitle });
-
-        // add title slide
-        const slide = pptx.addSlide({
-          masterName: 'LYRICS_TITLE_SLIDE',
-          sectionTitle,
-        });
-        slide.addText(item.title, { placeholder: 'song-title' });
-
-        const lyricsPerSlideArr = item.lyrics.split('\n\n');
-
-        // Add Lyrics Slide
-        lyricsPerSlideArr.forEach((lyrics) => {
-          const slide = pptx.addSlide({
-            masterName: 'LYRICS_SLIDE',
-            sectionTitle,
-          });
-
-          // Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
-          slide.addText(lyrics, { placeholder: 'lyrics-body' });
-        });
+        generateLyrics(pptx, sectionTitle, item);
         break;
       case 'hymn-image':
         // hymn title slide master
@@ -555,16 +539,16 @@ generateBtn.addEventListener('click', (e) => {
         }
 
         break;
-
       default:
         break;
     }
   });
 
   // 4. Save the Presentation
-  pptx.writeFile({ fileName: `${worshipName}.pptx` }).then((fileName) => {
+  const filename = filenameInput.value;
+  pptx.writeFile({ fileName: `${filename}.pptx` }).then((fileName) => {
     console.log(`created file: ${fileName}`);
-    generateBtn.innerHTML = originalBtnText;
-    generateBtn.disabled = false;
+    downloadBtn.innerHTML = originalBtnText;
+    downloadBtn.disabled = false;
   });
 });
