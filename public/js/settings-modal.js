@@ -96,7 +96,6 @@ fontColorInput.addEventListener('input', (e) => {
 
 presetCustomBtn.addEventListener('click', (e) => {
   bgColorInput.showPicker();
-  bgColorInput.checked = true;
 });
 
 presetColorRadios.forEach((radio) => {
