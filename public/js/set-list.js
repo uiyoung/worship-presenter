@@ -120,6 +120,8 @@ function renderSetlist() {
     const badgeSpan = document.createElement('span');
     badgeSpan.classList = 'badge text-bg-primary';
     let type = '';
+
+    // TODO: change to object
     switch (item.type) {
       case 'lyrics':
         type = '가사';
