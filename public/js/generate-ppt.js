@@ -50,6 +50,7 @@ downloadBtn.addEventListener('click', (e) => {
     .finally(() => {
       downloadBtn.innerHTML = originalBtnText;
       downloadBtn.disabled = false;
+      settingsModal.hide();
     });
 });
 
