@@ -51,7 +51,9 @@ searchBibleBtn.addEventListener('click', async () => {
   const inputRegex = /^.+ \d+(?::\d+(?:-\d+)?)?$/;
 
   if (!inputRegex.test(search)) {
-    alert('올바른 형식을 입력해주세요.\n\ne.g. 창 3, 창 3:4, 창 3:4-7\ne.g. 창세기 3, 창세기 3:4, 창세기 3:4-7');
+    alert(
+      '올바른 형식을 입력해주세요.\n\ne.g. 창 3, 창 3:4, 창 3:4-7\ne.g. 창세기 3, 창세기 3:4, 창세기 3:4-7'
+    );
     bibleInput.focus();
     return;
   }
@@ -60,7 +62,9 @@ searchBibleBtn.addEventListener('click', async () => {
   const parts = search.split(' ');
   const bookName = parts[0];
   const { books } = bibleInfo;
-  const book = books.find((book) => book.abbrevTitle === bookName || book.title === bookName);
+  const book = books.find(
+    (book) => book.abbrevTitle === bookName || book.title === bookName
+  );
   if (!book) {
     alert(`${bookName}을(를) 찾을 수 없습니다.`);
     return;
@@ -71,7 +75,9 @@ searchBibleBtn.addEventListener('click', async () => {
   const chapterVerse = parts[1].split(':');
   const chapter = chapterVerse[0];
   if (Number(chapter) > Number(maxChapterNo)) {
-    alert(`${book.title} ${chapter}장을 찾을 수 없습니다.\n(${book.title}의 마지막 장 : ${maxChapterNo})`);
+    alert(
+      `${book.title} ${chapter}장을 찾을 수 없습니다.\n(${book.title}의 마지막 장 : ${maxChapterNo})`
+    );
     return;
   }
   const maxVerseNo = verseNos[chapter - 1];
@@ -108,7 +114,9 @@ function setChapterSelect(bookIndex) {
   option.label = `${chapterOrSection} 선택`;
   chapterSelect.appendChild(option);
 
-  const maxChapterNo = bibleInfo.books.find((book) => book.no === bookIndex).chapterNo;
+  const maxChapterNo = bibleInfo.books.find(
+    (book) => book.no === bookIndex
+  ).chapterNo;
 
   for (let i = 1; i <= maxChapterNo; i++) {
     const option = document.createElement('option');
@@ -129,7 +137,8 @@ function setVerseSelect(bookIndex, chapterIndex) {
     return;
   }
 
-  const verseNo = bibleInfo.books.find((book) => book.no === bookIndex).verseNos[chapterIndex - 1];
+  const verseNo = bibleInfo.books.find((book) => book.no === bookIndex)
+    .verseNos[chapterIndex - 1];
   for (let i = 1; i <= verseNo; i++) {
     const option = document.createElement('option');
     option.value = i;
@@ -148,15 +157,17 @@ function renderBible(bibleData) {
   if (sortedKeys.length === 1) {
     verseInfo = `${startVerseNo}`;
   }
-  const title = `${bookName} ${chapter}${bookName === '시편' ? '편' : '장'} ${verseInfo}절`;
+  const title = `${bookName} ${chapter}${
+    bookName === '시편' ? '편' : '장'
+  } ${verseInfo}절`;
 
   const bibleTitle = document.querySelector('#bible-title');
   bibleTitle.innerHTML = title;
   const bibleSelectAllBtn = document.querySelector('#bible-select-all');
   bibleSelectAllBtn.hidden = false;
   bibleSelectAllBtn.onclick = () => {
-    selectedList.push({
-      no: selectedList.length + 1,
+    setList.push({
+      no: setList.length + 1,
       type: 'bible',
       title,
       data: {
@@ -197,13 +208,16 @@ function renderBible(bibleData) {
 
     const selectBtn = document.createElement('button');
     selectBtn.type = 'button';
-    selectBtn.classList = 'btn btn-primary btn-sm text-nowrap align-self-center';
+    selectBtn.classList =
+      'btn btn-primary btn-sm text-nowrap align-self-center';
     selectBtn.innerHTML = '선택';
     selectBtn.onclick = () => {
-      selectedList.push({
-        no: selectedList.length + 1,
+      setList.push({
+        no: setList.length + 1,
         type: 'bible',
-        title: `${bookName} ${chapter}${bookName === '시편' ? '편' : '장'} ${key}절`,
+        title: `${bookName} ${chapter}${
+          bookName === '시편' ? '편' : '장'
+        } ${key}절`,
         data: {
           bookName,
           chapter,
@@ -228,7 +242,9 @@ async function getBible(bookIndex, chapterIndex) {
     return;
   }
 
-  const response = await fetch(`/bibles/NKRV/${bookIndex}/${chapterIndex}.json`);
+  const response = await fetch(
+    `/bibles/NKRV/${bookIndex}/${chapterIndex}.json`
+  );
   const result = await response.json();
   return result;
 }

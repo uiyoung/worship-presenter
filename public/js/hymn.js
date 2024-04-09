@@ -5,7 +5,9 @@ const hymnImageBtn = document.querySelector('#hymn-image-btn');
 const carouselPrevBtn = document.querySelector('.carousel-control-prev');
 const carouselNextBtn = document.querySelector('.carousel-control-next');
 
-const hymnLyricsModal = new bootstrap.Modal(document.querySelector('#hymnLyricsModal'));
+const hymnLyricsModal = new bootstrap.Modal(
+  document.querySelector('#hymnLyricsModal')
+);
 
 const hymnSelect = document.querySelector('#hymn-select');
 hymnSelect.addEventListener('change', async () => {
@@ -73,7 +75,8 @@ function renderHymnLyrics(data) {
   // modify button
   const modifyLyricsBtn = document.createElement('a');
   modifyLyricsBtn.href = '#';
-  modifyLyricsBtn.className = 'btn btn-outline-success position-absolute top-0 end-0 m-2';
+  modifyLyricsBtn.className =
+    'btn btn-outline-success position-absolute top-0 end-0 m-2';
   modifyLyricsBtn.innerHTML = `수정`;
   modifyLyricsBtn.onclick = async (e) => {
     e.preventDefault();
@@ -140,10 +143,13 @@ function renderHymnLyrics(data) {
       }
     };
 
-    const hymnAutoAlignBtn = document.querySelector('#hymn-modal-auto-align-btn');
+    const hymnAutoAlignBtn = document.querySelector(
+      '#hymn-modal-auto-align-btn'
+    );
     hymnAutoAlignBtn.onclick = () => {
       const hymnTextAreas = document.querySelectorAll('.hymn-textarea');
-      const linesPerSlide = Number(document.querySelector('#hymn-lines-per-slide').value) || 2;
+      const linesPerSlide =
+        Number(document.querySelector('#hymn-lines-per-slide').value) || 2;
       hymnTextAreas.forEach((textarea) => {
         textarea.value = autoAlign(textarea.value, linesPerSlide);
         textarea.rows = textarea.value.split('\n').length;
@@ -191,8 +197,8 @@ function renderHymnLyrics(data) {
     }
     const lyrics = lyricsArr.join('\n\n');
 
-    selectedList.push({
-      no: selectedList.length + 1,
+    setList.push({
+      no: setList.length + 1,
       type: 'lyrics',
       title: `찬송가 ${no}장-${title}`,
       lyrics,
@@ -257,8 +263,8 @@ function renderHymnImages(data) {
   a.innerHTML = `이미지 선택`;
   a.onclick = (e) => {
     e.preventDefault();
-    selectedList.push({
-      no: selectedList.length + 1,
+    setList.push({
+      no: setList.length + 1,
       type: 'hymn-image',
       title: `찬송가 ${no}장-${title}`,
       images: images.map((image) => `/hymn/images/${no}/${image}`),
@@ -299,7 +305,8 @@ async function setHymnSelectOptions() {
       loadingText: 'Loading...',
       noResultsText: 'No results found',
       itemSelectText: 'Press to select',
-      customAddItemText: 'Only values matching specific conditions can be added',
+      customAddItemText:
+        'Only values matching specific conditions can be added',
       valueComparer: (value1, value2) => {
         return value1 === value2;
       },

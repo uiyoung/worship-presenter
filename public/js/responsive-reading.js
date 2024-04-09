@@ -46,8 +46,8 @@ function renderResponsiveReading(data) {
   a.innerHTML = `교독문 ${no}번 선택`;
   a.onclick = (e) => {
     e.preventDefault();
-    selectedList.push({
-      no: selectedList.length + 1,
+    setList.push({
+      no: setList.length + 1,
       type: 'responsive-reading',
       title: `${no}번. ${title}`,
       contents,
@@ -87,7 +87,8 @@ async function setResponsiveReadingSelectOptions() {
       loadingText: 'Loading...',
       noResultsText: 'No results found',
       itemSelectText: 'Press to select',
-      customAddItemText: 'Only values matching specific conditions can be added',
+      customAddItemText:
+        'Only values matching specific conditions can be added',
       valueComparer: (value1, value2) => {
         return value1 === value2;
       },
