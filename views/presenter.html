@@ -7,7 +7,6 @@
     <div class="col-lg-4 my-2">
       <div class="card">
         <div class="card-body position-relative">
-          <!-- <div class="d-flex justify-content-between"> -->
           <h5 class="card-title fw-bold mb-3">선택된 목록</h5>
 
           <button type="button" class="btn btn-link text-secondary position-absolute top-0 end-0 m-1" id="clear-button">
@@ -46,7 +45,7 @@
               <a class="nav-link" href="#" data-bs-toggle="pill" data-bs-target="#pills-responsive-reading"><i
                   class="fa-solid fa-scroll me-2"></i>교독문</a>
             </li>
-            <!-- TODO: implement text subtitle -->
+            <!-- TODO: implement simple text ppt -->
             <!-- <li class="nav-item">
               <a class="nav-link disabled" href="#" data-bs-toggle="pill" data-bs-target="#pills-text">텍스트</a>
             </li> -->
@@ -59,32 +58,25 @@
             <div class="tab-pane fade show active" id="pills-lyrics" role="tabpanel" aria-labelledby="pills-lyrics-tab"
               tabindex="0">
               <div class="d-flex justify-content-end mb-3">
-                {% if user %}
-                <button class="btn btn-primary btn-sm" type="button" id="new-button">
+                <button class="btn btn-primary btn-sm" type="button" {% if user %} id="new-button" {% else %}
+                  onclick="location.href='/auth/login'" {% endif %}>
                   <i class="fa-regular fa-circle-xmark fa-rotate-by" style="--fa-rotate-angle: 45deg;""></i>
                   등록하기
                 </button>
-                {% else %}
-                <button
-                  class=" btn btn-primary btn-sm" type="button" onclick="location.href='/auth/login'">
-                    <i class="fa-regular fa-circle-xmark fa-rotate-by" style="--fa-rotate-angle: 45deg;""></i>
-                  등록하기
-                </button>
-                {% endif %}
               </div>
 
               <div class=" input-group my-3">
-                      <div class="col-auto">
-                        <label class="visually-hidden" for="specificSizeSelect">Preference</label>
-                        <select class="form-select" id="search-type-select">
-                          <option value="title" selected="selected">제목</option>
-                          <option value="lyrics">가사</option>
-                        </select>
-                      </div>
-                      <input type="search" class="form-control" id="search-input" />
-                      <button class="btn btn-outline-primary" type="button" id="search-btn">
-                        검색
-                      </button>
+                    <div class="col-auto">
+                      <label class="visually-hidden" for="specificSizeSelect">Preference</label>
+                      <select class="form-select" id="search-type-select">
+                        <option value="title" selected="selected">제목</option>
+                        <option value="lyrics">가사</option>
+                      </select>
+                    </div>
+                    <input type="search" class="form-control" id="search-input" />
+                    <button class="btn btn-outline-primary" type="button" id="search-btn">
+                      검색
+                    </button>
               </div>
 
               <div class="text-center mb-2 text-body-secondary" id="search-info" hidden></div>
@@ -294,10 +286,10 @@
               </div>
             </div>
 
-            <!-- todo : new-text slide tab-->
-            <div class="tab-pane fade" id="pills-text" role="tabpanel" aria-labelledby="pills-text-tab" tabindex="0">
+            <!-- TODO: new-text slide tab-->
+            <!-- <div class="tab-pane fade" id="pills-text" role="tabpanel" aria-labelledby="pills-text-tab" tabindex="0">
               text here
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -321,11 +313,12 @@
             <div class="col-lg-6">
               <form>
                 <div class="form-floating mb-2">
-                  <input type="text" class="form-control" id="modal-title" placeholder="제목을 입력해주세요." />
+                  <input type="text" class="form-control" id="modal-title" placeholder="제목을 입력해주세요."
+                    autocomplete="off" />
                   <label for="modal-title">제목</label>
                 </div>
                 <div class="form-floating mb-2 mb-lg-0">
-                  <textarea class="form-control" placeholder="가사를 입력해주세요." id="modal-lyrics"
+                  <textarea class="form-control" placeholder="가사를 입력해주세요." id="modal-lyrics" autocomplete="off"
                     style="height: 280px"></textarea>
                   <label for="modal-lyrics">가사</label>
                 </div>
@@ -347,7 +340,7 @@
               </div> -->
 
               <div class="form-floating mb-2">
-                <textarea class="form-control" placeholder="메모를 입력해주세요." id="modal-memo"></textarea>
+                <textarea class="form-control" placeholder="메모를 입력해주세요." id="modal-memo" autocomplete="off"></textarea>
                 <label for="modal-memo">메모</label>
               </div>
 
@@ -390,9 +383,6 @@
           </button>
           <button type="button" class="btn btn-primary" id="modal-modify-btn" hidden>
             수정
-          </button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            닫기
           </button>
         </div>
       </div>
@@ -480,18 +470,16 @@
                       <div class="d-flex gap-1">
                         <div class="flex-grow-1">
                           <input type="radio" class="btn-check" name="bg-colorPicker" id="bg-color-1" autocomplete="off"
-                            checked>
+                            value='#009933'>
                           <label class="btn btn-outline-success w-100" for="bg-color-1">green</label>
                         </div>
                         <div class="flex-grow-1">
-                          <input type="radio" class="btn-check" name="bg-colorPicker" id="bg-color-2"
+                          <input type="radio" class="btn-check" name="bg-colorPicker" id="bg-color-2" value='#000000'
                             autocomplete="off">
                           <label class="btn btn-outline-dark w-100" for="bg-color-2">black</label>
                         </div>
                         <div class="flex-grow-1">
-                          <input type="radio" class="btn-check" name="bg-colorPicker" id="bg-color-custom"
-                            autocomplete="off">
-                          <label class="btn w-100" for="bg-color-custom">custom</label>
+                          <button type="button" class="btn" id="bg-color-custom">custom</button>
                         </div>
                       </div>
                     </div>
@@ -505,18 +493,16 @@
                       <div class="d-flex gap-1">
                         <div class="flex-grow-1">
                           <input type="radio" class="btn-check" name="font-colorPicker" id="font-color-1"
-                            autocomplete="off" checked>
+                            value='#FFFFFF' autocomplete="off">
                           <label class="btn btn-outline-light" for="font-color-1">white</label>
                         </div>
                         <div class="flex-grow-1">
                           <input type="radio" class="btn-check" name="font-colorPicker" id="font-color-2"
-                            autocomplete="off">
+                            value='#000000' autocomplete="off">
                           <label class="btn btn-outline-dark" for="font-color-2">black</label>
                         </div>
                         <div class="flex-grow-1">
-                          <input type="radio" class="btn-check" name="font-colorPicker" id="font-color-custom"
-                            autocomplete="off">
-                          <label class="btn" for="font-color-custom">custom</label>
+                          <button type="button" class="btn" id="font-color-custom">custom</button>
                         </div>
                       </div>
                     </div>
@@ -526,17 +512,17 @@
                   <div>
                     <div class="btn-group">
                       <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-left-input"
-                        autocomplete="off" checked>
+                        value="left" autocomplete="off">
                       <label class="btn btn-sm btn-outline-secondary" for="horizontal-left-input">
                         <i class="fa-solid fa-align-left"></i>
                       </label>
                       <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-center-input"
-                        autocomplete="off">
+                        value="center" autocomplete="off">
                       <label class="btn btn-sm btn-outline-secondary" for="horizontal-center-input">
                         <i class="fa-solid fa-align-center"></i>
                       </label>
                       <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-right-input"
-                        autocomplete="off">
+                        value="right" autocomplete="off">
                       <label class="btn btn-sm btn-outline-secondary" for="horizontal-right-input">
                         <i class="fa-solid fa-align-right"></i>
                       </label>
@@ -546,18 +532,18 @@
                   <label for="modal-title" class="col-form-label">수직 정렬</label>
                   <div>
                     <div class="btn-group">
-                      <input type="radio" class="btn-check" name="vertical-align" id="vertical-top-input"
-                        autocomplete="off" checked>
+                      <input type="radio" class="btn-check" name="vertical-align" id="vertical-top-input" value="top"
+                        autocomplete="off">
                       <label class="btn btn-sm btn-outline-secondary" for="vertical-top-input">
                         상
                       </label>
                       <input type="radio" class="btn-check" name="vertical-align" id="vertical-center-input"
-                        autocomplete="off">
+                        value="middle" autocomplete="off">
                       <label class="btn btn-sm btn-outline-secondary" for="vertical-center-input">
                         중
                       </label>
                       <input type="radio" class="btn-check" name="vertical-align" id="vertical-bottom-input"
-                        autocomplete="off">
+                        value="bottom" autocomplete="off">
                       <label class="btn btn-sm btn-outline-secondary" for="vertical-bottom-input">
                         하
                       </label>
@@ -567,10 +553,10 @@
               </div>
               <div class="col-lg-5">
                 <div>
-                  <label class="form-label fw-bold fs-5">preview</label>
-                  <div class="card ratio ratio-16x9" id="preview">
-                    <div class="card-body">
-                      <p class="card-text" id="preview-lyrics">첫번째줄 자막입니다<br />두번째줄 자막입니다</p>
+                  <label class="form-label fw-bold fs-5">미리보기</label>
+                  <div class="card ratio ratio-16x9">
+                    <div class="card-body d-flex" id="preview-ppt">
+                      <p class="card-text" id="preview-text">첫번째줄 자막입니다<br />두번째줄 자막입니다</p>
                     </div>
                   </div>
                 </div>
@@ -591,6 +577,8 @@
 {% endblock %}
 
 {% block script %}
+<script src="/js/utils.js"></script>
+<script src="/js/settings-modal.js"></script>
 <script src="/js/set-list.js"></script>
 <script src="/js/presenter.js"></script>
 <script src="/js/hymn.js"></script>

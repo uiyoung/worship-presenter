@@ -1,10 +1,11 @@
 const ITEMS_PER_PAGE = 10;
 
-let selectedList = [];
+const songDetailModalEl = document.querySelector('#songDetailModal');
+const songDetailModal = new bootstrap.Modal(songDetailModalEl);
 
-const songDetailModal = new bootstrap.Modal(
-  document.querySelector('#songDetailModal')
-);
+songDetailModalEl.addEventListener('shown.bs.modal', (e) => {
+  modalTitle.focus();
+});
 
 const modalTitle = document.querySelector('#modal-title');
 modalTitle.addEventListener('keyup', (e) => {
@@ -12,7 +13,6 @@ modalTitle.addEventListener('keyup', (e) => {
 });
 
 const newBtn = document.querySelector('#new-button');
-const clearButton = document.querySelector('#clear-button');
 
 if (newBtn) {
   newBtn.addEventListener('click', () => showNewSongModal());
@@ -32,7 +32,7 @@ function showNewSongModal() {
   const modalSelectBtn = document.querySelector('#modal-select-btn');
   const modalDeleteBtn = document.querySelector('#modal-delete-btn');
 
-  modalHeader.innerHTML = '새로 등록하기';
+  modalHeader.innerHTML = '가사 등록';
   modalTitle.value = '';
   modalLyrics.value = '';
   modalLyrics.style.height = '280px';
@@ -76,7 +76,7 @@ function showNewSongModal() {
   songDetailModal.show();
 }
 
-// modal : 조회, 수정, 삭제
+// lyrics modal : 조회, 수정, 삭제
 async function showSongDetailModal(id) {
   const modalHeader = document.querySelector('#songDetailModalLabel');
   const modalTitle = document.querySelector('#modal-title');
@@ -158,7 +158,7 @@ async function showSongDetailModal(id) {
   }
 }
 
-// modal : save
+// lyrics modal : save
 async function saveSong(newSong) {
   try {
     const response = await fetch(`/song`, {
@@ -184,7 +184,7 @@ async function saveSong(newSong) {
   }
 }
 
-// modal : delete
+// lyrics modal : delete
 async function deleteSong(id) {
   if (!confirm('삭제 하시겠습니까?')) {
     return;
@@ -210,7 +210,7 @@ async function deleteSong(id) {
   }
 }
 
-// modal : modify
+// lyrics modal : modify
 async function modifySong(id, modifiedSong) {
   try {
     const response = await fetch(`/song/${id}`, {
@@ -231,8 +231,8 @@ async function modifySong(id, modifiedSong) {
     render(searchInput.value, 1);
     songDetailModal.hide();
 
-    // setlist에 선택되어있는 경우 selectedList 값 업데이트
-    const targetItem = selectedList.find(
+    // setlist에 선택되어있는 경우 setList값 업데이트
+    const targetItem = setList.find(
       (item) => item.type === 'lyrics' && item.id === id
     );
     if (targetItem) {
@@ -384,7 +384,7 @@ function renderSearchTable(songs, pageNum) {
   });
 }
 
-// todo : DRY!
+// TODO: DRY!
 function renderPagination(totalCount, currentPage, query) {
   const paginationElement = document.querySelector('#search-pagination');
   paginationElement.innerHTML = '';
@@ -529,129 +529,6 @@ function renderSearchInfo(query, totalCount) {
   resultInfo.hidden = false;
 }
 
-function renderSetlist() {
-  const setList = document.querySelector('#setlist');
-  setList.innerHTML = '';
-
-  if (selectedList.length <= 0) {
-    const li = document.createElement('li');
-    li.className = 'text-center small opacity-50';
-    li.innerHTML = '선택된 아이템이 없습니다.';
-    setList.append(li);
-    // settingsBtn.disabled = true;
-    clearButton.disabled = true;
-    return;
-  }
-
-  // console.log(selectedList);
-
-  settingsBtn.disabled = false;
-  clearButton.disabled = false;
-
-  selectedList.forEach((item, idx) => {
-    const li = document.createElement('li');
-    li.className =
-      'list-group-item rounded-3 border-1 d-flex justify-content-between align-items-center draggable';
-    li.draggable = true;
-    li.setAttribute('no', idx);
-    li.onclick = () => {
-      switch (item.type) {
-        case 'lyrics':
-          showSongDetailModal(item.id);
-          break;
-        case 'hymn-image':
-          // todo : responsive-reading preview modal
-          break;
-        case 'bible':
-          // todo : bible preview modal
-          break;
-        case 'responsive-reading':
-          // todo : responsive-reading preview modal
-          break;
-        default:
-          break;
-      }
-    };
-    li.addEventListener('dragstart', () => {
-      li.classList.add('dragging');
-    });
-    li.addEventListener('dragend', () => {
-      li.classList.remove('dragging');
-      console.log('oldIdx:', idx, ', newIdx:', newIndexAfterDrag);
-      [selectedList[idx], selectedList[newIndexAfterDrag]] = [
-        selectedList[newIndexAfterDrag],
-        selectedList[idx],
-      ];
-      selectedList.forEach((s, index) => {
-        s.no = index + 1;
-      });
-      renderSetlist();
-      console.log(selectedList);
-    });
-
-    const div = document.createElement('div');
-    div.className = 'text-truncate';
-
-    // title
-    const titleSpan = document.createElement('span');
-    titleSpan.innerHTML = `${idx + 1}. ${item.title} `;
-    div.appendChild(titleSpan);
-
-    // type
-    const badgeSpan = document.createElement('span');
-    badgeSpan.classList = 'badge text-bg-primary';
-    let type = '';
-    switch (item.type) {
-      case 'lyrics':
-        type = '가사';
-        badgeSpan.classList.add('text-bg-primary');
-        break;
-      case 'hymn-image':
-        type = '이미지';
-        badgeSpan.classList.add('text-bg-warning');
-        break;
-      case 'bible':
-        type = '성경';
-        badgeSpan.classList.add('text-bg-success');
-        break;
-      case 'responsive-reading':
-        type = '교독문';
-        badgeSpan.classList.add('text-bg-secondary');
-        break;
-
-      default:
-        break;
-    }
-    badgeSpan.innerHTML = `${type} `;
-    div.appendChild(badgeSpan);
-
-    // lyrics preview
-    if (item.type === 'lyrics') {
-      const previewSpan = document.createElement('span');
-      previewSpan.className = 'd-block small opacity-50 ms-2 text-truncate';
-      previewSpan.innerHTML = item.lyrics;
-      div.appendChild(previewSpan);
-    }
-    li.appendChild(div);
-
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'removeBtn';
-    // removeBtn.innerHTML = '️&times;';
-    removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-    removeBtn.onclick = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const listItem = removeBtn.parentNode;
-      const targetIdx = Array.from(setList.children).indexOf(listItem);
-      selectedList = selectedList.filter((_, index) => index !== targetIdx);
-      renderSetlist();
-    };
-    li.appendChild(removeBtn);
-
-    setList.append(li);
-  });
-}
-
 async function getSongById(id) {
   try {
     const response = await fetch(`/song/${id}`);
@@ -665,77 +542,17 @@ async function getSongById(id) {
 async function selectLyrics(id) {
   const selectedSong = await getSongById(id);
   const { title, lyrics } = selectedSong;
-  selectedList.push({
-    no: selectedList.length + 1,
+
+  setList.push({
+    no: setList.length + 1,
     type: 'lyrics',
     id,
     title,
     lyrics,
   });
+
   renderSetlist();
 }
-
-let newIndexAfterDrag;
-
-const setList = document.querySelector('#setlist');
-setList.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  const draggingElement = document.querySelector('.dragging');
-  const afterElement = getDragAfterElement(e.clientY);
-
-  if (afterElement == null) {
-    newIndexAfterDrag = selectedList.length - 1;
-    setList.appendChild(draggingElement);
-    return;
-  }
-
-  if (draggingElement.getAttribute('no') > afterElement.getAttribute('no')) {
-    newIndexAfterDrag = Number(afterElement.getAttribute('no'));
-  } else if (
-    draggingElement.getAttribute('no') < afterElement.getAttribute('no')
-  ) {
-    newIndexAfterDrag = Number(afterElement.getAttribute('no')) - 1;
-  } else {
-    newIndexAfterDrag = Number(draggingElement.getAttribute('no'));
-  }
-
-  setList.insertBefore(draggingElement, afterElement);
-});
-
-function getDragAfterElement(y) {
-  const notDraggedElements = [
-    ...setList.querySelectorAll('.draggable:not(.dragging)'),
-  ];
-
-  return notDraggedElements.reduce(
-    (closest, child) => {
-      const box = child.getBoundingClientRect();
-      const offset = y - box.top - box.height / 2;
-      if (offset < 0 && offset > closest.offset) {
-        return { offset: offset, element: child };
-      } else {
-        return closest;
-      }
-    },
-    { offset: Number.NEGATIVE_INFINITY }
-  ).element;
-}
-
-clearButton.addEventListener('click', () => {
-  if (selectedList.length <= 0) {
-    alert('선택된 곡이 없습니다.');
-    return;
-  }
-  if (!confirm('목록을 비우시겠습니까?')) {
-    return;
-  }
-
-  selectedList = [];
-  renderSetlist();
-});
 
 render('%', 1);
 searchInput.focus();
-// settingsModal.show();
-settingsBtn.click();
-filenameInput.focus();
