@@ -3,13 +3,11 @@ const settingsModal = new bootstrap.Modal(settingsModalEl);
 
 const filenameInput = document.querySelector('#modal-filename');
 const bgColorInput = document.querySelector('#bg-color-input');
-const bgColorRadios = document.querySelectorAll('input[name="bg-colorPicker"]');
-const bgColorCustomBtn = document.querySelector('#bg-color-custom');
 const fontColorInput = document.querySelector('#font-color-input');
-const fontColorRadios = document.querySelectorAll(
-  'input[name="font-colorPicker"]'
+const presetColorRadios = document.querySelectorAll(
+  'input[name="preset-color"]'
 );
-const fontColorCustomBtn = document.querySelector('#font-color-custom');
+const presetCustomBtn = document.querySelector('#preset-color-custom');
 const horizontalAlignRadios = document.querySelectorAll(
   'input[name="horizontal-align"]'
 );
@@ -20,13 +18,13 @@ const previewDiv = document.querySelector('#preview-ppt');
 const previewText = document.querySelector('#preview-text');
 
 const lyricsOptions = {
+  bgColor: '#009933',
+  fontColor: '#FFFFFF',
   fontFace: '다음_SemiBold', // '나눔스퀘어라운드 Bold'; '나눔고딕 Bold';
   fontSize: 48,
   fontBold: false,
   fontItalic: false,
   fontUnderline: false,
-  fontColor: '#FFFFFF',
-  bgColor: '#009933',
   fontOutline: { size: 1.0, color: '#000000' },
   fontGlow: { size: 2, opacity: 1.0, color: '#000000' },
   align: 'center', // align(left, center, right, justify)
@@ -47,48 +45,77 @@ settingsModalEl.addEventListener('shown.bs.modal', (e) => {
   filenameInput.focus();
 });
 
+const colorsByPreset = {
+  preset1: {
+    bgColor: '#009933',
+    fontColor: '#FFFFFF',
+    fontOutline: { size: 1.0, color: '#000000' },
+    fontGlow: { size: 2, opacity: 1.0, color: '#000000' },
+  },
+  preset2: {
+    bgColor: '#1e1e2e',
+    fontColor: '#eff1f5',
+    outlineColor: undefined,
+    fontGlow: undefined,
+  },
+  preset3: {
+    bgColor: '#eff1f5',
+    fontColor: '#8839ef',
+    outlineColor: undefined,
+    fontGlow: undefined,
+  },
+  preset4: {
+    bgColor: '#f2cdcd',
+    fontColor: '#4c4f69',
+    outlineColor: undefined,
+    fontGlow: undefined,
+  },
+  preset5: {
+    bgColor: '#94e2d5',
+    fontColor: '#303446',
+    outlineColor: undefined,
+    fontGlow: undefined,
+  },
+};
+
 bgColorInput.addEventListener('input', (e) => {
-  bgColorRadios.forEach((radio) => (radio.checked = false));
+  presetColorRadios.forEach((radio) => (radio.checked = false));
   lyricsOptions.bgColor = e.target.value;
+  lyricsOptions.fontOutline = undefined;
+  lyricsOptions.fontGlow = undefined;
   renderPreviewLyrics();
-});
-
-bgColorRadios.forEach((radio) => {
-  radio.addEventListener('change', (e) => {
-    if (radio.checked) {
-      const bgColor = e.target.value;
-      bgColorInput.value = bgColor;
-      // previewDiv.style.backgroundColor = bgColor;
-
-      lyricsOptions.bgColor = bgColor;
-      renderPreviewLyrics();
-    }
-  });
-});
-
-bgColorCustomBtn.addEventListener('click', (e) => {
-  bgColorInput.showPicker();
 });
 
 fontColorInput.addEventListener('input', (e) => {
-  fontColorRadios.forEach((radio) => (radio.checked = false));
+  presetColorRadios.forEach((radio) => (radio.checked = false));
   lyricsOptions.fontColor = e.target.value;
+  lyricsOptions.fontOutline = undefined;
+  lyricsOptions.fontGlow = undefined;
   renderPreviewLyrics();
 });
 
-fontColorRadios.forEach((radio) => {
+presetCustomBtn.addEventListener('click', (e) => {
+  bgColorInput.showPicker();
+  bgColorInput.checked = true;
+});
+
+presetColorRadios.forEach((radio) => {
   radio.addEventListener('change', (e) => {
     if (radio.checked) {
-      const fontColor = e.target.value;
+      const { bgColor, fontColor, fontOutline, fontGlow } =
+        colorsByPreset[e.target.value];
 
+      bgColorInput.value = bgColor;
+      fontColorInput.value = fontColor;
+
+      lyricsOptions.bgColor = bgColor;
       lyricsOptions.fontColor = fontColor;
+      lyricsOptions.fontOutline = fontOutline;
+      lyricsOptions.fontGlow = fontGlow;
+
       renderPreviewLyrics();
     }
   });
-});
-
-fontColorCustomBtn.addEventListener('click', (e) => {
-  fontColorInput.showPicker();
 });
 
 horizontalAlignRadios.forEach((radio) => {
@@ -110,13 +137,14 @@ verticalAlignRadios.forEach((radio) => {
 });
 
 function renderPreviewLyrics() {
-  const { bgColor, fontColor, align, valign } = lyricsOptions;
+  const { bgColor, fontColor, fontOutline, align, valign } = lyricsOptions;
 
   // color
   bgColorInput.value = bgColor;
   fontColorInput.value = fontColor;
-  previewDiv.style.backgroundColor = bgColor;
+  previewDiv.parentElement.style.backgroundColor = bgColor;
   previewText.style.color = fontColor;
+  // previewText.style.textShadow = `-1px -1px 0 ${fontOutline.color}, 1px -1px 0 ${fontOutline.color}, -1px 1px 0 ${fontOutline.color}, 1px 1px 0 ${fontOutline.color}`;
 
   // align
   previewDiv.style.justifyContent = alignProps[align];
@@ -129,10 +157,8 @@ function initSettingsModal() {
   filenameInput.value = `${today}_worship`;
 
   // color
-  const defaultBgColorEl = document.querySelector('#bg-color-1');
-  const defaultfontColorEl = document.querySelector('#font-color-1');
-  defaultBgColorEl.checked = true;
-  defaultfontColorEl.checked = true;
+  const defaultColorPresetEl = document.querySelector('#preset1');
+  defaultColorPresetEl.checked = true;
 
   // align
   const defaultVerticalAlignEl = document.querySelector(

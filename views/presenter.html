@@ -450,7 +450,7 @@
         <div class="container-fluid">
           <!-- <div class="row"> -->
           <form>
-            <label for="modal-filename" class="col-form-label fw-bold fs-5 mb-1">파일명</label>
+            <label for="modal-filename" class="col-form-label fw-bold">파일명</label>
             <div class="input-group input-group-sm mb-3">
               <input type="text" class="form-control" id="modal-filename" />
               <span class="input-group-text" id="basic-addon2">.pptx</span>
@@ -459,56 +459,61 @@
             <div class="row">
               <div class="col-lg-7">
                 <div>
-                  <label for="modal-title" class="col-form-label fw-bold fs-5 mb-1">가사 설정</label>
-                  <div>
-                    <label for="bg-color-input" class="form-label">배경색</label>
-                    <div class="d-flex col gap-1">
-                      <div>
-                        <input type="color" class="form-control form-control-color" id="bg-color-input"
-                          value="#563d7c" />
-                      </div>
-                      <div class="d-flex gap-1">
-                        <div class="flex-grow-1">
-                          <input type="radio" class="btn-check" name="bg-colorPicker" id="bg-color-1" autocomplete="off"
-                            value='#009933'>
-                          <label class="btn btn-outline-success w-100" for="bg-color-1">green</label>
-                        </div>
-                        <div class="flex-grow-1">
-                          <input type="radio" class="btn-check" name="bg-colorPicker" id="bg-color-2" value='#000000'
-                            autocomplete="off">
-                          <label class="btn btn-outline-dark w-100" for="bg-color-2">black</label>
-                        </div>
-                        <div class="flex-grow-1">
-                          <button type="button" class="btn" id="bg-color-custom">custom</button>
-                        </div>
-                      </div>
-                    </div>
+                  <label for="modal-title" class="col-form-label fw-bold">가사 설정</label>
 
-                    <label for="font-color-input" class="form-label">글자색</label>
-                    <div class="d-flex col gap-1">
+                  <div>
+                    <label class="col-form-label">색상 프리셋</label>
+                    <div class="d-flex gap-2">
                       <div>
-                        <input type="color" class="form-control form-control-color" id="font-color-input"
-                          value="#563d7c" />
+                        <input type="radio" class="btn-check" name="preset-color" id="preset1" autocomplete="off"
+                          value='preset1'>
+                        <label class="btn" for="preset1" style="background-color: #009933;color: #FFFFFF;">1</label>
                       </div>
-                      <div class="d-flex gap-1">
-                        <div class="flex-grow-1">
-                          <input type="radio" class="btn-check" name="font-colorPicker" id="font-color-1"
-                            value='#FFFFFF' autocomplete="off">
-                          <label class="btn btn-outline-light" for="font-color-1">white</label>
-                        </div>
-                        <div class="flex-grow-1">
-                          <input type="radio" class="btn-check" name="font-colorPicker" id="font-color-2"
-                            value='#000000' autocomplete="off">
-                          <label class="btn btn-outline-dark" for="font-color-2">black</label>
-                        </div>
-                        <div class="flex-grow-1">
-                          <button type="button" class="btn" id="font-color-custom">custom</button>
-                        </div>
+                      <div>
+                        <input type="radio" class="btn-check" name="preset-color" id="preset2" value='preset2'
+                          autocomplete="off">
+                        <label class="btn" for="preset2" style="background-color: #1e1e2e;color: #cdd6f4;">2</label>
+                      </div>
+                      <div>
+                        <input type="radio" class="btn-check" name="preset-color" id="preset3" value='preset3'
+                          autocomplete="off">
+                        <label class="btn" for="preset3" style="background-color: #eff1f5;color: #8839ef;">3</label>
+                      </div>
+                      <div>
+                        <input type="radio" class="btn-check" name="preset-color" id="preset4" value='preset4'
+                          autocomplete="off">
+                        <label class="btn" for="preset4" style="background-color: #f2cdcd;color: #4c4f69;">4</label>
+                      </div>
+                      <div>
+                        <input type="radio" class="btn-check" name="preset-color" id="preset5" value='preset5'
+                          autocomplete="off">
+                        <label class="btn" for="preset5" style="background-color: #94e2d5;color: #303446;">5</label>
+                      </div>
+                      <div>
+                        <button type="button" class="btn" id="preset-color-custom" style="
+                            background: linear-gradient(50deg, #ff8787 0%, #ffd43b 30%, #63e6be 60%, #74c0fc 100%);
+                            color: white;
+                            border-color: #ffd43b;
+                          ">
+                          custom
+                        </button>
                       </div>
                     </div>
                   </div>
 
-                  <label for="modal-title" class="col-form-label">가로 정렬</label>
+                  <div class="d-flex gap-2">
+                    <div>
+                      <label for="bg-color-input" class="col-form-label">배경색</label>
+                      <input type="color" class="form-control form-control-color" id="bg-color-input" value="#563d7c" />
+                    </div>
+                    <div>
+                      <label for="font-color-input" class="col-form-label">글자색</label>
+                      <input type="color" class="form-control form-control-color" id="font-color-input"
+                        value="#563d7c" />
+                    </div>
+                  </div>
+
+                  <label class="col-form-label">가로 정렬</label>
                   <div>
                     <div class="btn-group">
                       <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-left-input"
@@ -529,7 +534,7 @@
                     </div>
                   </div>
 
-                  <label for="modal-title" class="col-form-label">수직 정렬</label>
+                  <label class="col-form-label">수직 정렬</label>
                   <div>
                     <div class="btn-group">
                       <input type="radio" class="btn-check" name="vertical-align" id="vertical-top-input" value="top"
@@ -553,9 +558,9 @@
               </div>
               <div class="col-lg-5">
                 <div>
-                  <label class="form-label fw-bold fs-5">미리보기</label>
+                  <label class="form-label fw-bold">미리보기</label>
                   <div class="card ratio ratio-16x9">
-                    <div class="card-body d-flex" id="preview-ppt">
+                    <div class="card-body d-flex p-1" id="preview-ppt">
                       <p class="card-text" id="preview-text">첫번째줄 자막입니다<br />두번째줄 자막입니다</p>
                     </div>
                   </div>
