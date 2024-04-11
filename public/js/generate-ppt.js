@@ -15,7 +15,8 @@ downloadBtn.addEventListener('click', (e) => {
   pptx.layout = 'LAYOUT_WIDE';
 
   // 1-1. define slide masters
-  defineSlideMasters(pptx);
+  const types = [...new Set(setList.map((item) => item.type))];
+  defineSlideMasters(pptx, types);
 
   // 2. generate slides by type
   setList.forEach((item, idx) => {
@@ -66,6 +67,28 @@ const shadowOptions = {
   opacity: 0.57,
 };
 
+const hymnTitleOptions = {
+  fontSize1: 18,
+  fontFace1: '마루 부리 조금굵은',
+  fontColor1: '210C00',
+  fontSize2: 36,
+  fontFace2: '마루 부리 굵은',
+  fontColor2: '431f00',
+};
+
+const bibleOptions = {
+  fullScreenSubtitleOptions: {
+    fontFace: '마루 부리 중간',
+    fontSize: 20,
+    color: 'FFFFFF',
+  },
+  fullScreenVerseOptions: {
+    fontFace: '나눔명조 ExtraBold',
+    fontSize: 40,
+    color: 'FFFFFF',
+  },
+};
+
 const rrTitleOptions = {
   fontFace: '나눔명조 ExtraBold',
   fontSize: 20,
@@ -83,247 +106,228 @@ const rrContentColors = {
   group2: 'FFE699',
 };
 
-const bibleOptions = {
-  fullScreenSubtitleOptions: {
-    fontFace: '마루 부리 중간',
-    fontSize: 20,
-    color: 'FFFFFF',
-  },
-  fullScreenVerseOptions: {
-    fontFace: '나눔명조 ExtraBold',
-    fontSize: 40,
-    color: 'FFFFFF',
-  },
-};
-
-const hymnTitleOptions = {
-  fontSize1: 18,
-  fontFace1: '마루 부리 조금굵은',
-  fontColor1: '210C00',
-  fontSize2: 36,
-  fontFace2: '마루 부리 굵은',
-  fontColor2: '431f00',
-};
-
-function defineSlideMasters(pptx) {
-  // define lyrics title slide master
-  pptx.defineSlideMaster({
-    title: 'LYRICS_TITLE_SLIDE',
-    background: { color: lyricsOptions.bgColor },
-    objects: [
-      {
-        placeholder: {
-          options: {
-            name: 'song-title',
-            type: 'title',
-            w: '100%',
-            h: '20%',
-            autoFit: true,
-            align: 'left',
-            valign: 'top',
-            fontSize: 32,
-            fontFace: lyricsOptions.fontFace,
-            color: lyricsOptions.fontColor,
-            outline: lyricsOptions.fontOutline,
-            glow: lyricsOptions.fontGlow,
-            margin: [CM_1, CM_1, CM_1, CM_1],
+const slideMasterOptionsByType = {
+  lyrics: [
+    {
+      title: 'LYRICS_TITLE_SLIDE',
+      background: { color: lyricsOptions.bgColor },
+      objects: [
+        {
+          placeholder: {
+            options: {
+              name: 'song-title',
+              type: 'title',
+              w: '100%',
+              h: '20%',
+              autoFit: true,
+              align: 'left',
+              valign: 'top',
+              fontSize: 32,
+              fontFace: lyricsOptions.fontFace,
+              color: lyricsOptions.fontColor,
+              outline: lyricsOptions.fontOutline,
+              glow: lyricsOptions.fontGlow,
+              margin: [CM_1, CM_1, CM_1, CM_1],
+            },
+            text: '(title here!)',
           },
-          text: '(title here!)',
         },
-      },
-    ],
-  });
-
-  // define lyrics slide master
-  pptx.defineSlideMaster({
-    title: 'LYRICS_SLIDE',
-    background: { color: lyricsOptions.bgColor },
-    objects: [
-      {
-        placeholder: {
-          options: {
-            name: 'lyrics-body',
-            type: 'body',
+      ],
+    },
+    {
+      title: 'LYRICS_SLIDE',
+      background: { color: lyricsOptions.bgColor },
+      objects: [
+        {
+          placeholder: {
+            options: {
+              name: 'lyrics-body',
+              type: 'body',
+              w: '100%',
+              h: '100%',
+              autoFit: true,
+              align: lyricsOptions.align,
+              valign: lyricsOptions.valign,
+              bold: lyricsOptions.fontBold,
+              italic: lyricsOptions.fontItalic,
+              underline: lyricsOptions.fontUnderline,
+              fontSize: lyricsOptions.fontSize,
+              fontFace: lyricsOptions.fontFace,
+              color: lyricsOptions.fontColor,
+              outline: lyricsOptions.fontOutline,
+              glow: lyricsOptions.fontGlow,
+              lineSpacing: lyricsOptions.fontSize * 1.025,
+              margin: [1, 1, CM_1, CM_1],
+            },
+            text: '(lyrics here!)',
+          },
+        },
+      ],
+    },
+  ],
+  hymn: [
+    {
+      title: 'HYMN_TITLE_SLIDE',
+      background: { path: '/backgrounds/hymn-title-background.jpg' },
+      objects: [
+        {
+          placeholder: {
+            options: {
+              name: 'hymn-no',
+              type: 'title',
+              x: 0,
+              y: 2.32,
+              w: '100%',
+              autoFit: true,
+              align: 'center',
+              valign: 'middle',
+              fontSize: hymnTitleOptions.fontSize1,
+              fontFace: hymnTitleOptions.fontFace1,
+              color: hymnTitleOptions.fontColor1,
+            },
+            text: '(hymn no here!)',
+          },
+        },
+        {
+          placeholder: {
+            options: {
+              name: 'hymn-title',
+              type: 'title',
+              x: 0,
+              y: 3.75,
+              w: '100%',
+              autoFit: true,
+              align: 'center',
+              valign: 'middle',
+              fontSize: hymnTitleOptions.fontSize2,
+              fontFace: hymnTitleOptions.fontFace2,
+              color: hymnTitleOptions.fontColor2,
+            },
+            text: '(hymn title here!)',
+          },
+        },
+      ],
+    },
+  ],
+  'responsive-reading': [
+    {
+      title: 'RR_TITLE_SLIDE',
+      background: { path: '/backgrounds/rr-background.jpg' },
+      objects: [
+        {
+          placeholder: {
+            options: {
+              name: 'rr-title',
+              type: 'title',
+              x: 0,
+              y: 1.76,
+              w: '100%',
+              // h: '100%',
+              autoFit: true,
+              align: 'center',
+              valign: 'middle',
+              fontSize: 54,
+              fontFace: rrTitleOptions.fontFace,
+              color: rrTitleOptions.fontColor,
+            },
+            text: '(title here!)',
+          },
+        },
+        {
+          placeholder: {
+            options: {
+              name: 'rr-subtitle',
+              type: 'title',
+              x: 0,
+              y: 2.64,
+              w: '100%',
+              // h: '100%',
+              autoFit: true,
+              align: 'center',
+              valign: 'middle',
+              fontSize: rrTitleOptions.fontSize,
+              fontFace: rrTitleOptions.fontFace,
+              color: rrTitleOptions.fontColor,
+            },
+            text: '(subtitle here!)',
+          },
+        },
+      ],
+    },
+    {
+      title: 'RR_CONTENT_SLIDE',
+      background: { path: '/backgrounds/rr-background.jpg' },
+      objects: [
+        {
+          rect: {
+            x: 0,
+            y: 0,
             w: '100%',
             h: '100%',
-            autoFit: true,
-            align: lyricsOptions.align,
-            valign: lyricsOptions.valign,
-            bold: lyricsOptions.fontBold,
-            italic: lyricsOptions.fontItalic,
-            underline: lyricsOptions.fontUnderline,
-            fontSize: lyricsOptions.fontSize,
-            fontFace: lyricsOptions.fontFace,
-            color: lyricsOptions.fontColor,
-            outline: lyricsOptions.fontOutline,
-            glow: lyricsOptions.fontGlow,
-            lineSpacing: lyricsOptions.fontSize * 1.025,
-            margin: [1, 1, CM_1, CM_1],
+            fill: { color: '000000', transparency: 50 },
           },
-          text: '(lyrics here!)',
         },
-      },
-    ],
-  });
+      ],
+    },
+  ],
+  bible: [
+    {
+      title: 'BIBLE_COVER',
+      background: { path: '/backgrounds/bible-fullscreen-bg.jpg' },
+      objects: [
+        {
+          placeholder: {
+            options: {
+              name: 'rr-title',
+              type: 'title',
+              x: 0,
+              y: 1.76,
+              w: '100%',
+              // h: '100%',
+              autoFit: true,
+              align: 'center',
+              valign: 'middle',
+              fontSize: 54,
+              fontFace: rrTitleOptions.fontFace,
+              color: rrTitleOptions.fontColor,
+            },
+            text: '(title here!)',
+          },
+        },
+        {
+          placeholder: {
+            options: {
+              name: 'rr-subtitle',
+              type: 'title',
+              x: 0,
+              y: 2.64,
+              w: '100%',
+              // h: '100%',
+              autoFit: true,
+              align: 'center',
+              valign: 'middle',
+              fontSize: rrTitleOptions.fontSize,
+              fontFace: rrTitleOptions.fontFace,
+              color: rrTitleOptions.fontColor,
+            },
+            text: '(subtitle here!)',
+          },
+        },
+      ],
+    },
+    {
+      title: 'BIBLE_SLIDE',
+      background: { path: '/backgrounds/bible-fullscreen-bg.jpg' },
+      // objects: [{ rect: { x: 0, y: 0, w: '100%', h: '100%', fill: { color: '000000', transparency: 50 } } }],
+    },
+  ],
+};
 
-  // define hymn title slide master
-  pptx.defineSlideMaster({
-    title: 'HYMN_TITLE_SLIDE',
-    background: { path: '/backgrounds/hymn-title-background.jpg' },
-    objects: [
-      {
-        placeholder: {
-          options: {
-            name: 'hymn-no',
-            type: 'title',
-            x: 0,
-            y: 2.32,
-            w: '100%',
-            autoFit: true,
-            align: 'center',
-            valign: 'middle',
-            fontSize: hymnTitleOptions.fontSize1,
-            fontFace: hymnTitleOptions.fontFace1,
-            color: hymnTitleOptions.fontColor1,
-          },
-          text: '(hymn no here!)',
-        },
-      },
-      {
-        placeholder: {
-          options: {
-            name: 'hymn-title',
-            type: 'title',
-            x: 0,
-            y: 3.75,
-            w: '100%',
-            autoFit: true,
-            align: 'center',
-            valign: 'middle',
-            fontSize: hymnTitleOptions.fontSize2,
-            fontFace: hymnTitleOptions.fontFace2,
-            color: hymnTitleOptions.fontColor2,
-          },
-          text: '(hymn title here!)',
-        },
-      },
-    ],
-  });
-
-  // define rr title slide master
-  pptx.defineSlideMaster({
-    title: 'RR_TITLE_SLIDE',
-    background: { path: '/backgrounds/rr-background.jpg' },
-    objects: [
-      {
-        placeholder: {
-          options: {
-            name: 'rr-title',
-            type: 'title',
-            x: 0,
-            y: 1.76,
-            w: '100%',
-            // h: '100%',
-            autoFit: true,
-            align: 'center',
-            valign: 'middle',
-            fontSize: 54,
-            fontFace: rrTitleOptions.fontFace,
-            color: rrTitleOptions.fontColor,
-          },
-          text: '(title here!)',
-        },
-      },
-      {
-        placeholder: {
-          options: {
-            name: 'rr-subtitle',
-            type: 'title',
-            x: 0,
-            y: 2.64,
-            w: '100%',
-            // h: '100%',
-            autoFit: true,
-            align: 'center',
-            valign: 'middle',
-            fontSize: rrTitleOptions.fontSize,
-            fontFace: rrTitleOptions.fontFace,
-            color: rrTitleOptions.fontColor,
-          },
-          text: '(subtitle here!)',
-        },
-      },
-    ],
-  });
-
-  // define rr content slide master
-  pptx.defineSlideMaster({
-    title: 'RR_CONTENT_SLIDE',
-    background: { path: '/backgrounds/rr-background.jpg' },
-    objects: [
-      {
-        rect: {
-          x: 0,
-          y: 0,
-          w: '100%',
-          h: '100%',
-          fill: { color: '000000', transparency: 50 },
-        },
-      },
-    ],
-  });
-
-  // define bible cover slide master
-  pptx.defineSlideMaster({
-    title: 'BIBLE_COVER',
-    background: { path: '/backgrounds/bible-fullscreen-bg.jpg' },
-    objects: [
-      {
-        placeholder: {
-          options: {
-            name: 'rr-title',
-            type: 'title',
-            x: 0,
-            y: 1.76,
-            w: '100%',
-            // h: '100%',
-            autoFit: true,
-            align: 'center',
-            valign: 'middle',
-            fontSize: 54,
-            fontFace: rrTitleOptions.fontFace,
-            color: rrTitleOptions.fontColor,
-          },
-          text: '(title here!)',
-        },
-      },
-      {
-        placeholder: {
-          options: {
-            name: 'rr-subtitle',
-            type: 'title',
-            x: 0,
-            y: 2.64,
-            w: '100%',
-            // h: '100%',
-            autoFit: true,
-            align: 'center',
-            valign: 'middle',
-            fontSize: rrTitleOptions.fontSize,
-            fontFace: rrTitleOptions.fontFace,
-            color: rrTitleOptions.fontColor,
-          },
-          text: '(subtitle here!)',
-        },
-      },
-    ],
-  });
-
-  // define bible content slide master
-  pptx.defineSlideMaster({
-    title: 'BIBLE_SLIDE',
-    background: { path: '/backgrounds/bible-fullscreen-bg.jpg' },
-    // objects: [{ rect: { x: 0, y: 0, w: '100%', h: '100%', fill: { color: '000000', transparency: 50 } } }],
+function defineSlideMasters(pptx, types) {
+  types.forEach((type) => {
+    slideMasterOptionsByType[type].forEach((options) => {
+      pptx.defineSlideMaster(options);
+    });
   });
 }
 
