@@ -12,10 +12,10 @@ modalTitle.addEventListener('keyup', (e) => {
   document.querySelector('#songDetailModalLabel').innerHTML = e.target.value;
 });
 
-const newBtn = document.querySelector('#new-button');
+const newLyricsBtn = document.querySelector('#new-lyrics-button');
 
-if (newBtn) {
-  newBtn.addEventListener('click', () => showNewSongModal());
+if (newLyricsBtn) {
+  newLyricsBtn.addEventListener('click', () => showNewSongModal());
 }
 
 // modal : 등록
@@ -176,7 +176,7 @@ async function saveSong(newSong) {
     }
 
     alert(`${newSong.title}이(가) 등록되었습니다.`);
-    render('%', 1);
+    renderLyrics('%', 1);
     songDetailModal.hide();
   } catch (error) {
     alert('등록 실패');
@@ -202,7 +202,7 @@ async function deleteSong(id) {
     }
 
     alert('삭제 성공');
-    render('%', 1);
+    renderLyrics('%', 1);
     songDetailModal.hide();
   } catch (error) {
     alert('삭제 실패');
@@ -228,7 +228,7 @@ async function modifySong(id, modifiedSong) {
     }
 
     alert('수정되었습니다.');
-    render(searchInput.value, 1);
+    renderLyrics(lyricsSearchInput.value, 1);
     songDetailModal.hide();
 
     // setlist에 선택되어있는 경우 setList값 업데이트
@@ -269,8 +269,8 @@ if (hymnDivideLinesBtn) {
   });
 }
 
-const searchInput = document.querySelector('#search-input');
-searchInput.addEventListener('keypress', (e) => {
+const lyricsSearchInput = document.querySelector('#search-input');
+lyricsSearchInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') {
     searchBtn.dispatchEvent(new Event('click'));
   }
@@ -278,14 +278,14 @@ searchInput.addEventListener('keypress', (e) => {
 
 const searchBtn = document.querySelector('#search-btn');
 searchBtn.addEventListener('click', () => {
-  const query = searchInput.value.trim();
+  const query = lyricsSearchInput.value.trim();
   if (query === '') {
     alert('검색어를 입력해주세요.');
-    searchInput.focus();
+    lyricsSearchInput.focus();
     return;
   }
 
-  render(query, 1);
+  renderLyrics(query, 1);
 });
 
 async function searchSong(query, pageNum) {
@@ -295,20 +295,15 @@ async function searchSong(query, pageNum) {
   return data;
 }
 
-function renderSearchTable(songs, pageNum) {
-  const tbody = document.querySelector('#search-table tbody');
+function renderLyricsTable(songs, pageNum) {
+  const thead = document.querySelector('#lyrics-table thead');
+  const tbody = document.querySelector('#lyrics-table tbody');
+
+  thead.style.display = '';
   tbody.innerHTML = '';
 
   if (songs.length <= 0) {
-    let tr = document.createElement('tr');
-    tr.className = 'text-center';
-    let td = document.createElement('td');
-    td.colSpan = 4;
-    const span = document.createElement('span');
-    span.innerHTML = '검색된 곡이 없습니다. ';
-    td.appendChild(span);
-    tr.appendChild(td);
-    tbody.append(tr);
+    thead.style.display = 'none';
     return;
   }
 
@@ -376,7 +371,7 @@ function renderPagination(totalCount, currentPage, query) {
   a.href = '#';
   a.onclick = (e) => {
     e.preventDefault();
-    render(query, currentPage - 1);
+    renderLyrics(query, currentPage - 1);
   };
   li.appendChild(a);
   paginationElement.appendChild(li);
@@ -390,7 +385,7 @@ function renderPagination(totalCount, currentPage, query) {
   a.href = '#';
   a.onclick = (e) => {
     e.preventDefault();
-    render(query, 1);
+    renderLyrics(query, 1);
   };
   li.appendChild(a);
   paginationElement.appendChild(li);
@@ -425,7 +420,7 @@ function renderPagination(totalCount, currentPage, query) {
     a.href = '#';
     a.onclick = (e) => {
       e.preventDefault();
-      render(query, i);
+      renderLyrics(query, i);
     };
     li.appendChild(a);
     paginationElement.appendChild(li);
@@ -452,7 +447,7 @@ function renderPagination(totalCount, currentPage, query) {
     a.href = '#';
     a.onclick = (e) => {
       e.preventDefault();
-      render(query, totalPage);
+      renderLyrics(query, totalPage);
     };
     li.appendChild(a);
     paginationElement.appendChild(li);
@@ -469,7 +464,7 @@ function renderPagination(totalCount, currentPage, query) {
   a.href = '#';
   a.onclick = (e) => {
     e.preventDefault();
-    render(query, currentPage + 1);
+    renderLyrics(query, currentPage + 1);
   };
   li.appendChild(a);
   paginationElement.appendChild(li);
@@ -485,16 +480,17 @@ function renderSearchInfo(query, totalCount) {
   }
 
   const span = document.createElement('span');
-  span.className = 'small';
+  span.className = 'text-body-secondary small';
   span.innerHTML = `'${query}' 검색결과 : 총 ${totalCount} 건`;
   resultInfo.appendChild(span);
 
   const button = document.createElement('button');
-  button.innerHTML = '&times;';
-  button.className = 'btn btn-danger btn-sm ms-2';
+  button.innerHTML = '<i class="fa-regular fa-circle-xmark"></i>';
+  button.className = 'btn p-0 ms-1';
+  button.style.color = '';
   button.onclick = () => {
-    searchInput.value = '';
-    render('%', 1);
+    lyricsSearchInput.value = '';
+    renderLyrics('%', 1);
   };
 
   resultInfo.appendChild(button);
@@ -526,11 +522,11 @@ async function selectLyrics(id) {
   renderSetlist();
 }
 
-async function render(query, pageNum) {
+async function renderLyrics(query, pageNum) {
   try {
     const { songs, totalCount } = await searchSong(query, pageNum);
 
-    renderSearchTable(songs, pageNum);
+    renderLyricsTable(songs, pageNum);
     renderPagination(totalCount, pageNum, query);
     renderSearchInfo(query, totalCount);
   } catch (error) {
@@ -540,5 +536,5 @@ async function render(query, pageNum) {
   renderSetlist();
 }
 
-render('%', 1);
-searchInput.focus();
+renderLyrics('%', 1);
+lyricsSearchInput.focus();
