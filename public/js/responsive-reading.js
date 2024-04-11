@@ -23,6 +23,7 @@ rrSelect.addEventListener('change', async () => {
 function renderResponsiveReading(data) {
   const rrCardBody = document.querySelector('#rr-card-body');
   rrCardBody.innerHTML = '';
+
   const { no, title, contents } = data;
 
   const h5 = document.createElement('h5');
@@ -46,12 +47,14 @@ function renderResponsiveReading(data) {
   a.innerHTML = `교독문 ${no}번 선택`;
   a.onclick = (e) => {
     e.preventDefault();
+
     setList.push({
       no: setList.length + 1,
       type: 'responsive-reading',
       title: `${no}번. ${title}`,
       contents,
     });
+
     renderSetlist();
   };
   rrCardBody.appendChild(a);
@@ -60,14 +63,15 @@ function renderResponsiveReading(data) {
 async function setResponsiveReadingSelectOptions() {
   try {
     const response = await fetch('/responsive-reading/index.json');
-    const data = await response.json();
+    const rrData = await response.json();
 
-    for (const { no, title } of data) {
+    for (const { no, title } of rrData) {
       const option = document.createElement('option');
       option.value = no;
       option.innerHTML = `${no}번. ${title}`;
       rrSelect.appendChild(option);
     }
+
     const choices = new Choices(rrSelect, {
       silent: false,
       choices: [],

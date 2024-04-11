@@ -91,12 +91,12 @@ function renderSetlist() {
           break;
       }
     };
-    li.addEventListener('dragstart', () => {
-      li.classList.add('dragging');
-    });
+    li.addEventListener('dragstart', () => li.classList.add('dragging'));
     li.addEventListener('dragend', () => {
       li.classList.remove('dragging');
-      console.log('oldIdx:', idx, ', newIdx:', newIndexAfterDrag);
+
+      // console.log('oldIdx:', idx, ', newIdx:', newIndexAfterDrag);
+
       [setList[idx], setList[newIndexAfterDrag]] = [
         setList[newIndexAfterDrag],
         setList[idx],
@@ -105,7 +105,7 @@ function renderSetlist() {
         s.no = index + 1;
       });
       renderSetlist();
-      console.log(setList);
+      // console.log(setList);
     });
 
     const div = document.createElement('div');
@@ -139,10 +139,10 @@ function renderSetlist() {
         type = '교독문';
         badgeSpan.classList.add('text-bg-secondary');
         break;
-
       default:
         break;
     }
+
     badgeSpan.innerHTML = `${type} `;
     div.appendChild(badgeSpan);
 

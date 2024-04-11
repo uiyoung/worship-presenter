@@ -32,8 +32,8 @@ hymnSelect.addEventListener('change', async () => {
   // hymn lyrcis
   try {
     const response = await fetch(`/hymn/lyrics/${no}.json`);
-    const data = await response.json();
-    renderHymnLyrics(data);
+    const hymnLyricsData = await response.json();
+    renderHymnLyrics(hymnLyricsData);
   } catch (error) {
     console.error(error);
   }
@@ -44,8 +44,8 @@ hymnSelect.addEventListener('change', async () => {
     if (!response.ok) {
       throw new Error('Request failed with status ' + response.status);
     }
-    const data = await response.json();
-    renderHymnImages(data);
+    const hymnImageData = await response.json();
+    renderHymnImages(hymnImageData);
   } catch (error) {
     console.error(error);
     hymnSlide.innerHTML = '이미지 불러오기 실패';
@@ -143,15 +143,15 @@ function renderHymnLyrics(data) {
       }
     };
 
-    const hymnAutoAlignBtn = document.querySelector(
-      '#hymn-modal-auto-align-btn'
+    const hymnDivideLinesBtn = document.querySelector(
+      '#hymn-modal-divide-lines-btn'
     );
-    hymnAutoAlignBtn.onclick = () => {
+    hymnDivideLinesBtn.onclick = () => {
       const hymnTextAreas = document.querySelectorAll('.hymn-textarea');
       const linesPerSlide =
         Number(document.querySelector('#hymn-lines-per-slide').value) || 2;
       hymnTextAreas.forEach((textarea) => {
-        textarea.value = autoAlign(textarea.value, linesPerSlide);
+        textarea.value = divideTextByLines(textarea.value, linesPerSlide);
         textarea.rows = textarea.value.split('\n').length;
       });
     };
@@ -203,6 +203,7 @@ function renderHymnLyrics(data) {
       title: `찬송가 ${no}장-${title}`,
       lyrics,
     });
+
     renderSetlist();
   };
   hymnCardBody.appendChild(selectLyricsBtn);
@@ -210,6 +211,7 @@ function renderHymnLyrics(data) {
 
 function renderHymnImages(data) {
   const { no, title, images } = data;
+
   // Sort the image file names in ascending order(numerically)
   images.sort((a, b) => {
     const numA = parseInt(a.match(/\d+/)[0]);

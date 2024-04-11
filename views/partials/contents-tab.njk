@@ -1,35 +1,41 @@
 <div class="card">
   <div class="card-header">
-    <ul class="nav nav-pills nav-fill card-header-pills">
-      <li class="nav-item">
-        <a class="nav-link active" href="#" data-bs-toggle="pill" data-bs-target="#pills-lyrics">
-          <i class="fa-regular fa-file-lines me-2"></i>가사</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#" data-bs-toggle="pill" data-bs-target="#pills-hymn">
-          <i class="fa-solid fa-music me-2"></i>찬송가</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#" data-bs-toggle="pill" data-bs-target="#pills-bible">
-          <i class="fa-solid fa-book-bible me-2"></i>성경</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#" data-bs-toggle="pill" data-bs-target="#pills-responsive-reading">
-          <i class="fa-solid fa-scroll me-2"></i>교독문</a>
-      </li>
-    </ul>
+    {# nav tabs #}
+    <nav class="nav nav-pills card-header-pills nav-fill nav-justified" id='contents-tab'>
+      <button type='button' class="nav-link active" data-bs-toggle="pill" data-bs-target="#pills-lyrics">
+        <i class="fa-regular fa-file-lines"></i> 가사
+        </button>
+      <button type='button' class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-hymn">
+        <i class="fa-solid fa-music"></i> 찬송가
+        </button>
+      <button type='button' class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-bible">
+        <i class="fa-solid fa-book-bible"></i> 성경
+        </button>
+      <button type='button' class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-responsive-reading">
+        <i class="fa-solid fa-scroll"></i> 교독문
+        </button>
+    </nav>
   </div>
 
   <div class="card-body">
+    {# tab panes #}
     <div class="tab-content" id="pills-tabContent">
       <!-- lyrics tab-->
-      {% include './tabs/lyrics.njk' %}
+      <div class="tab-pane fade show active" id="pills-lyrics" role="tabpanel" aria-labelledby="pills-lyrics-tab" tabindex="0">
+        {% include './tabs/lyrics.njk' %}
+      </div>
       <!-- hymn search tab-->
-      {% include './tabs/hymn.njk' %}
+      <div class="tab-pane fade" id="pills-hymn" role="tabpanel" aria-labelledby="pills-hymn-tab" tabindex="0">
+        {% include './tabs/hymn.njk' %}
+      </div>
       <!-- bible search tab-->
-      {% include './tabs/bible.njk' %}
+      <div class="tab-pane fade" id="pills-bible" role="tabpanel" aria-labelledby="pills-bible-tab" tabindex="0">
+        {% include './tabs/bible.njk' %}
+      </div>
       <!-- responsive reading search tab-->
-      {% include './tabs/responsive-reading.njk' %}
+      <div class="tab-pane fade" id="pills-responsive-reading" role="tabpanel" aria-labelledby="pills-responsive-reading-tab" tabindex="0">
+        {% include './tabs/responsive-reading.njk' %}
+      </div>
     </div>
   </div>
 </div>
