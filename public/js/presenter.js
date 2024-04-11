@@ -246,9 +246,11 @@ async function modifySong(id, modifiedSong) {
   }
 }
 
-const autoAlignBtn = document.querySelector('#song-modal-auto-align-btn');
-if (autoAlignBtn) {
-  autoAlignBtn.addEventListener('click', () => {
+const hymnDivideLinesBtn = document.querySelector(
+  '#song-modal-divide-lines-btn'
+);
+if (hymnDivideLinesBtn) {
+  hymnDivideLinesBtn.addEventListener('click', () => {
     const modalLyrics = document.querySelector('#modal-lyrics');
     if (modalLyrics.value.trim().length <= 0) {
       alert('가사를 입력해주세요.');
@@ -258,29 +260,13 @@ if (autoAlignBtn) {
 
     const linesPerSlide =
       Number(document.querySelector('#lines-per-slide').value) || 2;
-    modalLyrics.value = autoAlign(modalLyrics.value, linesPerSlide);
+    modalLyrics.value = divideTextByLines(modalLyrics.value, linesPerSlide);
     modalLyrics.style.height = `${Math.max(
       modalLyrics.value.split('\n').length * 20 + 38,
       280
     )}px`;
     modalLyrics.focus();
   });
-}
-
-function autoAlign(text, linesPerSlide) {
-  const lines = text
-    .split('\n')
-    .map((e) => e.replace(/[\s\u200B]+/g, ' ').trim()) // ZWSP공백 제거, 문자열 내의 연속된 공백을 하나의 공백으로 대체
-    .filter((e) => e !== '');
-
-  // linesPerSlide 만큼 묶어서 result에 담기
-  let result = [];
-  while (lines.length > 0) {
-    result.push(lines.splice(0, linesPerSlide));
-  }
-
-  result = result.map((e) => e.join('\n')).join('\n\n');
-  return result;
 }
 
 const searchInput = document.querySelector('#search-input');
@@ -307,20 +293,6 @@ async function searchSong(query, pageNum) {
   const response = await fetch(`/song?${searchBy}=${query}&page=${pageNum}`);
   const data = await response.json();
   return data;
-}
-
-async function render(query, pageNum) {
-  try {
-    const { songs, totalCount } = await searchSong(query, pageNum);
-
-    renderSearchTable(songs, pageNum);
-    renderPagination(totalCount, pageNum, query);
-    renderSearchInfo(query, totalCount);
-  } catch (error) {
-    console.error(error);
-  }
-
-  renderSetlist();
 }
 
 function renderSearchTable(songs, pageNum) {
@@ -550,6 +522,20 @@ async function selectLyrics(id) {
     title,
     lyrics,
   });
+
+  renderSetlist();
+}
+
+async function render(query, pageNum) {
+  try {
+    const { songs, totalCount } = await searchSong(query, pageNum);
+
+    renderSearchTable(songs, pageNum);
+    renderPagination(totalCount, pageNum, query);
+    renderSearchInfo(query, totalCount);
+  } catch (error) {
+    console.error(error);
+  }
 
   renderSetlist();
 }
