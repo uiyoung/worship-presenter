@@ -1,0 +1,35 @@
+<div class="card">
+  <div class="card-header">
+    <ul class="nav nav-pills nav-fill card-header-pills">
+      <li class="nav-item">
+        <a class="nav-link active" href="#" data-bs-toggle="pill" data-bs-target="#pills-lyrics">
+          <i class="fa-regular fa-file-lines me-2"></i>가사</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" data-bs-toggle="pill" data-bs-target="#pills-hymn">
+          <i class="fa-solid fa-music me-2"></i>찬송가</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" data-bs-toggle="pill" data-bs-target="#pills-bible">
+          <i class="fa-solid fa-book-bible me-2"></i>성경</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" data-bs-toggle="pill" data-bs-target="#pills-responsive-reading">
+          <i class="fa-solid fa-scroll me-2"></i>교독문</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card-body">
+    <div class="tab-content" id="pills-tabContent">
+      <!-- lyrics tab-->
+      {% include './tabs/lyrics.njk' %}
+      <!-- hymn search tab-->
+      {% include './tabs/hymn.njk' %}
+      <!-- bible search tab-->
+      {% include './tabs/bible.njk' %}
+      <!-- responsive reading search tab-->
+      {% include './tabs/responsive-reading.njk' %}
+    </div>
+  </div>
+</div>

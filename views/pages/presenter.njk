@@ -1,0 +1,44 @@
+{% extends '../layout.njk' %}
+
+{% block css %}
+  <link rel="stylesheet" href="/css/presenter.css"/>
+{% endblock %}
+
+{% block content %}
+  <div class="container-xxl mt-2">
+    <div class="row justify-content-center">
+      <div class="col-lg-4">
+        <aside>
+          {# set list #}
+          {% include '../partials/set-list.njk' %}
+        </aside>
+      </div>
+
+      <div class="col-lg-8">
+        <main>
+          {# main contents tab #}
+          {% include '../partials/contents-tab.njk' %}
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- lyrics detail modal -->
+  {% include "../modals/lyrics-detail.njk" %}
+  <!-- hymn lyrics modal -->
+  {% include "../modals/hymn-lyrics.njk" %}
+  <!-- settings modal -->
+  {% include "../modals/settings.njk" %}
+{% endblock %}
+
+{% block script %}
+  <script src="/js/utils.js"></script>
+  <script src="/js/settings-modal.js"></script>
+  <script src="/js/set-list.js"></script>
+  <script src="/js/presenter.js"></script>
+  <script src="/js/hymn.js"></script>
+  <script src="/js/bible.js"></script>
+  <script src="/js/responsive-reading.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+  <script src="/js/generate-ppt.js"></script>
+{% endblock %}

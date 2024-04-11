@@ -53,9 +53,9 @@ exports.logout = (req, res, next) => {
 };
 
 exports.renderLogin = (req, res, next) => {
-  res.render('login', { title: 'Login - Worship Presneter' });
+  res.render('pages/login.njk', { title: 'Login - Worship Presneter' });
 };
 
 exports.renderSignup = (req, res, next) => {
-  res.render('signup', { title: 'Sign Up- Worship Presneter' });
+  res.render('pages/signup.njk', { title: 'Sign Up- Worship Presneter' });
 };

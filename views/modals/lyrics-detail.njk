@@ -1,0 +1,91 @@
+<div class="modal fade" id="songDetailModal" tabindex="-1" aria-labelledby="songDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="d-flex align-items-center text-truncate">
+          <h1 class="modal-title fw-bold fs-5" id="songDetailModalLabel">New Song</h1>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-6">
+              <form>
+                <div class="form-floating mb-2">
+                  <input type="text" class="form-control" id="modal-title" placeholder="제목을 입력해주세요."
+                    autocomplete="off" />
+                  <label for="modal-title">제목</label>
+                </div>
+                <div class="form-floating mb-2 mb-lg-0">
+                  <textarea class="form-control" placeholder="가사를 입력해주세요." id="modal-lyrics" autocomplete="off"
+                    style="height: 280px"></textarea>
+                  <label for="modal-lyrics">가사</label>
+                </div>
+              </form>
+            </div>
+            <div class="col-lg-6">
+              <!-- <div class="mb-2">
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="song-type"
+                  id="hymn-radio"
+                  value="HYMN"
+                  autocomplete="off"
+                />
+                <label class="btn btn-sm btn-outline-success" for="hymn-radio">찬송가</label>
+                <input type="radio" class="btn-check" name="song-type" id="ccm-radio" value="CCM" autocomplete="off" />
+                <label class="btn btn-sm btn-outline-success" for="ccm-radio">CCM</label>
+              </div> -->
+
+              <div class="form-floating mb-2">
+                <textarea class="form-control" placeholder="메모를 입력해주세요." id="modal-memo" autocomplete="off"></textarea>
+                <label for="modal-memo">메모</label>
+              </div>
+
+              <details class="mb-2" id="modal-song-details">
+                <summary class="small">등록 정보</summary>
+                <ul class="list-group mb-2">
+                  <li class="list-group-item small opacity-50" id="modal-created-at" hidden></li>
+                  <li class="list-group-item small opacity-50" id="modal-updated-at" hidden></li>
+                </ul>
+                <button type="button" class="btn btn-danger w-100" id="modal-delete-btn" hidden>
+                  삭제하기
+                </button>
+              </details>
+              <div>
+                <button type="button" class="btn btn-outline-primary w-100 mb-2" id="modal-select-btn" hidden>
+                  선택하기
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <div class="d-flex align-items-center">
+          <select style="width: 70%" name="lines-per-slide" class="form-select me-1" id="lines-per-slide">
+            <option value="1">1줄 씩</option>
+            <option value="2" selected>2줄 씩</option>
+            <option value="3">3줄 씩</option>
+            <option value="4">4줄 씩</option>
+            <option value="5">5줄 씩</option>
+            <option value="6">6줄 씩</option>
+          </select>
+          <button type="button" class="btn btn-outline-primary flex-shrink-0" id="song-modal-auto-align-btn">
+            정렬
+          </button>
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary" id="modal-save-btn">
+            저장
+          </button>
+          <button type="button" class="btn btn-primary" id="modal-modify-btn" hidden>
+            수정
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

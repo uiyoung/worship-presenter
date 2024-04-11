@@ -1,0 +1,46 @@
+<div class="modal fade" id="hymnLyricsModal" tabindex="-1" aria-labelledby="hymnLyricsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="d-flex align-items-center text-truncate">
+          <h1 class="modal-title fw-bold fs-5" id="hymnLyricsModalLabel">Hymn Title</h1>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="hymn-modal-body">
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">1절</label>
+          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">2절</label>
+          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer justify-content-between">
+        <div class="d-flex align-items-center">
+          <select style="width: 70%" name="hymn-lines-per-slide" class="form-select me-1" id="hymn-lines-per-slide">
+            <option value="1">1줄 씩</option>
+            <option value="2" selected>2줄 씩</option>
+            <option value="3">3줄 씩</option>
+            <option value="4">4줄 씩</option>
+            <option value="5">5줄 씩</option>
+            <option value="6">6줄 씩</option>
+          </select>
+          <button type="button" class="btn btn-outline-primary flex-shrink-0" id="hymn-modal-auto-align-btn">
+            정렬
+          </button>
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary" id="hymn-modal-modify-btn">
+            수정
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            닫기
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

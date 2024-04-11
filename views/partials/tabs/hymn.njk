@@ -1,0 +1,46 @@
+<div class="tab-pane fade" id="pills-hymn" role="tabpanel" aria-labelledby="pills-hymn-tab" tabindex="0">
+  <select class="form-select mb-3" id="hymn-select">
+    <option value="">찬송가 선택</option>
+  </select>
+
+  <!-- hymn image slide -->
+  <div class="card mb-2">
+    <div class="card-body">
+      <div class="carousel carousel-dark slide my-1" id="hymn-carousel">
+        <div class="carousel-indicators" id="hymn-indicators">
+          <button type="button" data-bs-target="#hymn-carousel" data-bs-slide-to="0" class="active"
+                        aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#hymn-carousel" data-bs-slide-to="1"
+                        aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#hymn-carousel" data-bs-slide-to="2"
+                        aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner" id="hymn-slide">
+          <div class="carousel-item active">
+            <!-- <img src="default-image.jpg" alt="Default Image"> -->
+            <div class="carousel-caption">
+              <h5>Default Content</h5>
+              <p>This is the default content to be displayed when there is no data available.</p>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#hymn-carousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#hymn-carousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      <div id="hymn-image-btn"></div>
+    </div>
+  </div>
+
+  <!-- hymn lyrics -->
+  <div class="card">
+    <div class="card-body" id="hymn-card-body">
+      <p class="card-text text-body-secondary text-center">찬송가를 선택해 주세요.</p>
+    </div>
+  </div>
+</div>

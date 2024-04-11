@@ -1,10 +1,11 @@
 const router = require('express').Router();
 
 router.get('/', (req, res) => {
-  res.render('presenter', { title: 'Worship Presenter' });
+  res.render('pages/presenter.njk', { title: 'Worship Presenter' });
 });
 
 router.get('/about', (req, res) => {
-  res.render('about', { title: 'about - Worship Presenter' });
+  res.render('pages/about.njk', { title: 'about - Worship Presenter' });
 });
+
 module.exports = router;

@@ -1,0 +1,44 @@
+<div class="tab-pane fade show active" id="pills-lyrics" role="tabpanel" aria-labelledby="pills-lyrics-tab" tabindex="0">
+  <div class="d-flex justify-content-end mb-3">
+    <button type="button" class="btn btn-primary btn-sm" 
+      {% if user %} 
+        id="new-button" 
+      {% else %}
+        onclick="location.href='/auth/login'" 
+      {% endif %}>
+      <i class="fa-regular fa-circle-xmark fa-rotate-by" style="--fa-rotate-angle: 45deg;"></i>등록하기
+    </button>
+  </div>
+
+  <div class=" input-group my-3">
+    <div class="col-auto">
+      <label class="visually-hidden" for="specificSizeSelect">Preference</label>
+      <select class="form-select" id="search-type-select">
+        <option value="title" selected="selected">제목</option>
+        <option value="lyrics">가사</option>
+      </select>
+    </div>
+    <input type="search" class="form-control" id="search-input"/>
+    <button class="btn btn-outline-primary" type="button" id="search-btn">검색</button>
+  </div>
+
+  <div class="text-center mb-2 text-body-secondary" id="search-info" hidden></div>
+
+  <div class="table-responsive text-nowrap">
+    <table class="table table-hover" id="search-table">
+      <thead class="table-light">
+        <tr class="text-center">
+          <th style="width: 5%">#</th>
+          <th style="width: 5%">타입</th>
+          <th>제목</th>
+          <th style="width: 5%">선택</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <nav aria-label="Page navigation">
+    <ul class="pagination pagination-sm justify-content-center" id="search-pagination"></ul>
+  </nav>
+</div>
