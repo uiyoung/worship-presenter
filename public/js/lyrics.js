@@ -288,11 +288,14 @@ searchBtn.addEventListener('click', () => {
   renderLyrics(query, 1);
 });
 
-async function searchSong(query, pageNum) {
-  const searchBy = document.querySelector('#search-type-select').value;
-  const response = await fetch(`/song?${searchBy}=${query}&page=${pageNum}`);
-  const data = await response.json();
-  return data;
+async function searchSong(query, searchBy, pageNum) {
+  try {
+    const response = await fetch(`/song?${searchBy}=${query}&page=${pageNum}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function renderLyricsTable(songs, pageNum) {
@@ -523,18 +526,19 @@ async function selectLyrics(id) {
 }
 
 async function renderLyrics(query, pageNum) {
-  try {
-    const { songs, totalCount } = await searchSong(query, pageNum);
+  const searchBy = document.querySelector('#search-type-select').value;
+  const { songs, totalCount } = await searchSong(query, searchBy, pageNum);
 
-    renderLyricsTable(songs, pageNum);
-    renderPagination(totalCount, pageNum, query);
-    renderSearchInfo(query, totalCount);
-  } catch (error) {
-    console.error(error);
-  }
-
+  renderLyricsTable(songs, pageNum);
+  renderPagination(totalCount, pageNum, query);
+  renderSearchInfo(query, totalCount);
   renderSetlist();
 }
 
-renderLyrics('%', 1);
-lyricsSearchInput.focus();
+function initLyrics() {
+  renderLyrics('%', 1);
+  lyricsSearchInput.focus();
+}
+
+// renderLyrics('%', 1);
+// lyricsSearchInput.focus();
