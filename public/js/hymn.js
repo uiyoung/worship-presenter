@@ -128,7 +128,7 @@ function renderHymnLyrics(data) {
         });
 
         const result = await response.json();
-        console.log(result);
+        // console.log(result);
 
         if (!result.success && result.redirectURL) {
           alert('로그인이 필요합니다.');
