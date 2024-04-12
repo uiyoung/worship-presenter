@@ -5,6 +5,7 @@ public/backgrounds
 public/responsive-reading
 
 test.js
+.DS_Store
 
 # Logs
 logs
