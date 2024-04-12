@@ -173,7 +173,7 @@ function renderSetlist() {
     setListEl.append(li);
   });
 
-  console.log(setList);
+  // console.log(setList);
 }
 
 function getDragAfterElement(y) {
