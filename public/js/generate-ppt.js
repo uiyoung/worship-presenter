@@ -65,7 +65,7 @@ const shadowOptions = {
   type: 'outer',
   angle: 45,
   blur: 3,
-  color: '#000000',
+  color: '000000',
   offset: 3,
   opacity: 0.57,
 };
@@ -377,7 +377,7 @@ function generateBible(pptx, sectionTitle, data) {
     bibleCoverSlide
       .addText('교독문', {
         placeholder: 'bible-title',
-        shadow: shadowOptions,
+        shadow: { ...shadowOptions },
       })
       .addShape(pptx.ShapeType.rect, {
         fill: { color: 'FFFFFF' },
@@ -479,7 +479,7 @@ function generateResponsiveReading(pptx, sectionTitle, data) {
     rrCoverSlide
       .addText('교독문', {
         placeholder: 'rr-title',
-        shadow: shadowOptions,
+        shadow: { ...shadowOptions },
       })
       .addShape(pptx.ShapeType.rect, {
         fill: { color: '#FFFFFF' },
