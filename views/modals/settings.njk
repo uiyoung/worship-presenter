@@ -11,7 +11,7 @@
           <form>
             <label for="modal-filename" class="col-form-label fw-bold">
               <i class="fa-regular fa-file-powerpoint"></i> 파일명</label>
-            <div class="input-group input-group-sm w-50 mb-3">
+            <div class="input-group input-group-sm w-50 mb-2">
               <input type="text" class="form-control" id="modal-filename" />
               <span class="input-group-text" id="basic-addon2">.pptx</span>
             </div>
@@ -26,13 +26,13 @@
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#lyrics-setting-panel">가사</button>
                 </h2>
                 <div id="lyrics-setting-panel" class="accordion-collapse collapse">
-                  <div class="accordion-body">
+                  <div class="accordion-body p-2">
                     <div class="row">
                       <div class="col-lg-7">
-                        <div>
+                        <div class='d-flex flex-column gap-3'>
                           <div>
-                            <label class="col-form-label">색상 프리셋</label>
-                            <div class="d-flex gap-2">
+                            <label class="form-label">색상 프리셋</label>
+                            <div class="d-flex gap-2 mb-1">
                               <div>
                                 <input type="radio" class="btn-check" name="preset-color" id="preset1" autocomplete="off" value='preset1'>
                                 <label class="btn" for="preset1" style="background-color: #009933;color: #FFFFFF;">1</label>
@@ -63,22 +63,22 @@
                                 </button>
                               </div>
                             </div>
+
+                            <div class="d-flex gap-2">
+                              <div>
+                                <label for="bg-color-input" class="form-label mb-1">배경색</label>
+                                <input type="color" class="form-control form-control-color" id="bg-color-input" value="#563d7c" />
+                              </div>
+                              <div>
+                                <label for="font-color-input" class="form-label mb-1">글자색</label>
+                                <input type="color" class="form-control form-control-color" id="font-color-input" value="#563d7c" />
+                              </div>
+                            </div>
                           </div>
 
                           <div class="d-flex gap-2">
                             <div>
-                              <label for="bg-color-input" class="col-form-label">배경색</label>
-                              <input type="color" class="form-control form-control-color" id="bg-color-input" value="#563d7c" />
-                            </div>
-                            <div>
-                              <label for="font-color-input" class="col-form-label">글자색</label>
-                              <input type="color" class="form-control form-control-color" id="font-color-input" value="#563d7c" />
-                            </div>
-                          </div>
-
-                          <div class="d-flex gap-2 mb-3">
-                            <div>
-                              <label class="col-form-label">수직 정렬</label>
+                              <label class="form-label">수직 정렬</label>
                               <div>
                                 <div class="btn-group">
                                   <input type="radio" class="btn-check" name="vertical-align" id="vertical-top-input" value="top" autocomplete="off">
@@ -91,7 +91,7 @@
                               </div>
                             </div>
                             <div>
-                              <label class="col-form-label">가로 정렬</label>
+                              <label class="form-label">가로 정렬</label>
                               <div>
                                 <div class="btn-group">
                                   <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-left-input" value="left" autocomplete="off">
@@ -120,7 +120,7 @@
 
                       <div class="col-lg-5">
                         <div>
-                          <label class="form-label fw-bold">미리보기</label>
+                          <label class="form-label">미리보기</label>
                           <div class="card ratio ratio-16x9">
                             <div class="card-body d-flex p-1" id="preview-ppt">
                               <p class="card-text" id="preview-text">첫번째줄 자막입니다<br />두번째줄 자막입니다</p>
@@ -140,7 +140,7 @@
                   </button>
                 </h2>
                 <div id="hymn-setting-panel" class="accordion-collapse collapse">
-                  <div class="accordion-body">
+                  <div class="accordion-body p-2">
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" role="switch" id="hymn-cover-slide" checked>
                       <label class="form-check-label" for="hymn-cover-slide">커버 슬라이드</label>
@@ -156,7 +156,7 @@
                   </button>
                 </h2>
                 <div id="bible-settings-panel" class="accordion-collapse collapse">
-                  <div class="accordion-body">
+                  <div class="accordion-body p-2">
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" role="switch" id="bible-cover-slide" disabled>
                       <label class="form-check-label" for="bible-cover-slide">커버 슬라이드</label>
@@ -172,7 +172,7 @@
                   </button>
                 </h2>
                 <div id="rr-settings-panel" class="accordion-collapse collapse">
-                  <div class="accordion-body">
+                  <div class="accordion-body p-2">
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" role="switch" id="rr-cover-slide" checked>
                       <label class="form-check-label" for="rr-cover-slide">커버 슬라이드</label>
