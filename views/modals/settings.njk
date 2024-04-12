@@ -9,119 +9,173 @@
         <div class="container-fluid">
           <!-- <div class="row"> -->
           <form>
-            <label for="modal-filename" class="col-form-label fw-bold">파일명</label>
-            <div class="input-group input-group-sm mb-3">
-              <input type="text" class="form-control" id="modal-filename"/>
+            <label for="modal-filename" class="col-form-label fw-bold">
+              <i class="fa-regular fa-file-powerpoint"></i> 파일명</label>
+            <div class="input-group input-group-sm w-50 mb-3">
+              <input type="text" class="form-control" id="modal-filename" />
               <span class="input-group-text" id="basic-addon2">.pptx</span>
             </div>
-            <hr/>
 
-            <div class="row">
-              <div class="col-lg-7">
-                <div>
-                  <label for="modal-title" class="col-form-label fw-bold">가사 설정</label>
+            <label class="col-form-label fw-bold">
+              <i class="fa-solid fa-sliders"></i> 설정
+            </label>
 
-                  <div>
-                    <label class="col-form-label">색상 프리셋</label>
-                    <div class="d-flex gap-2">
-                      <div>
-                        <input type="radio" class="btn-check" name="preset-color" id="preset1" autocomplete="off"
-                          value='preset1'>
-                        <label class="btn" for="preset1" style="background-color: #009933;color: #FFFFFF;">1</label>
-                      </div>
-                      <div>
-                        <input type="radio" class="btn-check" name="preset-color" id="preset2" value='preset2'
-                          autocomplete="off">
-                        <label class="btn" for="preset2" style="background-color: #1e1e2e;color: #cdd6f4;">2</label>
-                      </div>
-                      <div>
-                        <input type="radio" class="btn-check" name="preset-color" id="preset3" value='preset3'
-                          autocomplete="off">
-                        <label class="btn" for="preset3" style="background-color: #eff1f5;color: #8839ef;">3</label>
-                      </div>
-                      <div>
-                        <input type="radio" class="btn-check" name="preset-color" id="preset4" value='preset4'
-                          autocomplete="off">
-                        <label class="btn" for="preset4" style="background-color: #f2cdcd;color: #4c4f69;">4</label>
-                      </div>
-                      <div>
-                        <input type="radio" class="btn-check" name="preset-color" id="preset5" value='preset5'
-                          autocomplete="off">
-                        <label class="btn" for="preset5" style="background-color: #94e2d5;color: #303446;">5</label>
-                      </div>
-                      <div>
-                        <button type="button" class="btn" id="preset-color-custom" style="
-                            background: linear-gradient(50deg, #ff8787 0%, #ffd43b 30%, #63e6be 60%, #74c0fc 100%);
-                            color: white;
-                            border-color: #ffd43b;
-                          ">
-                          custom
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+            <div class="accordion accordion-flush">
+              <div class="accordion-item" id='lyrics-setting' hidden>
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#lyrics-setting-panel">가사</button>
+                </h2>
+                <div id="lyrics-setting-panel" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="row">
+                      <div class="col-lg-7">
+                        <div>
+                          <div>
+                            <label class="col-form-label">색상 프리셋</label>
+                            <div class="d-flex gap-2">
+                              <div>
+                                <input type="radio" class="btn-check" name="preset-color" id="preset1" autocomplete="off" value='preset1'>
+                                <label class="btn" for="preset1" style="background-color: #009933;color: #FFFFFF;">1</label>
+                              </div>
+                              <div>
+                                <input type="radio" class="btn-check" name="preset-color" id="preset2" value='preset2' autocomplete="off">
+                                <label class="btn" for="preset2" style="background-color: #1e1e2e;color: #cdd6f4;">2</label>
+                              </div>
+                              <div>
+                                <input type="radio" class="btn-check" name="preset-color" id="preset3" value='preset3' autocomplete="off">
+                                <label class="btn" for="preset3" style="background-color: #eff1f5;color: #8839ef;">3</label>
+                              </div>
+                              <div>
+                                <input type="radio" class="btn-check" name="preset-color" id="preset4" value='preset4' autocomplete="off">
+                                <label class="btn" for="preset4" style="background-color: #f2cdcd;color: #4c4f69;">4</label>
+                              </div>
+                              <div>
+                                <input type="radio" class="btn-check" name="preset-color" id="preset5" value='preset5' autocomplete="off">
+                                <label class="btn" for="preset5" style="background-color: #94e2d5;color: #303446;">5</label>
+                              </div>
+                              <div>
+                                <button type="button" class="btn" id="preset-color-custom" style="
+                                    background: linear-gradient(50deg, #ff8787 0%, #ffd43b 30%, #63e6be 60%, #74c0fc 100%);
+                                    color: white;
+                                    border-color: #ffd43b;
+                                  ">
+                                  custom
+                                </button>
+                              </div>
+                            </div>
+                          </div>
 
-                  <div class="d-flex gap-2">
-                    <div>
-                      <label for="bg-color-input" class="col-form-label">배경색</label>
-                      <input type="color" class="form-control form-control-color" id="bg-color-input" value="#563d7c"/>
-                    </div>
-                    <div>
-                      <label for="font-color-input" class="col-form-label">글자색</label>
-                      <input type="color" class="form-control form-control-color" id="font-color-input"
-                        value="#563d7c"/>
-                    </div>
-                  </div>
+                          <div class="d-flex gap-2">
+                            <div>
+                              <label for="bg-color-input" class="col-form-label">배경색</label>
+                              <input type="color" class="form-control form-control-color" id="bg-color-input" value="#563d7c" />
+                            </div>
+                            <div>
+                              <label for="font-color-input" class="col-form-label">글자색</label>
+                              <input type="color" class="form-control form-control-color" id="font-color-input" value="#563d7c" />
+                            </div>
+                          </div>
 
-                  <label class="col-form-label">가로 정렬</label>
-                  <div>
-                    <div class="btn-group">
-                      <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-left-input"
-                        value="left" autocomplete="off">
-                      <label class="btn btn-sm btn-outline-secondary" for="horizontal-left-input">
-                        <i class="fa-solid fa-align-left"></i>
-                      </label>
-                      <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-center-input"
-                        value="center" autocomplete="off">
-                      <label class="btn btn-sm btn-outline-secondary" for="horizontal-center-input">
-                        <i class="fa-solid fa-align-center"></i>
-                      </label>
-                      <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-right-input"
-                        value="right" autocomplete="off">
-                      <label class="btn btn-sm btn-outline-secondary" for="horizontal-right-input">
-                        <i class="fa-solid fa-align-right"></i>
-                      </label>
-                    </div>
-                  </div>
+                          <div class="d-flex gap-2 mb-3">
+                            <div>
+                              <label class="col-form-label">수직 정렬</label>
+                              <div>
+                                <div class="btn-group">
+                                  <input type="radio" class="btn-check" name="vertical-align" id="vertical-top-input" value="top" autocomplete="off">
+                                  <label class="btn btn-sm btn-outline-secondary" for="vertical-top-input">상</label>
+                                  <input type="radio" class="btn-check" name="vertical-align" id="vertical-center-input" value="middle" autocomplete="off">
+                                  <label class="btn btn-sm btn-outline-secondary" for="vertical-center-input">중</label>
+                                  <input type="radio" class="btn-check" name="vertical-align" id="vertical-bottom-input" value="bottom" autocomplete="off">
+                                  <label class="btn btn-sm btn-outline-secondary" for="vertical-bottom-input">하</label>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <label class="col-form-label">가로 정렬</label>
+                              <div>
+                                <div class="btn-group">
+                                  <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-left-input" value="left" autocomplete="off">
+                                  <label class="btn btn-sm btn-outline-secondary" for="horizontal-left-input">
+                                    <i class="fa-solid fa-align-left"></i>
+                                  </label>
+                                  <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-center-input" value="center" autocomplete="off">
+                                  <label class="btn btn-sm btn-outline-secondary" for="horizontal-center-input">
+                                    <i class="fa-solid fa-align-center"></i>
+                                  </label>
+                                  <input type="radio" class="btn-check" name="horizontal-align" id="horizontal-right-input" value="right" autocomplete="off">
+                                  <label class="btn btn-sm btn-outline-secondary" for="horizontal-right-input">
+                                    <i class="fa-solid fa-align-right"></i>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
 
-                  <label class="col-form-label">수직 정렬</label>
-                  <div>
-                    <div class="btn-group">
-                      <input type="radio" class="btn-check" name="vertical-align" id="vertical-top-input" value="top"
-                        autocomplete="off">
-                      <label class="btn btn-sm btn-outline-secondary" for="vertical-top-input">
-                        상
-                      </label>
-                      <input type="radio" class="btn-check" name="vertical-align" id="vertical-center-input"
-                        value="middle" autocomplete="off">
-                      <label class="btn btn-sm btn-outline-secondary" for="vertical-center-input">
-                        중
-                      </label>
-                      <input type="radio" class="btn-check" name="vertical-align" id="vertical-bottom-input"
-                        value="bottom" autocomplete="off">
-                      <label class="btn btn-sm btn-outline-secondary" for="vertical-bottom-input">
-                        하
-                      </label>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="lyrics-cover-slide" checked>
+                            <label class="form-check-label" for="lyrics-cover-slide">커버 슬라이드</label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-lg-5">
+                        <div>
+                          <label class="form-label fw-bold">미리보기</label>
+                          <div class="card ratio ratio-16x9">
+                            <div class="card-body d-flex p-1" id="preview-ppt">
+                              <p class="card-text" id="preview-text">첫번째줄 자막입니다<br />두번째줄 자막입니다</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="col-lg-5">
-                <div>
-                  <label class="form-label fw-bold">미리보기</label>
-                  <div class="card ratio ratio-16x9">
-                    <div class="card-body d-flex p-1" id="preview-ppt">
-                      <p class="card-text" id="preview-text">첫번째줄 자막입니다<br/>두번째줄 자막입니다</p>
+
+              <div class="accordion-item" id='hymn-setting' hidden>
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#hymn-setting-panel">
+                    찬송가
+                  </button>
+                </h2>
+                <div id="hymn-setting-panel" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" id="hymn-cover-slide" checked>
+                      <label class="form-check-label" for="hymn-cover-slide">커버 슬라이드</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item" id='bible-setting' hidden>
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bible-settings-panel">
+                    성경
+                  </button>
+                </h2>
+                <div id="bible-settings-panel" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" id="bible-cover-slide" disabled>
+                      <label class="form-check-label" for="bible-cover-slide">커버 슬라이드</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item" id='rr-setting' hidden>
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#rr-settings-panel">
+                    교독문
+                  </button>
+                </h2>
+                <div id="rr-settings-panel" class="accordion-collapse collapse">
+                  <div class="accordion-body">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" id="rr-cover-slide" checked>
+                      <label class="form-check-label" for="rr-cover-slide">커버 슬라이드</label>
                     </div>
                   </div>
                 </div>

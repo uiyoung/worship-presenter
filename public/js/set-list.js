@@ -44,12 +44,31 @@ clearButton.addEventListener('click', () => {
 
 settingsBtn.addEventListener('click', (e) => {
   if (setList.length <= 0) {
-    alert('아이템을 먼저 선택해 주세요.');
+    alert('아이템을 먼저 추가해 주세요.');
     return;
   }
 
   settingsModal.show();
 });
+
+function handleSetListItemClick(item) {
+  switch (item.type) {
+    case 'lyrics':
+      showSongDetailModal(item.data.id);
+      break;
+    case 'hymn-image':
+      // todo : responsive-reading preview modal
+      break;
+    case 'bible':
+      // todo : bible preview modal
+      break;
+    case 'responsive-reading':
+      // todo : responsive-reading preview modal
+      break;
+    default:
+      break;
+  }
+}
 
 function renderSetlist() {
   setListEl.innerHTML = '';
@@ -73,24 +92,7 @@ function renderSetlist() {
       'list-group-item rounded-3 border-1 d-flex justify-content-between align-items-center draggable';
     li.draggable = true;
     li.setAttribute('no', idx);
-    li.onclick = () => {
-      switch (item.type) {
-        case 'lyrics':
-          showSongDetailModal(item.id);
-          break;
-        case 'hymn-image':
-          // todo : responsive-reading preview modal
-          break;
-        case 'bible':
-          // todo : bible preview modal
-          break;
-        case 'responsive-reading':
-          // todo : responsive-reading preview modal
-          break;
-        default:
-          break;
-      }
-    };
+    li.onclick = () => handleSetListItemClick(item);
     li.addEventListener('dragstart', () => li.classList.add('dragging'));
     li.addEventListener('dragend', () => {
       li.classList.remove('dragging');
@@ -113,7 +115,7 @@ function renderSetlist() {
 
     // title
     const titleSpan = document.createElement('span');
-    titleSpan.innerHTML = `${idx + 1}. ${item.title} `;
+    titleSpan.innerHTML = `${idx + 1}. ${item.data.title} `;
     div.appendChild(titleSpan);
 
     // type
@@ -146,18 +148,17 @@ function renderSetlist() {
     badgeSpan.innerHTML = `${type} `;
     div.appendChild(badgeSpan);
 
-    // lyrics preview
+    // lyrics preview line
     if (item.type === 'lyrics') {
       const previewSpan = document.createElement('span');
       previewSpan.className = 'd-block small opacity-50 ms-2 text-truncate';
-      previewSpan.innerHTML = item.lyrics;
+      previewSpan.innerHTML = item.data.lyrics.split('\n\n')[0];
       div.appendChild(previewSpan);
     }
     li.appendChild(div);
 
     const removeBtn = document.createElement('button');
     removeBtn.className = 'removeBtn';
-    // removeBtn.innerHTML = '️&times;';
     removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
     removeBtn.onclick = (e) => {
       e.preventDefault();
@@ -171,6 +172,8 @@ function renderSetlist() {
 
     setListEl.append(li);
   });
+
+  console.log(setList);
 }
 
 function getDragAfterElement(y) {

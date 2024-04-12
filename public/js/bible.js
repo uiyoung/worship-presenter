@@ -169,8 +169,8 @@ function renderBible(bibleData) {
     setList.push({
       no: setList.length + 1,
       type: 'bible',
-      title,
       data: {
+        title,
         bookName,
         chapter,
         verses,
@@ -215,10 +215,10 @@ function renderBible(bibleData) {
       setList.push({
         no: setList.length + 1,
         type: 'bible',
-        title: `${bookName} ${chapter}${
-          bookName === '시편' ? '편' : '장'
-        } ${key}절`,
         data: {
+          title: `${bookName} ${chapter}${
+            bookName === '시편' ? '편' : '장'
+          } ${key}절`,
           bookName,
           chapter,
           verses: { [key]: verses[key] },
@@ -237,19 +237,24 @@ async function getBible(bookIndex, chapterIndex) {
     alert('성경을 선택해주세요.');
     return;
   }
+
   if (chapterIndex === '') {
     alert('장을 선택해주세요.');
     return;
   }
 
-  const response = await fetch(
-    `/bibles/NKRV/${bookIndex}/${chapterIndex}.json`
-  );
-  const result = await response.json();
-  return result;
+  try {
+    const response = await fetch(
+      `/bibles/NKRV/${bookIndex}/${chapterIndex}.json`
+    );
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-async function init() {
+async function initBible() {
   try {
     const response = await fetch('/bibles/NKRV/index.json');
     bibleInfo = await response.json();
@@ -263,4 +268,4 @@ async function init() {
   }
 }
 
-init();
+initBible();

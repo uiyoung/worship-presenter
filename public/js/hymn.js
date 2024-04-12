@@ -200,8 +200,10 @@ function renderHymnLyrics(data) {
     setList.push({
       no: setList.length + 1,
       type: 'lyrics',
-      title: `찬송가 ${no}장-${title}`,
-      lyrics,
+      data: {
+        title: `찬송가 ${no}장-${title}`,
+        lyrics,
+      },
     });
 
     renderSetlist();
@@ -265,12 +267,16 @@ function renderHymnImages(data) {
   a.innerHTML = `이미지 선택`;
   a.onclick = (e) => {
     e.preventDefault();
+
     setList.push({
       no: setList.length + 1,
       type: 'hymn-image',
-      title: `찬송가 ${no}장-${title}`,
-      images: images.map((image) => `/hymn/images/${no}/${image}`),
+      data: {
+        title: `찬송가 ${no}장-${title}`,
+        images: images.map((image) => `/hymn/images/${no}/${image}`),
+      },
     });
+
     renderSetlist();
   };
   hymnImageBtn.appendChild(a);

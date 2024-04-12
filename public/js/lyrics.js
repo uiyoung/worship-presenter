@@ -21,7 +21,6 @@ if (newLyricsBtn) {
 // modal : 등록
 function showNewSongModal() {
   const modalHeader = document.querySelector('#songDetailModalLabel');
-  const modalTitle = document.querySelector('#modal-title');
   const modalLyrics = document.querySelector('#modal-lyrics');
   const modalMemo = document.querySelector('#modal-memo');
   const modalSongDetails = document.querySelector('#modal-song-details');
@@ -232,12 +231,12 @@ async function modifySong(id, modifiedSong) {
     songDetailModal.hide();
 
     // setlist에 선택되어있는 경우 setList값 업데이트
-    const targetItem = setList.find(
-      (item) => item.type === 'lyrics' && item.id === id
+    const itemInSetList = setList.find(
+      (item) => item.type === 'lyrics' && item.data.id === id
     );
-    if (targetItem) {
-      targetItem.title = modifiedSong.title;
-      targetItem.lyrics = modifiedSong.lyrics;
+    if (itemInSetList) {
+      itemInSetList.data.title = modifiedSong.title;
+      itemInSetList.data.lyrics = modifiedSong.lyrics;
       renderSetlist();
     }
   } catch (error) {
@@ -517,9 +516,11 @@ async function selectLyrics(id) {
   setList.push({
     no: setList.length + 1,
     type: 'lyrics',
-    id,
-    title,
-    lyrics,
+    data: {
+      id,
+      title,
+      lyrics,
+    },
   });
 
   renderSetlist();

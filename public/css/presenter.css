@@ -89,3 +89,7 @@
   --bs-nav-link-color: #7c7f93;
   --bs-nav-link-hover-color: #dc8a78;
 }
+
+.accordion {
+  --bs-accordion-active-bg: #eff1f5;
+}

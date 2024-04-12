@@ -51,8 +51,10 @@ function renderResponsiveReading(data) {
     setList.push({
       no: setList.length + 1,
       type: 'responsive-reading',
-      title: `${no}번. ${title}`,
-      contents,
+      data: {
+        title: `${no}번. ${title}`,
+        contents,
+      },
     });
 
     renderSetlist();
