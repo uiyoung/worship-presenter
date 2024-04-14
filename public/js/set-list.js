@@ -96,7 +96,6 @@ function renderSetlist() {
     li.addEventListener('dragstart', () => li.classList.add('dragging'));
     li.addEventListener('dragend', () => {
       li.classList.remove('dragging');
-
       // console.log('oldIdx:', idx, ', newIdx:', newIndexAfterDrag);
 
       [setList[idx], setList[newIndexAfterDrag]] = [
@@ -113,12 +112,16 @@ function renderSetlist() {
     const div = document.createElement('div');
     div.className = 'text-truncate';
 
+    const titleAndBadgeDiv = document.createElement('div');
+    titleAndBadgeDiv.className = 'd-flex align-items-center gap-1';
+
     // title
     const titleSpan = document.createElement('span');
+    titleSpan.className = 'text-truncate';
     titleSpan.innerHTML = `${idx + 1}. ${item.data.title} `;
-    div.appendChild(titleSpan);
+    titleAndBadgeDiv.appendChild(titleSpan);
 
-    // type
+    // type badge
     const badgeSpan = document.createElement('span');
     badgeSpan.classList = 'badge text-bg-primary';
     let type = '';
@@ -146,7 +149,9 @@ function renderSetlist() {
     }
 
     badgeSpan.innerHTML = `${type} `;
-    div.appendChild(badgeSpan);
+    titleAndBadgeDiv.appendChild(badgeSpan);
+
+    div.appendChild(titleAndBadgeDiv);
 
     // lyrics preview line
     if (item.type === 'lyrics') {
