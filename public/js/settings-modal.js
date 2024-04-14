@@ -19,14 +19,14 @@ const previewText = document.querySelector('#preview-text');
 
 const lyricsSetting = {
   isCoverSlide: true,
-  bgColor: '009933',
-  fontColor: 'FFFFFF',
+  bgColor: '#009933',
+  fontColor: '#FFFFFF',
   fontFace: '다음_SemiBold', // '나눔스퀘어라운드 Bold'; '나눔고딕 Bold';
   fontSize: 48,
   fontBold: false,
   fontItalic: false,
   fontUnderline: false,
-  fontOutline: { size: 1.4, color: '000000' },
+  fontOutline: { size: 1.4, color: '#000000' },
   // fontGlow: { size: 2, opacity: 1.0, color: '000000' },
   align: 'center', // align(left, center, right, justify)
   valign: 'bottom', // vertical align(top, middle, bottom)
@@ -52,19 +52,19 @@ const bibleSetting = {
     bgImage: '/backgrounds/bible-fullscreen-bg.jpg',
     fontFace: '나눔명조 ExtraBold',
     fontSize: 20,
-    fontColor: 'FFFFFF',
+    fontColor: '#FFFFFF',
   },
   fullScreen: {
     bgImage: '/backgrounds/bible-fullscreen-bg.jpg',
     info: {
       fontFace: '마루 부리 중간',
       fontSize: 20,
-      color: 'FFFFFF',
+      color: '#FFFFFF',
     },
     verse: {
       fontFace: '나눔명조 ExtraBold',
       fontSize: 40,
-      color: 'FFFFFF',
+      color: '#FFFFFF',
     },
   },
   subtitle: {},
@@ -75,14 +75,14 @@ const rrSetting = {
   cover: {
     fontFace: '나눔명조 ExtraBold',
     fontSize: 20,
-    fontColor: 'FFFFFF',
+    fontColor: '#FFFFFF',
   },
   content: {
     fontFace: '다음_SemiBold',
     fontSize: 36,
     breakLine: false,
-    group1Color: 'FFFFFF',
-    group2Color: 'FFE699',
+    group1Color: '#FFFFFF',
+    group2Color: '#FFE699',
   },
 };
 
@@ -102,15 +102,15 @@ settingsModalEl.addEventListener('shown.bs.modal', (e) => {
 
 const colorsByPreset = {
   preset1: {
-    bgColor: '009933',
-    fontColor: 'FFFFFF',
-    fontOutline: { size: 1.4, color: '000000' },
+    bgColor: '#009933',
+    fontColor: '#FFFFFF',
+    fontOutline: { size: 1.4, color: '#000000' },
     // fontGlow: { size: 2, opacity: 1.0, color: '000000' },
     fontGlow: undefined,
   },
   preset2: {
-    bgColor: '1e1e2e',
-    fontColor: 'eff1f5',
+    bgColor: '#1e1e2e',
+    fontColor: '#eff1f5',
     outlineColor: undefined,
     fontGlow: undefined,
   },
