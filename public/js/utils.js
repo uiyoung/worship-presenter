@@ -10,6 +10,7 @@ function getCurrentDate() {
 
 function cleanText(text) {
   return text
+    .trim()
     .split('\n')
     .map((line) => line.replace(/\n+/g, '\n\n')) // 2개 초과의 \n -> \n\n
     .map((line) => line.replace(/[\s\u200B]+/g, ' ').trim()) // 공백 및 제로 폭 공백(ZWSP)을 정규화하고 양 끝의 공백 제거
