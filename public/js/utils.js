@@ -8,6 +8,21 @@ function getCurrentDate() {
   }).format(today);
 }
 
+function cleanText(text) {
+  return text
+    .split('\n')
+    .map((line) => line.replace(/\n+/g, '\n\n')) // 2개 초과의 \n -> \n\n
+    .map((line) => line.replace(/[\s\u200B]+/g, ' ').trim()) // 공백 및 제로 폭 공백(ZWSP)을 정규화하고 양 끝의 공백 제거
+    .reduce(
+      (acc, cur) =>
+        cur !== '' || (acc.length > 0 && acc[acc.length - 1] !== '')
+          ? acc.concat(cur)
+          : acc,
+      []
+    ) // 연속으로 있는 ''요소를 한개로
+    .join('\n');
+}
+
 function divideTextByLines(text, linesPerSlide) {
   const lines = text
     .split('\n')
