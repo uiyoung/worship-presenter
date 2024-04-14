@@ -151,7 +151,7 @@ function renderSetlist() {
     // lyrics preview line
     if (item.type === 'lyrics') {
       const previewSpan = document.createElement('span');
-      previewSpan.className = 'd-block small opacity-50 ms-2 text-truncate';
+      previewSpan.className = 'd-block small opacity-50 ms-3 text-truncate';
       previewSpan.innerHTML = item.data.lyrics.split('\n\n')[0];
       div.appendChild(previewSpan);
     }
