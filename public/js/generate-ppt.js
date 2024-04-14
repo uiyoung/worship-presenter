@@ -94,7 +94,7 @@ function defineSlideMastersInTypes(pptx, types) {
                     fontFace: lyricsSetting.fontFace,
                     color: lyricsSetting.fontColor,
                     outline: lyricsSetting.fontOutline,
-                    glow: lyricsSetting.fontGlow,
+                    // glow: lyricsSetting.fontGlow,
                     margin: [CM_1, CM_1, CM_1, CM_1],
                   },
                   text: '(title here!)',
