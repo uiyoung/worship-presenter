@@ -1,4 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
 function getSpaceIgnoreRegex(str) {
@@ -10,7 +11,7 @@ function getSpaceIgnoreRegex(str) {
         .join('[[:space:]]?');
 }
 
-exports.getSongs = async (req, res, next) => {
+export async function getSongs(req, res, next) {
   const title = req.query.title || '';
   const lyrics = req.query.lyrics || '';
   const page = Number(req.query.page) || 1;
@@ -46,13 +47,13 @@ exports.getSongs = async (req, res, next) => {
       const titleRegex = getSpaceIgnoreRegex(title);
 
       songs = await prisma.$queryRaw`
-      SELECT id, title, type
-      FROM jeil."Song"
-      WHERE title ~* ${titleRegex}
-      ORDER BY "createdAt" DESC
-      LIMIT ${itemsPerPage}
-      OFFSET ${(page - 1) * itemsPerPage}
-    `;
+        SELECT id, title, type
+        FROM jeil."Song"
+        WHERE title ~* ${titleRegex}
+        ORDER BY "createdAt" DESC
+        LIMIT ${itemsPerPage}
+        OFFSET ${(page - 1) * itemsPerPage}
+      `;
 
       totalCount = await prisma.$queryRaw`
         SELECT COUNT(*)::integer as count 
@@ -84,9 +85,9 @@ exports.getSongs = async (req, res, next) => {
     console.error(error);
     next(error);
   }
-};
+}
 
-exports.getSongById = async (req, res, next) => {
+export async function getSongById(req, res, next) {
   try {
     const song = await prisma.song.findUnique({
       where: { id: Number(req.params.id) },
@@ -96,13 +97,13 @@ exports.getSongById = async (req, res, next) => {
       },
     });
     res.json(song);
-  } catch (err) {
-    console.error(err);
-    next(err);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
-};
+}
 
-exports.createSong = async (req, res, next) => {
+export async function createSong(req, res, next) {
   try {
     const { title, lyrics, type, memo } = req.body;
     await prisma.song.create({
@@ -120,9 +121,9 @@ exports.createSong = async (req, res, next) => {
     console.error(error);
     next(error);
   }
-};
+}
 
-exports.updateSong = async (req, res, next) => {
+export async function updateSong(req, res, next) {
   const { title, lyrics, memo } = req.body;
 
   try {
@@ -144,16 +145,16 @@ exports.updateSong = async (req, res, next) => {
     console.error(error);
     next(error);
   }
-};
+}
 
-exports.deleteSong = async (req, res, next) => {
+export async function deleteSong(req, res, next) {
   try {
     await prisma.song.delete({
       where: { id: Number(req.params.id) },
     });
     res.json({ success: true });
   } catch (error) {
-    console.error(err);
+    console.error(error);
     next(error);
   }
-};
+}

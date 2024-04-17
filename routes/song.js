@@ -1,12 +1,14 @@
-const router = require('express').Router();
-const {
+import { Router } from 'express';
+import {
   getSongById,
   getSongs,
   createSong,
   updateSong,
   deleteSong,
-} = require('../controllers/song');
-const { isLoggedIn } = require('../middlewares/');
+} from '../controllers/song.js';
+import { isLoggedIn } from '../middlewares/auth.js';
+
+const router = Router();
 
 router
   .route('/:id')
@@ -19,4 +21,4 @@ router //
   .get(getSongs)
   .post(isLoggedIn, createSong);
 
-module.exports = router;
+export default router;

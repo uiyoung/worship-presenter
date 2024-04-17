@@ -1,16 +1,18 @@
-const express = require('express');
-const session = require('express-session');
-const passport = require('passport');
-const passportConfig = require('./passport');
-const nunjucks = require('nunjucks');
+import express from 'express';
+import dotenv from 'dotenv';
+import session from 'express-session';
+import passport from 'passport';
+import passportConfig from './passport/index.js';
+import nunjucks from 'nunjucks';
 
-const indexRouter = require('./routes');
-const songRouter = require('./routes/song');
-const hymnRouter = require('./routes/hymn');
-const authRouter = require('./routes/auth');
+import indexRouter from './routes/index.js';
+import songRouter from './routes/song.js';
+import hymnRouter from './routes/hymn.js';
+import authRouter from './routes/auth.js';
+import { notFound, errorHandler } from './middlewares/error.js';
 
 const app = express();
-require('dotenv').config();
+dotenv.config();
 passportConfig();
 app.set('port', process.env.PORT || 5000);
 app.set('view engine', 'html');
@@ -45,18 +47,8 @@ app.use('/song', songRouter);
 app.use('/hymn', hymnRouter);
 app.use('/auth', authRouter);
 
-app.use((req, res, next) => {
-  const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
-  error.status = 404;
-  next(error);
-});
-
-app.use((err, req, res, next) => {
-  res.locals.message = err.message;
-  res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
-  res.status(err.status || 500);
-  res.render('pages/error.njk', { title: 'error - Worship Presenter' });
-});
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(app.get('port'), () => {
   console.log('> Server is up and running on port : ' + app.get('port'));

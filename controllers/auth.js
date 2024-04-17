@@ -1,15 +1,16 @@
-const passport = require('passport');
-const bcrypt = require('bcrypt');
-const { PrismaClient } = require('@prisma/client');
+import passport from 'passport';
+import bcrypt from 'bcrypt';
+import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
-exports.login = passport.authenticate('local', {
+export const login = passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/auth/login',
   failureMessage: true,
 });
 
-exports.signup = async (req, res, next) => {
+export async function signup(req, res, next) {
   const { email, username, password } = req.body;
   try {
     const exUser = await prisma.user.findUnique({ where: { email } });
@@ -36,9 +37,9 @@ exports.signup = async (req, res, next) => {
     console.error(error);
     next(error);
   }
-};
+}
 
-exports.logout = (req, res, next) => {
+export function logout(req, res, next) {
   try {
     req.logout((err) => {
       if (err) {
@@ -50,12 +51,12 @@ exports.logout = (req, res, next) => {
     console.error(error);
     next(error);
   }
-};
+}
 
-exports.renderLogin = (req, res, next) => {
+export function renderLogin(req, res, next) {
   res.render('pages/login.njk', { title: 'Login - Worship Presneter' });
-};
+}
 
-exports.renderSignup = (req, res, next) => {
+export function renderSignup(req, res, next) {
   res.render('pages/signup.njk', { title: 'Sign Up- Worship Presneter' });
-};
+}

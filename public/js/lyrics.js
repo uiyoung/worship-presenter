@@ -10,15 +10,11 @@ songDetailModalEl.addEventListener('shown.bs.modal', (e) => {
 const newLyricsBtn = document.querySelector('#new-lyrics-button');
 
 if (newLyricsBtn) {
-  newLyricsBtn.addEventListener('click', () => showNewSongModal());
+  newLyricsBtn.addEventListener('click', showNewSongModal);
 }
 
-const modalTitle = document.querySelector('#modal-title');
-modalTitle.addEventListener('keyup', (e) => {
-  document.querySelector('#songDetailModalLabel').innerHTML = e.target.value;
-});
-
 const modalHeader = document.querySelector('#songDetailModalLabel');
+const modalTitle = document.querySelector('#modal-title');
 const modalLyrics = document.querySelector('#modal-lyrics');
 const modalMemo = document.querySelector('#modal-memo');
 const modalSongDetails = document.querySelector('#modal-song-details');
@@ -29,35 +25,123 @@ const modalModifyBtn = document.querySelector('#modal-modify-btn');
 const modalSelectBtn = document.querySelector('#modal-select-btn');
 const modalDeleteBtn = document.querySelector('#modal-delete-btn');
 
-function handleSaveBtnClick(e) {
-  const title = modalTitle.value.trim();
-  if (title === '') {
-    alert('제목을 입력해주세요.');
-    modalTitle.focus();
-    return;
+modalTitle.addEventListener(
+  'keyup',
+  (e) => (modalHeader.innerHTML = e.target.value)
+);
+
+async function searchSong(query, searchBy, pageNum) {
+  const response = await fetch(`/song?${searchBy}=${query}&page=${pageNum}`);
+
+  if (!response.ok) {
+    throw new Error('서버에서 응답을 받을 수 없습니다.');
   }
 
-  const lyrics = cleanText(modalLyrics.value);
-
-  if (lyrics === '') {
-    alert('가사를 입력해주세요.');
-    modalLyrics.focus();
-    return;
-  }
-
-  const memo = modalMemo.value.trim();
-
-  const song = { title, lyrics, memo };
-  saveSong(song);
+  const data = await response.json();
+  return data;
 }
 
-function handleModifyBtnClick(id) {
+async function getSongById(id) {
+  const response = await fetch(`/song/${id}`);
+
+  if (!response.ok) {
+    throw new Error('서버에서 응답을 받을 수 없습니다.');
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+async function saveSong(newSong) {
+  const response = await fetch(`/song`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newSong),
+  });
+
+  if (!response.ok) {
+    throw new Error('서버에서 응답을 받을 수 없습니다.');
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+async function modifySong(id, modifiedSong) {
+  const response = await fetch(`/song/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(modifiedSong),
+  });
+
+  if (!response.ok) {
+    throw new Error('서버에서 응답을 받을 수 없습니다.');
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+async function deleteSong(id) {
+  const response = await fetch(`/song/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw new Error('서버에서 응답을 받을 수 없습니다.');
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+async function handleSaveBtnClick(e) {
   const title = modalTitle.value.trim();
   if (title === '') {
     alert('제목을 입력해주세요.');
     modalTitle.focus();
     return;
   }
+
+  const lyrics = cleanText(modalLyrics.value);
+  if (lyrics === '') {
+    alert('가사를 입력해주세요.');
+    modalLyrics.focus();
+    return;
+  }
+
+  const memo = modalMemo.value.trim();
+  const song = { title, lyrics, memo };
+
+  try {
+    const result = await saveSong(song);
+
+    if (!result.success && result.redirectURL) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    alert(`${song.title}이(가) 등록되었습니다.`);
+    renderLyrics('%', 1);
+    songDetailModal.hide();
+  } catch (error) {
+    console.error(error);
+    alert('저장 실패', error.message);
+  }
+}
+
+async function handleModifyBtnClick(id) {
+  const title = modalTitle.value.trim();
+  if (title === '') {
+    alert('제목을 입력해주세요.');
+    modalTitle.focus();
+    return;
+  }
+
   const lyrics = cleanText(modalLyrics.value);
   if (lyrics === '') {
     alert('가사를 입력해주세요.');
@@ -67,12 +151,52 @@ function handleModifyBtnClick(id) {
 
   const memo = modalMemo.value.trim();
 
-  if (!confirm('수정 하시겠습니까?')) {
-    return;
-  }
+  if (!confirm('수정 하시겠습니까?')) return;
 
   const song = { title, lyrics, memo };
-  modifySong(id, song);
+
+  try {
+    const result = await modifySong(id, song);
+
+    if (!result.success && result.redirectURL) {
+      throw new Error('로그인이 필요합니다.');
+    }
+
+    alert('수정되었습니다.');
+    renderLyrics(lyricsSearchInput.value, 1);
+    songDetailModal.hide();
+
+    // setlist에 선택되어있는 경우 setList값 업데이트
+    const itemInSetList = setList.find(
+      (item) => item.type === 'lyrics' && item.data.id === id
+    );
+    if (itemInSetList) {
+      itemInSetList.data.title = song.title;
+      itemInSetList.data.lyrics = song.lyrics;
+      renderSetlist();
+    }
+  } catch (error) {
+    console.error(error);
+    alert('수정 실패', error.message);
+  }
+}
+
+async function handleDeleteBtnClick(id) {
+  if (!confirm('삭제 하시겠습니까?')) return;
+
+  try {
+    const result = await deleteSong(id);
+    if (!result.success && result.redirectURL) {
+      throw new Error('로그인이 필요합니다.');
+    }
+
+    alert('삭제 성공');
+    renderLyrics('%', 1);
+    songDetailModal.hide();
+  } catch (error) {
+    console.error(error);
+    alert('삭제 실패', error.message);
+  }
 }
 
 // modal : 등록
@@ -107,8 +231,7 @@ async function showSongDetailModal(id) {
       await getSongById(id);
 
     modalHeader.innerHTML = title;
-    modalHeader.classList = 'modal-title fs-5 text-truncate';
-
+    modalHeader.className = 'modal-title fs-5 text-truncate';
     modalTitle.value = title;
     modalLyrics.value = lyrics;
     modalLyrics.style.height = `${Math.max(
@@ -118,15 +241,13 @@ async function showSongDetailModal(id) {
     modalMemo.value = memo;
     modalSongDetails.hidden = false;
     modalSongDetails.open = false;
-    modalCreatedAt.innerHTML = `등록 : ${new Intl.DateTimeFormat('ko', {
-      dateStyle: 'long',
-      timeStyle: 'short',
-    }).format(new Date(createdAt))}, ${author.username}`;
+    modalCreatedAt.innerHTML = `등록 : ${formatDateTime(createdAt)}, ${
+      author.username
+    }`;
     modalCreatedAt.hidden = false;
-    modalUpdatedAt.innerHTML = `수정 : ${new Intl.DateTimeFormat('ko', {
-      dateStyle: 'long',
-      timeStyle: 'short',
-    }).format(new Date(updatedAt))}, ${editor?.username}`;
+    modalUpdatedAt.innerHTML = `수정 : ${formatDateTime(updatedAt)}, ${
+      editor?.username
+    }`;
     modalUpdatedAt.hidden = false;
 
     modalSelectBtn.onclick = () => {
@@ -134,7 +255,7 @@ async function showSongDetailModal(id) {
       songDetailModal.hide();
     };
     modalSelectBtn.hidden = false;
-    modalDeleteBtn.onclick = () => deleteSong(id);
+    modalDeleteBtn.onclick = () => handleDeleteBtnClick(id);
     modalDeleteBtn.hidden = false;
     modalSaveBtn.onclick = null;
     modalSaveBtn.hidden = true;
@@ -144,94 +265,6 @@ async function showSongDetailModal(id) {
     songDetailModal.show();
   } catch (error) {
     alert('getSongById error');
-    console.error(error);
-  }
-}
-
-// lyrics modal : save
-async function saveSong(newSong) {
-  try {
-    const response = await fetch(`/song`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newSong),
-    });
-    const result = await response.json();
-
-    if (!result.success && result.redirectURL) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
-
-    alert(`${newSong.title}이(가) 등록되었습니다.`);
-    renderLyrics('%', 1);
-    songDetailModal.hide();
-  } catch (error) {
-    alert('등록 실패');
-    console.error(error);
-  }
-}
-
-// lyrics modal : modify
-async function modifySong(id, modifiedSong) {
-  try {
-    const response = await fetch(`/song/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(modifiedSong),
-    });
-    const result = await response.json();
-
-    if (!result.success && result.redirectURL) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
-
-    alert('수정되었습니다.');
-    renderLyrics(lyricsSearchInput.value, 1);
-    songDetailModal.hide();
-
-    // setlist에 선택되어있는 경우 setList값 업데이트
-    const itemInSetList = setList.find(
-      (item) => item.type === 'lyrics' && item.data.id === id
-    );
-    if (itemInSetList) {
-      itemInSetList.data.title = modifiedSong.title;
-      itemInSetList.data.lyrics = modifiedSong.lyrics;
-      renderSetlist();
-    }
-  } catch (error) {
-    alert('등록 실패');
-    console.error(error);
-  }
-}
-
-// lyrics modal : delete
-async function deleteSong(id) {
-  if (!confirm('삭제 하시겠습니까?')) {
-    return;
-  }
-
-  try {
-    const response = await fetch(`/song/${id}`, {
-      method: 'DELETE',
-    });
-    const result = await response.json();
-
-    if (!result.success && result.redirectURL) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
-
-    alert('삭제 성공');
-    renderLyrics('%', 1);
-    songDetailModal.hide();
-  } catch (error) {
-    alert('삭제 실패');
     console.error(error);
   }
 }
@@ -277,16 +310,6 @@ searchBtn.addEventListener('click', () => {
   renderLyrics(query, 1);
 });
 
-async function searchSong(query, searchBy, pageNum) {
-  try {
-    const response = await fetch(`/song?${searchBy}=${query}&page=${pageNum}`);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 function renderLyricsTable(songs, pageNum) {
   const thead = document.querySelector('#lyrics-table thead');
   const tbody = document.querySelector('#lyrics-table tbody');
@@ -302,10 +325,12 @@ function renderLyricsTable(songs, pageNum) {
   songs.forEach((song, idx) => {
     const tr = document.createElement('tr');
     tr.className = 'text-center';
+
     // no
     let td = document.createElement('td');
     td.innerHTML = (pageNum - 1) * 10 + idx + 1;
     tr.appendChild(td);
+
     // type
     td = document.createElement('td');
     const span = document.createElement('span');
@@ -315,6 +340,7 @@ function renderLyricsTable(songs, pageNum) {
     span.innerHTML = song.type;
     td.appendChild(span);
     tr.appendChild(td);
+
     // title
     td = document.createElement('td');
     const titleLink = document.createElement('a');
@@ -328,6 +354,7 @@ function renderLyricsTable(songs, pageNum) {
     td.className = 'text-start';
     td.appendChild(titleLink);
     tr.appendChild(td);
+
     // select btn
     td = document.createElement('td');
     const selectBtn = document.createElement('a');
@@ -489,31 +516,26 @@ function renderSearchInfo(query, totalCount) {
   resultInfo.hidden = false;
 }
 
-async function getSongById(id) {
+async function selectLyrics(id) {
   try {
-    const response = await fetch(`/song/${id}`);
-    const data = await response.json();
-    return data;
+    const selectedSong = await getSongById(id);
+    const { title, lyrics } = selectedSong;
+
+    setList.push({
+      no: setList.length + 1,
+      type: 'lyrics',
+      data: {
+        id,
+        title,
+        lyrics,
+      },
+    });
+
+    renderSetlist();
   } catch (error) {
     console.error(error);
+    alert('select lyrics error', error.message);
   }
-}
-
-async function selectLyrics(id) {
-  const selectedSong = await getSongById(id);
-  const { title, lyrics } = selectedSong;
-
-  setList.push({
-    no: setList.length + 1,
-    type: 'lyrics',
-    data: {
-      id,
-      title,
-      lyrics,
-    },
-  });
-
-  renderSetlist();
 }
 
 async function renderLyrics(query, pageNum) {
@@ -530,6 +552,3 @@ function initLyrics() {
   renderLyrics('%', 1);
   lyricsSearchInput.focus();
 }
-
-// renderLyrics('%', 1);
-// lyricsSearchInput.focus();

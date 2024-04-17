@@ -8,6 +8,13 @@ function getCurrentDate() {
   }).format(today);
 }
 
+function formatDateTime(datetime) {
+  return new Intl.DateTimeFormat('ko', {
+    dateStyle: 'long',
+    timeStyle: 'short',
+  }).format(new Date(datetime));
+}
+
 function cleanText(text) {
   return text
     .trim()

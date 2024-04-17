@@ -1,10 +1,11 @@
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
-const bcrypt = require('bcrypt');
-const { PrismaClient } = require('@prisma/client');
+import passport from 'passport';
+import LocalStrategy from 'passport-local';
+import bcrypt from 'bcrypt';
+import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
-module.exports = () => {
+export default () => {
   passport.use(
     new LocalStrategy(
       {
@@ -16,12 +17,16 @@ module.exports = () => {
         try {
           const exUser = await prisma.user.findUnique({ where: { email } });
           if (!exUser) {
-            return done(null, false, { message: 'Invalid username or password.' });
+            return done(null, false, {
+              message: 'Invalid username or password.',
+            });
           }
 
           const result = await bcrypt.compare(password, exUser.password);
           if (!result) {
-            return done(null, false, { message: 'Invalid username or password.' });
+            return done(null, false, {
+              message: 'Invalid username or password.',
+            });
           }
 
           return done(null, exUser);

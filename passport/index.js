@@ -1,9 +1,10 @@
-const passport = require('passport');
-const local = require('./localStrategy');
-const { PrismaClient } = require('@prisma/client');
+import passport from 'passport';
+import { PrismaClient } from '@prisma/client';
+import localStrategy from './localStrategy.js';
+
 const prisma = new PrismaClient();
 
-module.exports = () => {
+export default () => {
   passport.serializeUser((user, done) => {
     // console.log('serializeUser', user);
     done(null, user.id);
@@ -19,5 +20,5 @@ module.exports = () => {
     }
   });
 
-  local();
+  localStrategy();
 };

@@ -1,7 +1,7 @@
-const fs = require('fs').promises;
-const path = require('path');
+import { promises as fs } from 'fs';
+import path from 'path';
 
-exports.getHymnImagesById = async (req, res, next) => {
+export async function getHymnImagesById(req, res, next) {
   const no = Number(req.params.no);
   const imageDirectory = `./public/hymn/images/${no}`;
 
@@ -9,7 +9,10 @@ exports.getHymnImagesById = async (req, res, next) => {
     const readIndexPromise = fs.readFile('public/hymn/index.json', 'utf8');
     const readDirPromise = fs.readdir(imageDirectory);
 
-    const [index, files] = await Promise.all([readIndexPromise, readDirPromise]);
+    const [index, files] = await Promise.all([
+      readIndexPromise,
+      readDirPromise,
+    ]);
     const title = JSON.parse(index).hymn.find((item) => item.no === no).title;
     const imageFiles = [];
     for (const file of files) {
@@ -25,9 +28,9 @@ exports.getHymnImagesById = async (req, res, next) => {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-};
+}
 
-exports.updateLyrics = async (req, res, next) => {
+export async function updateLyrics(req, res, next) {
   try {
     const { no } = req.params;
     const newVerses = req.body;
@@ -35,11 +38,14 @@ exports.updateLyrics = async (req, res, next) => {
     const hymn = await fs.readFile(`public/hymn/lyrics/${no}.json`, 'utf8');
     const hymnObj = JSON.parse(hymn);
     const newHymn = { ...hymnObj, verses: newVerses };
-    await fs.writeFile(`public/hymn/lyrics/${no}.json`, JSON.stringify(newHymn));
+    await fs.writeFile(
+      `public/hymn/lyrics/${no}.json`,
+      JSON.stringify(newHymn)
+    );
 
     res.json({ success: true });
   } catch (error) {
     console.error(error);
     next(error);
   }
-};
+}

@@ -214,13 +214,6 @@ function renderHymnLyrics(data) {
 function renderHymnImages(data) {
   const { no, title, images } = data;
 
-  // Sort the image file names in ascending order(numerically)
-  images.sort((a, b) => {
-    const numA = parseInt(a.match(/\d+/)[0]);
-    const numB = parseInt(b.match(/\d+/)[0]);
-    return numA - numB;
-  });
-
   // hymnCarousel.innerHTML = '';
   hymnIndicators.innerHTML = '';
   hymnSlide.innerHTML = '';
@@ -228,30 +221,36 @@ function renderHymnImages(data) {
   carouselPrevBtn.innerHTML = '';
   carouselNextBtn.innerHTML = '';
 
-  images.forEach((image, index) => {
-    // append indicators
-    const button = document.createElement('button');
-    button.className = index === 0 ? 'active' : '';
-    button.setAttribute('type', 'button');
-    button.setAttribute('data-bs-target', '#hymn-carousel');
-    button.setAttribute('data-bs-slide-to', `${index}`);
-    button.setAttribute('aria-label', `Slide ${index + 1}`);
-    hymnIndicators.appendChild(button);
+  images
+    .sort((a, b) => {
+      // Sort the image file names in ascending order(numerically)
+      const numA = parseInt(a.match(/\d+/)[0]);
+      const numB = parseInt(b.match(/\d+/)[0]);
+      return numA - numB;
+    })
+    .forEach((image, index) => {
+      // append indicators
+      const button = document.createElement('button');
+      button.className = index === 0 ? 'active' : '';
+      button.setAttribute('type', 'button');
+      button.setAttribute('data-bs-target', '#hymn-carousel');
+      button.setAttribute('data-bs-slide-to', `${index}`);
+      button.setAttribute('aria-label', `Slide ${index + 1}`);
+      hymnIndicators.appendChild(button);
 
-    // append slides
-    const div = document.createElement('div');
-    div.className = 'carousel-item' + (index === 0 ? ' active' : '');
+      // append slides
+      const div = document.createElement('div');
+      div.className = 'carousel-item' + (index === 0 ? ' active' : '');
 
-    const img = document.createElement('img');
-    img.className = 'd-block w-100';
-    img.src = `/hymn/images/${no}/${image}`;
-    img.loading = 'lazy';
-    div.appendChild(img);
-    hymnSlide.appendChild(div);
-  });
+      const img = document.createElement('img');
+      img.className = 'd-block w-100';
+      img.src = `/hymn/images/${no}/${image}`;
+      img.loading = 'lazy';
+      div.appendChild(img);
+      hymnSlide.appendChild(div);
+    });
 
   // prev, next button
-  // <span class="carousel-control-prev-icon" aria-hidden="true"></span>
   const spanPrev = document.createElement('span');
   spanPrev.className = 'carousel-control-prev-icon';
   carouselPrevBtn.appendChild(spanPrev);

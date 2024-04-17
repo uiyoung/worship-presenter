@@ -1,8 +1,10 @@
-const router = require('express').Router();
-const { getHymnImagesById, updateLyrics } = require('../controllers/hymn');
-const { isLoggedIn } = require('../middlewares/');
+import { Router } from 'express';
+import { getHymnImagesById, updateLyrics } from '../controllers/hymn.js';
+import { isLoggedIn } from '../middlewares/auth.js';
+
+const router = Router();
 
 router.get('/images/:no', getHymnImagesById);
 router.patch('/lyrics/:no', isLoggedIn, updateLyrics);
 
-module.exports = router;
+export default router;
