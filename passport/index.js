@@ -14,7 +14,8 @@ export default () => {
     // console.log('deserializeUser', id);
     try {
       const user = await prisma.user.findUnique({ where: { id } });
-      done(null, user);
+      const { password, ...userWithoutPassword } = user;
+      done(null, userWithoutPassword);
     } catch (error) {
       done(error);
     }
