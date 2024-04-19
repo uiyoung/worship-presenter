@@ -1,4 +1,4 @@
-let bibleInfo;
+let bibleInfo = null;
 
 const bookSelect = document.querySelector('#book');
 const chapterSelect = document.querySelector('#chapter');
@@ -254,18 +254,23 @@ async function getBible(bookIndex, chapterIndex) {
   }
 }
 
+async function getBibleInfo() {
+  const response = await fetch('/bibles/NKRV/index.json');
+  if (!response.ok) {
+    throw new Error('Request failed with status ' + response.status);
+  }
+
+  const data = await response.json();
+  return data;
+}
+
 async function initBible() {
   try {
-    const response = await fetch('/bibles/NKRV/index.json');
-    bibleInfo = await response.json();
-
-    // setChapterSelect('1');
-    // setVerseSelect('1', 1);
-    // const bible = await getBible(1, 1);
-    // renderBible(bible, 1);
+    if (!bibleInfo) {
+      bibleInfo = await getBibleInfo();
+    }
+    bibleInput.focus();
   } catch (error) {
     console.error(error);
   }
 }
-
-initBible();

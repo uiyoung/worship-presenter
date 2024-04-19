@@ -1,3 +1,6 @@
+let hymnInfo = null;
+let hymnChoices = null;
+
 const hymnCarousel = document.querySelector('#hymn-carousel');
 const hymnIndicators = document.querySelector('#hymn-indicators');
 const hymnSlide = document.querySelector('#hymn-slide');
@@ -281,10 +284,19 @@ function renderHymnImages(data) {
   hymnImageBtn.appendChild(a);
 }
 
-async function setHymnSelectOptions() {
+async function getHymnInfo() {
+  const response = await fetch('/hymn/index.json');
+  if (!response.ok) {
+    throw new Error('Request failed with status ' + response.status);
+  }
+  const data = await response.json();
+  return data;
+}
+
+async function setHymnSelectOptions(data) {
   try {
-    const response = await fetch('/hymn/index.json');
-    const data = await response.json();
+    // const response = await fetch('/hymn/index.json');
+    // const data = await response.json();
 
     for (const { no, title } of data.hymn) {
       const option = document.createElement('option');
@@ -293,7 +305,7 @@ async function setHymnSelectOptions() {
       hymnSelect.appendChild(option);
     }
 
-    const choices = new Choices(hymnSelect, {
+    hymnChoices = new Choices(hymnSelect, {
       silent: false,
       choices: [],
       renderChoiceLimit: -1,
@@ -330,6 +342,16 @@ async function setHymnSelectOptions() {
   }
 }
 
-setHymnSelectOptions();
-hymnSelect.value = '';
-hymnSelect.dispatchEvent(new Event('change'));
+async function initHymn() {
+  try {
+    if (!hymnInfo) {
+      hymnInfo = await getHymnInfo();
+      setHymnSelectOptions(hymnInfo);
+      hymnSelect.value = '';
+      hymnSelect.dispatchEvent(new Event('change'));
+    }
+    hymnChoices.showDropdown();
+  } catch (error) {
+    console.error(error);
+  }
+}

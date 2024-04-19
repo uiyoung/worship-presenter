@@ -34,7 +34,7 @@ async function searchSong(query, searchBy, pageNum) {
   const response = await fetch(`/song?${searchBy}=${query}&page=${pageNum}`);
 
   if (!response.ok) {
-    throw new Error('서버에서 응답을 받을 수 없습니다.');
+    throw new Error('Request failed with status ' + response.status);
   }
 
   const data = await response.json();
@@ -45,7 +45,7 @@ async function getSongById(id) {
   const response = await fetch(`/song/${id}`);
 
   if (!response.ok) {
-    throw new Error('서버에서 응답을 받을 수 없습니다.');
+    throw new Error('Request failed with status ' + response.status);
   }
 
   const data = await response.json();
@@ -62,7 +62,7 @@ async function saveSong(newSong) {
   });
 
   if (!response.ok) {
-    throw new Error('서버에서 응답을 받을 수 없습니다.');
+    throw new Error('Request failed with status ' + response.status);
   }
 
   const data = await response.json();
@@ -79,7 +79,7 @@ async function modifySong(id, modifiedSong) {
   });
 
   if (!response.ok) {
-    throw new Error('서버에서 응답을 받을 수 없습니다.');
+    throw new Error('Request failed with status ' + response.status);
   }
 
   const data = await response.json();
@@ -92,7 +92,7 @@ async function deleteSong(id) {
   });
 
   if (!response.ok) {
-    throw new Error('서버에서 응답을 받을 수 없습니다.');
+    throw new Error('Request failed with status ' + response.status);
   }
 
   const data = await response.json();
