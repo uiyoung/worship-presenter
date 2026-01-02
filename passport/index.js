@@ -1,8 +1,6 @@
 import passport from 'passport';
-import { PrismaClient } from '@prisma/client';
 import localStrategy from './localStrategy.js';
-
-const prisma = new PrismaClient();
+import { prisma } from '../lib/prisma.js';
 
 export default () => {
   passport.serializeUser((user, done) => {
