@@ -1,8 +1,9 @@
-# static files
-public/bibles
-public/hymn
-public/backgrounds
-public/responsive-reading
+# resource files
+public/resources
+# public/bibles
+# public/hymn
+# public/backgrounds
+# public/responsive-reading
 
 test.js
 .DS_Store

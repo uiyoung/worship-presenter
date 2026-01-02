@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getHymnImagesById, updateLyrics } from '../controllers/hymn.js';
-import { isLoggedIn } from '../middlewares/auth.js';
+import { isLoggedIn } from '../../middlewares/auth.js';
+import { getHymnImagesById, updateLyrics } from '../../controllers/hymn.js';
 
 const router = Router();
 

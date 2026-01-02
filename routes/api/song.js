@@ -1,16 +1,10 @@
 import { Router } from 'express';
-import {
-  getSongById,
-  getSongs,
-  createSong,
-  updateSong,
-  deleteSong,
-} from '../controllers/song.js';
-import { isLoggedIn } from '../middlewares/auth.js';
+import { isLoggedIn } from '../../middlewares/auth.js';
+import { getSongById, getSongs, createSong, updateSong, deleteSong } from '../../controllers/song.js';
 
 const router = Router();
 
-router
+router //
   .route('/:id')
   .get(getSongById)
   .patch(isLoggedIn, updateSong)

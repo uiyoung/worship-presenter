@@ -8,9 +8,7 @@ const hymnImageBtn = document.querySelector('#hymn-image-btn');
 const carouselPrevBtn = document.querySelector('.carousel-control-prev');
 const carouselNextBtn = document.querySelector('.carousel-control-next');
 
-const hymnLyricsModal = new bootstrap.Modal(
-  document.querySelector('#hymnLyricsModal')
-);
+const hymnLyricsModal = new bootstrap.Modal(document.querySelector('#hymnLyricsModal'));
 
 const hymnSelect = document.querySelector('#hymn-select');
 hymnSelect.addEventListener('change', async () => {
@@ -34,7 +32,7 @@ hymnSelect.addEventListener('change', async () => {
 
   // hymn lyrcis
   try {
-    const response = await fetch(`/hymn/lyrics/${no}.json`);
+    const response = await fetch(`/resources/hymn/lyrics/${no}.json`);
     const hymnLyricsData = await response.json();
     renderHymnLyrics(hymnLyricsData);
   } catch (error) {
@@ -43,7 +41,7 @@ hymnSelect.addEventListener('change', async () => {
 
   // hymn image
   try {
-    const response = await fetch(`/hymn/images/${no}`);
+    const response = await fetch(`/api/hymn/images/${no}`);
     if (!response.ok) {
       throw new Error('Request failed with status ' + response.status);
     }
@@ -78,8 +76,7 @@ function renderHymnLyrics(data) {
   // modify button
   const modifyLyricsBtn = document.createElement('a');
   modifyLyricsBtn.href = '#';
-  modifyLyricsBtn.className =
-    'btn btn-outline-success position-absolute top-0 end-0 m-2';
+  modifyLyricsBtn.className = 'btn btn-outline-success position-absolute top-0 end-0 m-2';
   modifyLyricsBtn.innerHTML = `수정`;
   modifyLyricsBtn.onclick = async (e) => {
     e.preventDefault();
@@ -122,7 +119,7 @@ function renderHymnLyrics(data) {
         }, {});
 
       try {
-        const response = await fetch(`/hymn/lyrics/${no}`, {
+        const response = await fetch(`/api/hymn/lyrics/${no}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -146,13 +143,10 @@ function renderHymnLyrics(data) {
       }
     };
 
-    const hymnDivideLinesBtn = document.querySelector(
-      '#hymn-modal-divide-lines-btn'
-    );
+    const hymnDivideLinesBtn = document.querySelector('#hymn-modal-divide-lines-btn');
     hymnDivideLinesBtn.onclick = () => {
       const hymnTextAreas = document.querySelectorAll('.hymn-textarea');
-      const linesPerSlide =
-        Number(document.querySelector('#hymn-lines-per-slide').value) || 2;
+      const linesPerSlide = Number(document.querySelector('#hymn-lines-per-slide').value) || 2;
       hymnTextAreas.forEach((textarea) => {
         textarea.value = divideTextByLines(textarea.value, linesPerSlide);
         textarea.rows = textarea.value.split('\n').length;
@@ -247,7 +241,7 @@ function renderHymnImages(data) {
 
       const img = document.createElement('img');
       img.className = 'd-block w-100';
-      img.src = `/hymn/images/${no}/${image}`;
+      img.src = `/resources/hymn/images/${no}/${image}`;
       img.loading = 'lazy';
       div.appendChild(img);
       hymnSlide.appendChild(div);
@@ -275,7 +269,7 @@ function renderHymnImages(data) {
       type: 'hymn-image',
       data: {
         title: `찬송가 ${no}장-${title}`,
-        images: images.map((image) => `/hymn/images/${no}/${image}`),
+        images: images.map((image) => `/resources/hymn/images/${no}/${image}`),
       },
     });
 
@@ -285,7 +279,7 @@ function renderHymnImages(data) {
 }
 
 async function getHymnInfo() {
-  const response = await fetch('/hymn/index.json');
+  const response = await fetch('/resources/hymn/index.json');
   if (!response.ok) {
     throw new Error('Request failed with status ' + response.status);
   }
@@ -295,7 +289,7 @@ async function getHymnInfo() {
 
 async function setHymnSelectOptions(data) {
   try {
-    // const response = await fetch('/hymn/index.json');
+    // const response = await fetch('/resources/hymn/index.json');
     // const data = await response.json();
 
     for (const { no, title } of data.hymn) {
@@ -324,8 +318,7 @@ async function setHymnSelectOptions(data) {
       loadingText: 'Loading...',
       noResultsText: 'No results found',
       itemSelectText: 'Press to select',
-      customAddItemText:
-        'Only values matching specific conditions can be added',
+      customAddItemText: 'Only values matching specific conditions can be added',
       valueComparer: (value1, value2) => {
         return value1 === value2;
       },

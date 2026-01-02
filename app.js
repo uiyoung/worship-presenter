@@ -5,10 +5,8 @@ import passport from 'passport';
 import passportConfig from './passport/index.js';
 import nunjucks from 'nunjucks';
 
-import indexRouter from './routes/index.js';
-import songRouter from './routes/song.js';
-import hymnRouter from './routes/hymn.js';
-import authRouter from './routes/auth.js';
+import apiRouter from './routes/api/index.js';
+import viewRouter from './routes/view/index.js';
 import { notFound, errorHandler } from './middlewares/error.js';
 
 const app = express();
@@ -42,10 +40,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', indexRouter);
-app.use('/song', songRouter);
-app.use('/hymn', hymnRouter);
-app.use('/auth', authRouter);
+app.use('/api', apiRouter);
+app.use('/', viewRouter);
 
 app.use(notFound);
 app.use(errorHandler);

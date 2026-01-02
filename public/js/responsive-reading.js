@@ -15,7 +15,7 @@ rrSelect.addEventListener('change', async () => {
     return;
   }
   try {
-    const response = await fetch(`/responsive-reading/${no}.json`);
+    const response = await fetch(`/resources/responsive-reading/${no}.json`);
     const data = await response.json();
     renderResponsiveReading(data);
   } catch (error) {
@@ -107,7 +107,7 @@ async function setResponsiveReadingSelectOptions(data) {
 }
 
 async function getResponsiveReadingInfo() {
-  const response = await fetch('/responsive-reading/index.json');
+  const response = await fetch('/resources/responsive-reading/index.json');
   if (!response.ok) {
     throw new Error('Request failed with status ' + response.status);
   }

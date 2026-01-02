@@ -4,16 +4,10 @@ const settingsModal = new bootstrap.Modal(settingsModalEl);
 const filenameInput = document.querySelector('#modal-filename');
 const bgColorInput = document.querySelector('#bg-color-input');
 const fontColorInput = document.querySelector('#font-color-input');
-const presetColorRadios = document.querySelectorAll(
-  'input[name="preset-color"]'
-);
+const presetColorRadios = document.querySelectorAll('input[name="preset-color"]');
 const presetCustomBtn = document.querySelector('#preset-color-custom');
-const horizontalAlignRadios = document.querySelectorAll(
-  'input[name="horizontal-align"]'
-);
-const verticalAlignRadios = document.querySelectorAll(
-  'input[name="vertical-align"]'
-);
+const horizontalAlignRadios = document.querySelectorAll('input[name="horizontal-align"]');
+const verticalAlignRadios = document.querySelectorAll('input[name="vertical-align"]');
 const previewDiv = document.querySelector('#preview-ppt');
 const previewText = document.querySelector('#preview-text');
 
@@ -41,7 +35,7 @@ const hymnSetting = {
     fontSize2: 36,
     fontFace2: '마루 부리 굵은',
     fontColor2: '431f00',
-    backgroundImage: '/backgrounds/hymn-title-background.jpg',
+    backgroundImage: '/resources/backgrounds/hymn-title-background.jpg',
   },
 };
 
@@ -49,13 +43,13 @@ const bibleSetting = {
   isCoverSlide: false, // TODO: set true when bible cover slide implemented
   isFullScreen: true,
   cover: {
-    bgImage: '/backgrounds/bible-fullscreen-bg.jpg',
+    bgImage: '/resources/backgrounds/bible-fullscreen-bg.jpg',
     fontFace: '나눔명조 ExtraBold',
     fontSize: 20,
     fontColor: '#FFFFFF',
   },
   fullScreen: {
-    bgImage: '/backgrounds/bible-fullscreen-bg.jpg',
+    bgImage: '/resources/backgrounds/bible-fullscreen-bg.jpg',
     info: {
       fontFace: '마루 부리 중간',
       fontSize: 20,
@@ -155,8 +149,7 @@ presetCustomBtn.addEventListener('click', (e) => bgColorInput.showPicker());
 presetColorRadios.forEach((radio) => {
   radio.addEventListener('change', (e) => {
     if (radio.checked) {
-      const { bgColor, fontColor, fontOutline, fontGlow } =
-        colorsByPreset[e.target.value];
+      const { bgColor, fontColor, fontOutline, fontGlow } = colorsByPreset[e.target.value];
 
       bgColorInput.value = bgColor;
       fontColorInput.value = fontColor;
@@ -219,9 +212,7 @@ function initSettingsModal() {
   filenameInput.value = `${today}_worship`;
 
   // settings by selected types
-  document
-    .querySelectorAll('.accordion-item')
-    .forEach((el) => (el.hidden = true));
+  document.querySelectorAll('.accordion-item').forEach((el) => (el.hidden = true));
 
   const types = [...new Set(setList.map((item) => item.type))];
   types.forEach((type) => {
@@ -229,23 +220,17 @@ function initSettingsModal() {
 
     switch (type) {
       case 'lyrics':
-        document
-          .querySelector('#lyrics-cover-slide')
-          .addEventListener('change', (e) => {
-            lyricsSetting.isCoverSlide = e.target.checked;
-          });
+        document.querySelector('#lyrics-cover-slide').addEventListener('change', (e) => {
+          lyricsSetting.isCoverSlide = e.target.checked;
+        });
 
         // color
         const defaultColorPresetEl = document.querySelector('#preset1');
         defaultColorPresetEl.checked = true;
 
         // align
-        const defaultVerticalAlignEl = document.querySelector(
-          '#vertical-bottom-input'
-        );
-        const defaultHorizontalAlignEl = document.querySelector(
-          '#horizontal-center-input'
-        );
+        const defaultVerticalAlignEl = document.querySelector('#vertical-bottom-input');
+        const defaultHorizontalAlignEl = document.querySelector('#horizontal-center-input');
         defaultVerticalAlignEl.checked = true;
         defaultHorizontalAlignEl.checked = true;
         defaultVerticalAlignEl.dispatchEvent(new Event('change'));
@@ -253,26 +238,20 @@ function initSettingsModal() {
 
         break;
       case 'hymn-image':
-        document
-          .querySelector('#hymn-cover-slide')
-          .addEventListener('change', (e) => {
-            hymnSetting.isCoverSlide = e.target.checked;
-          });
+        document.querySelector('#hymn-cover-slide').addEventListener('change', (e) => {
+          hymnSetting.isCoverSlide = e.target.checked;
+        });
 
         break;
       case 'bible':
-        document
-          .querySelector('#bible-cover-slide')
-          .addEventListener('change', (e) => {
-            rrSetting.isCoverSlide = e.target.checked;
-          });
+        document.querySelector('#bible-cover-slide').addEventListener('change', (e) => {
+          rrSetting.isCoverSlide = e.target.checked;
+        });
         break;
       case 'responsive-reading':
-        document
-          .querySelector('#rr-cover-slide')
-          .addEventListener('change', (e) => {
-            rrSetting.isCoverSlide = e.target.checked;
-          });
+        document.querySelector('#rr-cover-slide').addEventListener('change', (e) => {
+          rrSetting.isCoverSlide = e.target.checked;
+        });
         break;
       default:
         break;

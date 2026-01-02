@@ -25,7 +25,7 @@ if (!inputRegex.test(search)) {
 const parts = search.split(' ');
 const bookName = parts[0];
 
-const { books } = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/index.json`));
+const { books } = JSON.parse(fs.readFileSync(`./public/resources/bibles/NKRV/index.json`));
 const { no, verseNos } = books.find((book) => book.abbrevTitle === bookName || book.title === bookName);
 
 // 2. chapter 분리
@@ -48,7 +48,7 @@ console.log('장:', chapter);
 console.log('시작 절:', startVerse);
 console.log('끝 절:', endVerse);
 
-const { verses } = JSON.parse(fs.readFileSync(`./public/bibles/NKRV/${no}/${chapter}.json`));
+const { verses } = JSON.parse(fs.readFileSync(`./public/resources/bibles/NKRV/${no}/${chapter}.json`));
 const results = {};
 for (let i = startVerse; i <= endVerse; i++) {
   results[i] = verses[i];

@@ -25,13 +25,10 @@ const modalModifyBtn = document.querySelector('#modal-modify-btn');
 const modalSelectBtn = document.querySelector('#modal-select-btn');
 const modalDeleteBtn = document.querySelector('#modal-delete-btn');
 
-modalTitle.addEventListener(
-  'keyup',
-  (e) => (modalHeader.innerHTML = e.target.value)
-);
+modalTitle.addEventListener('keyup', (e) => (modalHeader.innerHTML = e.target.value));
 
 async function searchSong(query, searchBy, pageNum) {
-  const response = await fetch(`/song?${searchBy}=${query}&page=${pageNum}`);
+  const response = await fetch(`/api/song?${searchBy}=${query}&page=${pageNum}`);
 
   if (!response.ok) {
     throw new Error('Request failed with status ' + response.status);
@@ -42,7 +39,7 @@ async function searchSong(query, searchBy, pageNum) {
 }
 
 async function getSongById(id) {
-  const response = await fetch(`/song/${id}`);
+  const response = await fetch(`/api/song/${id}`);
 
   if (!response.ok) {
     throw new Error('Request failed with status ' + response.status);
@@ -53,7 +50,7 @@ async function getSongById(id) {
 }
 
 async function saveSong(newSong) {
-  const response = await fetch(`/song`, {
+  const response = await fetch(`/api/song`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -70,7 +67,7 @@ async function saveSong(newSong) {
 }
 
 async function modifySong(id, modifiedSong) {
-  const response = await fetch(`/song/${id}`, {
+  const response = await fetch(`/api/song/${id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -87,7 +84,7 @@ async function modifySong(id, modifiedSong) {
 }
 
 async function deleteSong(id) {
-  const response = await fetch(`/song/${id}`, {
+  const response = await fetch(`/api/song/${id}`, {
     method: 'DELETE',
   });
 
@@ -167,9 +164,7 @@ async function handleModifyBtnClick(id) {
     songDetailModal.hide();
 
     // setlist에 선택되어있는 경우 setList값 업데이트
-    const itemInSetList = setList.find(
-      (item) => item.type === 'lyrics' && item.data.id === id
-    );
+    const itemInSetList = setList.find((item) => item.type === 'lyrics' && item.data.id === id);
     if (itemInSetList) {
       itemInSetList.data.title = song.title;
       itemInSetList.data.lyrics = song.lyrics;
@@ -227,27 +222,19 @@ function showNewSongModal() {
 // lyrics modal : 조회, 수정, 삭제
 async function showSongDetailModal(id) {
   try {
-    const { title, lyrics, memo, createdAt, updatedAt, author, editor } =
-      await getSongById(id);
+    const { title, lyrics, memo, createdAt, updatedAt, author, editor } = await getSongById(id);
 
     modalHeader.innerHTML = title;
     modalHeader.className = 'modal-title fs-5 text-truncate';
     modalTitle.value = title;
     modalLyrics.value = lyrics;
-    modalLyrics.style.height = `${Math.max(
-      lyrics.split('\n').length * 20 + 38,
-      280
-    )}px`;
+    modalLyrics.style.height = `${Math.max(lyrics.split('\n').length * 20 + 38, 280)}px`;
     modalMemo.value = memo;
     modalSongDetails.hidden = false;
     modalSongDetails.open = false;
-    modalCreatedAt.innerHTML = `등록 : ${formatDateTime(createdAt)}, ${
-      author.username
-    }`;
+    modalCreatedAt.innerHTML = `등록 : ${formatDateTime(createdAt)}, ${author.username}`;
     modalCreatedAt.hidden = false;
-    modalUpdatedAt.innerHTML = `수정 : ${formatDateTime(updatedAt)}, ${
-      editor?.username
-    }`;
+    modalUpdatedAt.innerHTML = `수정 : ${formatDateTime(updatedAt)}, ${editor?.username}`;
     modalUpdatedAt.hidden = false;
 
     modalSelectBtn.onclick = () => {
@@ -269,9 +256,7 @@ async function showSongDetailModal(id) {
   }
 }
 
-const hymnDivideLinesBtn = document.querySelector(
-  '#song-modal-divide-lines-btn'
-);
+const hymnDivideLinesBtn = document.querySelector('#song-modal-divide-lines-btn');
 if (hymnDivideLinesBtn) {
   hymnDivideLinesBtn.addEventListener('click', () => {
     if (modalLyrics.value.trim().length <= 0) {
@@ -280,13 +265,9 @@ if (hymnDivideLinesBtn) {
       return;
     }
 
-    const linesPerSlide =
-      Number(document.querySelector('#lines-per-slide').value) || 2;
+    const linesPerSlide = Number(document.querySelector('#lines-per-slide').value) || 2;
     modalLyrics.value = divideTextByLines(modalLyrics.value, linesPerSlide);
-    modalLyrics.style.height = `${Math.max(
-      modalLyrics.value.split('\n').length * 20 + 38,
-      280
-    )}px`;
+    modalLyrics.style.height = `${Math.max(modalLyrics.value.split('\n').length * 20 + 38, 280)}px`;
     modalLyrics.focus();
   });
 }
@@ -334,9 +315,7 @@ function renderLyricsTable(songs, pageNum) {
     // type
     td = document.createElement('td');
     const span = document.createElement('span');
-    span.className = `badge rounded-pill ${
-      song.type === 'HYMN' ? 'text-bg-warning' : 'text-bg-info'
-    }`;
+    span.className = `badge rounded-pill ${song.type === 'HYMN' ? 'text-bg-warning' : 'text-bg-info'}`;
     span.innerHTML = song.type;
     td.appendChild(span);
     tr.appendChild(td);
@@ -409,14 +388,8 @@ function renderPagination(totalCount, currentPage, query) {
   li.appendChild(a);
   paginationElement.appendChild(li);
 
-  const pageStart =
-    currentPage >= totalPage - 4
-      ? Math.max(totalPage - 7, 2)
-      : Math.max(currentPage - 3, 2);
-  const pageEnd =
-    currentPage <= 5 && totalPage > 8
-      ? 8
-      : Math.min(currentPage + 3, totalPage - 1);
+  const pageStart = currentPage >= totalPage - 4 ? Math.max(totalPage - 7, 2) : Math.max(currentPage - 3, 2);
+  const pageEnd = currentPage <= 5 && totalPage > 8 ? 8 : Math.min(currentPage + 3, totalPage - 1);
 
   // ...
   if (pageStart > 2) {
@@ -474,9 +447,7 @@ function renderPagination(totalCount, currentPage, query) {
 
   // next
   li = document.createElement('li');
-  li.className = `page-item text-nowrap ${
-    currentPage + 1 > totalPage ? 'disabled' : ''
-  }`;
+  li.className = `page-item text-nowrap ${currentPage + 1 > totalPage ? 'disabled' : ''}`;
   a = document.createElement('a');
   a.className = 'page-link';
   a.innerHTML = '다음';

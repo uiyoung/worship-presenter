@@ -244,7 +244,7 @@ function defineSlideMastersInTypes(pptx, types) {
         if (rrSetting.isCoverSlide) {
           pptx.defineSlideMaster({
             title: 'RR_TITLE_SLIDE',
-            background: { path: '/backgrounds/rr-background.jpg' },
+            background: { path: '/resources/backgrounds/rr-background.jpg' },
             objects: [
               {
                 placeholder: {
@@ -291,7 +291,7 @@ function defineSlideMastersInTypes(pptx, types) {
         // rr content slide master
         pptx.defineSlideMaster({
           title: 'RR_CONTENT_SLIDE',
-          background: { path: '/backgrounds/rr-background.jpg' },
+          background: { path: '/resources/backgrounds/rr-background.jpg' },
           objects: [
             {
               rect: {
@@ -392,9 +392,7 @@ function generateBible(pptx, sectionTitle, data) {
   // bible slide
   const sortedKeys = Object.keys(verses).sort((a, b) => a - b);
   for (const key of sortedKeys) {
-    const bibleTitle = `${bookName} ${chapter}${
-      bookName === '시편' ? '편' : '장'
-    } ${key}절`;
+    const bibleTitle = `${bookName} ${chapter}${bookName === '시편' ? '편' : '장'} ${key}절`;
 
     const bibleSlide = pptx.addSlide({
       masterName: 'BIBLE_SLIDE',

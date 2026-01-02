@@ -50,11 +50,3 @@ export function logout(req, res, next) {
     next(error);
   }
 }
-
-export function renderLogin(req, res, next) {
-  res.render('pages/login.njk', { title: 'Login - Worship Presneter' });
-}
-
-export function renderSignup(req, res, next) {
-  res.render('pages/signup.njk', { title: 'Sign Up- Worship Presneter' });
-}
