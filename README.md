@@ -1,11 +1,11 @@
 # Worship Presenter
+
 https://worship.uiyoung.com
 
 create ppt for worship and manage setlists
 
 ![Picture1](https://github.com/uiyoung/worship-presenter/assets/8945807/b76e6a5a-dc46-4bf5-961a-c1630f0c794b)
 ![Picture2](https://github.com/uiyoung/worship-presenter/assets/8945807/8dc4c5ae-9f71-430f-8969-e445b3918113)
-
 
 ## Features
 
@@ -19,18 +19,19 @@ create ppt for worship and manage setlists
 ## How to Run
 
 1. set `.env`
-    ```
-    DATABASE_URL=postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public
-    COOKIE_SECRET=""
-    ```
+   ```
+   DATABASE_URL=postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public
+   COOKIE_SECRET=""
+   ```
 2. run
-    ```bash
-    # install libraries
-    npm i
-    
-    # run
-    npm start
-    ```
+
+   ```bash
+   # install libraries
+   npm i
+
+   # run
+   npm start
+   ```
 
 ## environments
 
@@ -44,3 +45,7 @@ create ppt for worship and manage setlists
 ## todo
 
 - [trello](https://trello.com/b/7oiX5itL/todo)
+
+## Copyright Information
+
+- <a href="https://www.flaticon.com/free-icons/hymns" title="hymns icons">Hymns icons created by Flat Icons - Flaticon</a>
