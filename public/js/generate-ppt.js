@@ -1,62 +1,4 @@
-const downloadBtn = document.querySelector('#download-btn');
-
-downloadBtn.addEventListener('click', (e) => {
-  // add loading spinner to button
-  const originalBtnText = e.target.innerHTML;
-  e.target.innerHTML = '';
-  const spinner = document.createElement('span');
-  spinner.className = 'spinner-border spinner-border-sm mx-2';
-  e.target.appendChild(spinner);
-  e.target.innerHTML += 'PPT 생성 중...';
-  e.target.disabled = true;
-
-  // 1. Create a new Presentation
-  const pptx = new PptxGenJS();
-  pptx.author = 'suy';
-  pptx.company = 'github.com/uiyoung';
-  pptx.title = 'Worship Presenter';
-  pptx.layout = 'LAYOUT_WIDE';
-
-  // 1-1. define slide masters
-  const types = [...new Set(setList.map((item) => item.type))];
-  defineSlideMastersInTypes(pptx, types);
-
-  // 2. generate slides by type
-  setList.forEach(({ type, data }, idx) => {
-    const sectionTitle = `${idx}_${data.title}`;
-
-    switch (type) {
-      case 'lyrics':
-        generateLyrics(pptx, sectionTitle, data);
-        break;
-      case 'hymn-image':
-        generateHymn(pptx, sectionTitle, data);
-        break;
-      case 'bible':
-        generateBible(pptx, sectionTitle, data);
-        break;
-      case 'responsive-reading':
-        generateResponsiveReading(pptx, sectionTitle, data);
-        break;
-      default:
-        break;
-    }
-  });
-
-  // 3. Save the Presentation
-  const filename = filenameInput.value;
-  pptx
-    .writeFile({ fileName: `${filename}.pptx` })
-    .then((fileName) => {
-      console.log(`created file: ${fileName}`);
-    })
-    .catch((error) => console.error(error))
-    .finally(() => {
-      downloadBtn.innerHTML = originalBtnText;
-      downloadBtn.disabled = false;
-      settingsModal.hide();
-    });
-});
+import { lyricsSetting, hymnSetting, bibleSetting, rrSetting } from './settings-modal.js';
 
 // options
 const CM_1 = 28.346; // 1cm = 28.346pt
@@ -562,4 +504,32 @@ function generateResponsiveReading(pptx, sectionTitle, data) {
       );
     }
   });
+}
+
+export async function generatePPT({ setList, filename }) {
+  // 1. Create a new Presentation
+  const pptx = new PptxGenJS();
+  pptx.author = 'suy';
+  pptx.company = 'worship.uiyoung.com';
+  pptx.title = 'Worship Presenter';
+  pptx.layout = 'LAYOUT_WIDE';
+
+  // 1-1. define slide masters
+  const types = [...new Set(setList.map((item) => item.type))];
+  defineSlideMastersInTypes(pptx, types);
+
+  // 2. generate slides by type
+  const generators = {
+    lyrics: generateLyrics,
+    'hymn-image': generateHymn,
+    bible: generateBible,
+    'responsive-reading': generateResponsiveReading,
+  };
+
+  setList.forEach(({ type, data }, idx) => {
+    const sectionTitle = `${idx}_${data.title}`;
+    generators[type]?.(pptx, sectionTitle, data);
+  });
+
+  pptx.writeFile({ fileName: `${filename}.pptx` });
 }

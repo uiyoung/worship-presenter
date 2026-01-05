@@ -1,7 +1,10 @@
+import { addToSetList } from './set-list.js';
+import { divideTextByLines } from './utils.js';
+
 let hymnInfo = null;
 let hymnChoices = null;
 
-const hymnCarousel = document.querySelector('#hymn-carousel');
+// const hymnCarousel = document.querySelector('#hymn-carousel');
 const hymnIndicators = document.querySelector('#hymn-indicators');
 const hymnSlide = document.querySelector('#hymn-slide');
 const hymnImageBtn = document.querySelector('#hymn-image-btn');
@@ -89,18 +92,22 @@ function renderHymnLyrics(data) {
     modalBody.innerHTML = '';
 
     for (const key in verses) {
-      const div = document.createElement('div');
-      div.className = 'mb-3';
       const label = document.createElement('label');
       label.htmlFor = `textarea${key}`;
       label.className = 'form-label';
       label.innerHTML = `${key}절`;
-      div.appendChild(label);
+
       const textarea = document.createElement('textarea');
+      textarea.id = `textarea${key}`;
       textarea.className = 'form-control hymn-textarea';
       textarea.value = `${verses[key]}`;
       textarea.rows = verses[key].split('\n').length;
+
+      const div = document.createElement('div');
+      div.className = 'mb-3';
+      div.appendChild(label);
       div.appendChild(textarea);
+
       modalBody.appendChild(div);
     }
 
@@ -184,7 +191,7 @@ function renderHymnLyrics(data) {
   selectLyricsBtn.href = '#';
   selectLyricsBtn.className = 'btn btn-primary';
   selectLyricsBtn.innerHTML = `가사 선택`;
-  selectLyricsBtn.onclick = (e) => {
+  selectLyricsBtn.addEventListener('click', (e) => {
     e.preventDefault();
 
     // convert hymn verses to lyrics string
@@ -194,17 +201,15 @@ function renderHymnLyrics(data) {
     }
     const lyrics = lyricsArr.join('\n\n');
 
-    setList.push({
-      no: setList.length + 1,
+    addToSetList({
       type: 'lyrics',
       data: {
         title: `찬송가 ${no}장-${title}`,
         lyrics,
       },
     });
+  });
 
-    renderSetlist();
-  };
   hymnCardBody.appendChild(selectLyricsBtn);
 }
 
@@ -261,20 +266,18 @@ function renderHymnImages(data) {
   a.href = '#';
   a.className = 'btn btn-primary';
   a.innerHTML = `이미지 선택`;
-  a.onclick = (e) => {
+  a.addEventListener('click', (e) => {
     e.preventDefault();
 
-    setList.push({
-      no: setList.length + 1,
+    addToSetList({
       type: 'hymn-image',
       data: {
         title: `찬송가 ${no}장-${title}`,
         images: images.map((image) => `/resources/hymn/images/${no}/${image}`),
       },
     });
+  });
 
-    renderSetlist();
-  };
   hymnImageBtn.appendChild(a);
 }
 
@@ -335,7 +338,7 @@ async function setHymnSelectOptions(data) {
   }
 }
 
-async function initHymn() {
+export async function initHymn() {
   try {
     if (!hymnInfo) {
       hymnInfo = await getHymnInfo();
@@ -343,6 +346,7 @@ async function initHymn() {
       hymnSelect.value = '';
       hymnSelect.dispatchEvent(new Event('change'));
     }
+
     hymnChoices.showDropdown();
   } catch (error) {
     console.error(error);

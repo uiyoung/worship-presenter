@@ -1,5 +1,8 @@
+import { addToSetList } from './set-list.js';
+
 let bibleInfo = null;
 
+const BIBLE_VERSION = 'NKRV';
 const bookSelect = document.querySelector('#book');
 const chapterSelect = document.querySelector('#chapter');
 const verseSelect = document.querySelector('#verse');
@@ -42,7 +45,7 @@ verseSelect.addEventListener('change', async (e) => {
 
 bibleInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') {
-    searchBibleBtn.dispatchEvent(new Event('click'));
+    searchBibleBtn.click();
   }
 });
 
@@ -85,8 +88,10 @@ searchBibleBtn.addEventListener('click', async () => {
     alert('시작하는 절이 끝나는 절 보다 큽니다.');
     return;
   }
-  const response = await fetch(`/resources/bibles/NKRV/${bookIndex}/${chapter}.json`);
-  const { verses } = await response.json();
+  // const response = await fetch(`/resources/bibles/${BIBLE_VERSION}/${bookIndex}/${chapter}.json`);
+  // const { verses } = await response.json();
+
+  const { verses } = await getBible(bookIndex, chapter);
 
   const result = {};
   for (let i = startVerse; i <= endVerse; i++) {
@@ -152,11 +157,11 @@ function renderBible(bibleData) {
 
   const bibleTitle = document.querySelector('#bible-title');
   bibleTitle.innerHTML = title;
+
   const bibleSelectAllBtn = document.querySelector('#bible-select-all');
   bibleSelectAllBtn.hidden = false;
-  bibleSelectAllBtn.onclick = () => {
-    setList.push({
-      no: setList.length + 1,
+  bibleSelectAllBtn.addEventListener('click', () => {
+    addToSetList({
       type: 'bible',
       data: {
         title,
@@ -165,8 +170,7 @@ function renderBible(bibleData) {
         verses,
       },
     });
-    renderSetlist();
-  };
+  });
 
   const bibleList = document.querySelector('#bible-list');
   bibleList.innerHTML = '';
@@ -199,9 +203,8 @@ function renderBible(bibleData) {
     selectBtn.type = 'button';
     selectBtn.classList = 'btn btn-primary btn-sm text-nowrap align-self-center';
     selectBtn.innerHTML = '선택';
-    selectBtn.onclick = () => {
-      setList.push({
-        no: setList.length + 1,
+    selectBtn.addEventListener('click', () => {
+      addToSetList({
         type: 'bible',
         data: {
           title: `${bookName} ${chapter}${bookName === '시편' ? '편' : '장'} ${key}절`,
@@ -210,8 +213,7 @@ function renderBible(bibleData) {
           verses: { [key]: verses[key] },
         },
       });
-      renderSetlist();
-    };
+    });
 
     li.appendChild(selectBtn);
     bibleList.appendChild(li);
@@ -230,16 +232,20 @@ async function getBible(bookIndex, chapterIndex) {
   }
 
   try {
-    const response = await fetch(`/resources/bibles/NKRV/${bookIndex}/${chapterIndex}.json`);
-    const result = await response.json();
-    return result;
+    const response = await fetch(`/resources/bibles/${BIBLE_VERSION}/${bookIndex}/${chapterIndex}.json`);
+    if (!response.ok) {
+      throw new Error('Request failed with status ' + response.status);
+    }
+
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error(error);
   }
 }
 
 async function getBibleInfo() {
-  const response = await fetch('/resources/bibles/NKRV/index.json');
+  const response = await fetch(`/resources/bibles/${BIBLE_VERSION}/index.json`);
   if (!response.ok) {
     throw new Error('Request failed with status ' + response.status);
   }
@@ -248,11 +254,12 @@ async function getBibleInfo() {
   return data;
 }
 
-async function initBible() {
+export async function initBible() {
   try {
     if (!bibleInfo) {
       bibleInfo = await getBibleInfo();
     }
+
     bibleInput.focus();
   } catch (error) {
     console.error(error);

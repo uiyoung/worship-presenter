@@ -1,4 +1,7 @@
-let setList = [];
+import { showSongDetailModal } from './lyrics.js';
+import { showSettigsModal } from './settings-modal.js';
+
+export let setList = [];
 
 const setListEl = document.querySelector('#setlist');
 const clearButton = document.querySelector('#clear-button');
@@ -18,9 +21,7 @@ setListEl.addEventListener('dragover', (e) => {
 
   if (draggingElement.getAttribute('no') > afterElement.getAttribute('no')) {
     newIndexAfterDrag = Number(afterElement.getAttribute('no'));
-  } else if (
-    draggingElement.getAttribute('no') < afterElement.getAttribute('no')
-  ) {
+  } else if (draggingElement.getAttribute('no') < afterElement.getAttribute('no')) {
     newIndexAfterDrag = Number(afterElement.getAttribute('no')) - 1;
   } else {
     newIndexAfterDrag = Number(draggingElement.getAttribute('no'));
@@ -34,6 +35,7 @@ clearButton.addEventListener('click', () => {
     alert('선택된 곡이 없습니다.');
     return;
   }
+
   if (!confirm('목록을 비우시겠습니까?')) {
     return;
   }
@@ -42,13 +44,13 @@ clearButton.addEventListener('click', () => {
   renderSetlist();
 });
 
-settingsBtn.addEventListener('click', (e) => {
+settingsBtn.addEventListener('click', () => {
   if (setList.length <= 0) {
     alert('아이템을 먼저 추가해 주세요.');
     return;
   }
 
-  settingsModal.show();
+  showSettigsModal();
 });
 
 function handleSetListItemClick(item) {
@@ -70,7 +72,7 @@ function handleSetListItemClick(item) {
   }
 }
 
-function renderSetlist() {
+export function renderSetlist() {
   setListEl.innerHTML = '';
 
   if (setList.length <= 0) {
@@ -88,25 +90,21 @@ function renderSetlist() {
 
   setList.forEach((item, idx) => {
     const li = document.createElement('li');
-    li.className =
-      'list-group-item rounded-3 border-1 d-flex justify-content-between align-items-center draggable';
+    li.className = 'list-group-item rounded-3 border-1 d-flex justify-content-between align-items-center draggable';
     li.draggable = true;
     li.setAttribute('no', idx);
-    li.onclick = () => handleSetListItemClick(item);
+
+    li.addEventListener('click', () => handleSetListItemClick(item));
     li.addEventListener('dragstart', () => li.classList.add('dragging'));
     li.addEventListener('dragend', () => {
       li.classList.remove('dragging');
-      // console.log('oldIdx:', idx, ', newIdx:', newIndexAfterDrag);
 
-      [setList[idx], setList[newIndexAfterDrag]] = [
-        setList[newIndexAfterDrag],
-        setList[idx],
-      ];
+      [setList[idx], setList[newIndexAfterDrag]] = [setList[newIndexAfterDrag], setList[idx]];
       setList.forEach((s, index) => {
         s.no = index + 1;
       });
+
       renderSetlist();
-      // console.log(setList);
     });
 
     const div = document.createElement('div');
@@ -122,35 +120,19 @@ function renderSetlist() {
     titleAndBadgeDiv.appendChild(titleSpan);
 
     // type badge
+    const badgeTypes = {
+      lyrics: { text: '가사', class: 'text-bg-primary' },
+      'hymn-image': { text: '이미지', class: 'text-bg-warning' },
+      bible: { text: '성경', class: 'text-bg-success' },
+      'responsive-reading': { text: '교독문', class: 'text-bg-secondary' },
+    };
+
     const badgeSpan = document.createElement('span');
-    badgeSpan.classList = 'badge text-bg-primary';
-    let type = '';
+    badgeSpan.classList = 'badge';
+    badgeSpan.classList.add(badgeTypes[item.type].class);
+    badgeSpan.innerHTML = badgeTypes[item.type].text;
 
-    // TODO: change to object
-    switch (item.type) {
-      case 'lyrics':
-        type = '가사';
-        badgeSpan.classList.add('text-bg-primary');
-        break;
-      case 'hymn-image':
-        type = '이미지';
-        badgeSpan.classList.add('text-bg-warning');
-        break;
-      case 'bible':
-        type = '성경';
-        badgeSpan.classList.add('text-bg-success');
-        break;
-      case 'responsive-reading':
-        type = '교독문';
-        badgeSpan.classList.add('text-bg-secondary');
-        break;
-      default:
-        break;
-    }
-
-    badgeSpan.innerHTML = `${type} `;
     titleAndBadgeDiv.appendChild(badgeSpan);
-
     div.appendChild(titleAndBadgeDiv);
 
     // lyrics preview line
@@ -168,23 +150,47 @@ function renderSetlist() {
     removeBtn.onclick = (e) => {
       e.preventDefault();
       e.stopPropagation();
+
       const listItem = removeBtn.parentNode;
       const targetIdx = Array.from(setListEl.children).indexOf(listItem);
       setList = setList.filter((_, index) => index !== targetIdx);
       renderSetlist();
     };
-    li.appendChild(removeBtn);
 
+    li.appendChild(removeBtn);
     setListEl.append(li);
   });
+}
 
-  // console.log(setList);
+export function addToSetList(item) {
+  setList.push({
+    no: setList.length + 1,
+    ...item,
+  });
+
+  renderSetlist();
+}
+
+export function updateLyricsInSetList(id, newData) {
+  setList = setList.map((item) => {
+    if (item.type === 'lyrics' && item.data.id === id) {
+      return {
+        ...item,
+        data: {
+          ...item.data,
+          title: newData.title,
+          lyrics: newData.lyrics,
+        },
+      };
+    }
+    return item;
+  });
+
+  renderSetlist();
 }
 
 function getDragAfterElement(y) {
-  const notDraggedElements = [
-    ...setListEl.querySelectorAll('.draggable:not(.dragging)'),
-  ];
+  const notDraggedElements = [...setListEl.querySelectorAll('.draggable:not(.dragging)')];
 
   return notDraggedElements.reduce(
     (closest, child) => {

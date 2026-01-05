@@ -1,17 +1,8 @@
-const settingsModalEl = document.querySelector('#settingsModal');
-const settingsModal = new bootstrap.Modal(settingsModalEl);
+import { setList } from './set-list.js';
+import { generatePPT } from './generate-ppt.js';
+import { getCurrentDate } from './utils.js';
 
-const filenameInput = document.querySelector('#modal-filename');
-const bgColorInput = document.querySelector('#bg-color-input');
-const fontColorInput = document.querySelector('#font-color-input');
-const presetColorRadios = document.querySelectorAll('input[name="preset-color"]');
-const presetCustomBtn = document.querySelector('#preset-color-custom');
-const horizontalAlignRadios = document.querySelectorAll('input[name="horizontal-align"]');
-const verticalAlignRadios = document.querySelectorAll('input[name="vertical-align"]');
-const previewDiv = document.querySelector('#preview-ppt');
-const previewText = document.querySelector('#preview-text');
-
-const lyricsSetting = {
+export const lyricsSetting = {
   isCoverSlide: true,
   bgColor: '#009933',
   fontColor: '#FFFFFF',
@@ -26,7 +17,7 @@ const lyricsSetting = {
   valign: 'bottom', // vertical align(top, middle, bottom)
 };
 
-const hymnSetting = {
+export const hymnSetting = {
   isCoverSlide: true,
   cover: {
     fontSize1: 18,
@@ -39,7 +30,7 @@ const hymnSetting = {
   },
 };
 
-const bibleSetting = {
+export const bibleSetting = {
   isCoverSlide: false, // TODO: set true when bible cover slide implemented
   isFullScreen: true,
   cover: {
@@ -64,7 +55,7 @@ const bibleSetting = {
   subtitle: {},
 };
 
-const rrSetting = {
+export const rrSetting = {
   isCoverSlide: true,
   cover: {
     fontFace: '나눔명조 ExtraBold',
@@ -88,11 +79,6 @@ const alignProps = {
   middle: 'center',
   bottom: 'end',
 };
-
-settingsModalEl.addEventListener('shown.bs.modal', (e) => {
-  initSettingsModal();
-  filenameInput.focus();
-});
 
 const colorsByPreset = {
   preset1: {
@@ -127,6 +113,24 @@ const colorsByPreset = {
     fontGlow: undefined,
   },
 };
+
+const settingsModalEl = document.querySelector('#settingsModal');
+const settingsModal = new bootstrap.Modal(settingsModalEl);
+
+const filenameInput = document.querySelector('#modal-filename');
+const bgColorInput = document.querySelector('#bg-color-input');
+const fontColorInput = document.querySelector('#font-color-input');
+const presetColorRadios = document.querySelectorAll('input[name="preset-color"]');
+const presetCustomBtn = document.querySelector('#preset-color-custom');
+const horizontalAlignRadios = document.querySelectorAll('input[name="horizontal-align"]');
+const verticalAlignRadios = document.querySelectorAll('input[name="vertical-align"]');
+const previewDiv = document.querySelector('#preview-ppt');
+const previewText = document.querySelector('#preview-text');
+
+settingsModalEl.addEventListener('shown.bs.modal', (e) => {
+  initSettingsModal();
+  filenameInput.focus();
+});
 
 bgColorInput.addEventListener('input', (e) => {
   presetColorRadios.forEach((radio) => (radio.checked = false));
@@ -260,3 +264,32 @@ function initSettingsModal() {
 
   renderPreviewLyrics();
 }
+
+export function showSettigsModal() {
+  settingsModal.show();
+}
+
+const downloadBtn = document.querySelector('#download-btn');
+downloadBtn.addEventListener('click', async (e) => {
+  // add loading spinner to button
+  const originalBtnText = e.target.innerHTML;
+  e.target.innerHTML = '';
+
+  const spinner = document.createElement('span');
+  spinner.className = 'spinner-border spinner-border-sm mx-2';
+
+  e.target.appendChild(spinner);
+  e.target.innerHTML += 'PPT 생성 중...';
+  e.target.disabled = true;
+
+  const filename = filenameInput.value;
+  try {
+    await generatePPT({ setList, filename });
+  } catch (error) {
+    console.error(error);
+  } finally {
+    downloadBtn.innerHTML = originalBtnText;
+    downloadBtn.disabled = false;
+    settingsModal.hide();
+  }
+});

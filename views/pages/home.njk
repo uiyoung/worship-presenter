@@ -2,6 +2,9 @@
 
 {% block css %}
   <link rel="stylesheet" href="/css/presenter.css" />
+
+  <!-- Choices.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 {% endblock %}
 
 {% block content %}
@@ -32,14 +35,10 @@
 {% endblock %}
 
 {% block script %}
-  <script src="/js/utils.js"></script>
-  <script src="/js/settings-modal.js"></script>
-  <script src="/js/set-list.js"></script>
-  <script src="/js/lyrics.js"></script>
-  <script src="/js/hymn.js"></script>
-  <script src="/js/bible.js"></script>
-  <script src="/js/responsive-reading.js"></script>
-  <script src="/js/contents-tab.js"></script>
+  <!-- Choices.js  -->
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <!-- PptxGenJS -->
   <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.bundle.js"></script>
-  <script src="/js/generate-ppt.js"></script>
+
+  <script type="module" src="/js/main.js"></script> 
 {% endblock %}

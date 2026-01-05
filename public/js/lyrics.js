@@ -1,3 +1,6 @@
+import { addToSetList, updateLyricsInSetList } from './set-list.js';
+import { formatDateTime, divideTextByLines, cleanText } from './utils.js';
+
 const ITEMS_PER_PAGE = 10;
 
 const songDetailModalEl = document.querySelector('#songDetailModal');
@@ -8,7 +11,6 @@ songDetailModalEl.addEventListener('shown.bs.modal', (e) => {
 });
 
 const newLyricsBtn = document.querySelector('#new-lyrics-button');
-
 if (newLyricsBtn) {
   newLyricsBtn.addEventListener('click', showNewSongModal);
 }
@@ -164,15 +166,10 @@ async function handleModifyBtnClick(id) {
     songDetailModal.hide();
 
     // setlist에 선택되어있는 경우 setList값 업데이트
-    const itemInSetList = setList.find((item) => item.type === 'lyrics' && item.data.id === id);
-    if (itemInSetList) {
-      itemInSetList.data.title = song.title;
-      itemInSetList.data.lyrics = song.lyrics;
-      renderSetlist();
-    }
+    updateLyricsInSetList(id, song);
   } catch (error) {
     console.error(error);
-    alert('수정 실패', error.message);
+    alert(`수정 실패 ${error.message}`);
   }
 }
 
@@ -190,11 +187,11 @@ async function handleDeleteBtnClick(id) {
     songDetailModal.hide();
   } catch (error) {
     console.error(error);
-    alert('삭제 실패', error.message);
+    alert(`삭제 실패 ${error.message}`);
   }
 }
 
-// modal : 등록
+// lyrics modal : 등록
 function showNewSongModal() {
   modalHeader.innerHTML = '가사 등록';
   modalTitle.value = '';
@@ -220,7 +217,7 @@ function showNewSongModal() {
 }
 
 // lyrics modal : 조회, 수정, 삭제
-async function showSongDetailModal(id) {
+export async function showSongDetailModal(id) {
   try {
     const { title, lyrics, memo, createdAt, updatedAt, author, editor } = await getSongById(id);
 
@@ -349,10 +346,9 @@ function renderLyricsTable(songs, pageNum) {
   });
 }
 
-// TODO: DRY!
 function renderPagination(totalCount, currentPage, query) {
-  const paginationElement = document.querySelector('#search-pagination');
-  paginationElement.innerHTML = '';
+  const container = document.querySelector('#search-pagination');
+  container.innerHTML = '';
 
   if (totalCount <= 0) {
     return;
@@ -360,104 +356,200 @@ function renderPagination(totalCount, currentPage, query) {
 
   const totalPage = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
-  // prev
-  let li = document.createElement('li');
-  li.className = `page-item text-nowrap ${currentPage == 1 ? 'disabled' : ''}`;
-  let a = document.createElement('a');
-  a.className = 'page-link';
-  a.innerHTML = '이전';
-  a.href = '#';
-  a.onclick = (e) => {
-    e.preventDefault();
-    renderLyrics(query, currentPage - 1);
+  const createPageItem = ({ label, page, active = false, disabled = false, clickable = true }) => {
+    const li = document.createElement('li');
+    li.className = `page-item ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`;
+
+    const a = document.createElement('a');
+    a.className = 'page-link';
+    a.href = '#';
+    a.textContent = label;
+
+    if (clickable && !disabled) {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        renderLyrics(query, page);
+      });
+    }
+
+    li.appendChild(a);
+    return li;
   };
-  li.appendChild(a);
-  paginationElement.appendChild(li);
+
+  const fragment = document.createDocumentFragment();
+
+  // prev
+  const prevPageButton = createPageItem({
+    label: '이전',
+    page: currentPage - 1,
+    disabled: currentPage === 1,
+    clickable: true,
+  });
+  fragment.appendChild(prevPageButton);
 
   // first
-  li = document.createElement('li');
-  li.className = `page-item ${1 === currentPage ? 'active' : ''}`;
-  a = document.createElement('a');
-  a.className = 'page-link';
-  a.innerHTML = 1;
-  a.href = '#';
-  a.onclick = (e) => {
-    e.preventDefault();
-    renderLyrics(query, 1);
-  };
-  li.appendChild(a);
-  paginationElement.appendChild(li);
+  const firstPageButton = createPageItem({
+    label: '1',
+    page: 1,
+    active: currentPage === 1,
+    clickable: true,
+  });
+  fragment.appendChild(firstPageButton);
 
   const pageStart = currentPage >= totalPage - 4 ? Math.max(totalPage - 7, 2) : Math.max(currentPage - 3, 2);
   const pageEnd = currentPage <= 5 && totalPage > 8 ? 8 : Math.min(currentPage + 3, totalPage - 1);
 
-  // ...
+  // 앞쪽 ...
   if (pageStart > 2) {
-    li = document.createElement('li');
-    li.className = `page-item`;
-    a = document.createElement('a');
-    a.className = 'page-link';
-    a.innerHTML = '...';
-    li.appendChild(a);
-    paginationElement.appendChild(li);
+    const ellipsisItem = createPageItem({
+      label: '...',
+      clickable: false,
+      disabled: true,
+    });
+    fragment.appendChild(ellipsisItem);
   }
 
   // currentPage-3 ~ currentPage+3
   for (let i = pageStart; i <= pageEnd; i++) {
-    li = document.createElement('li');
-    li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-    a = document.createElement('a');
-    a.className = 'page-link';
-    a.innerHTML = i;
-    a.href = '#';
-    a.onclick = (e) => {
-      e.preventDefault();
-      renderLyrics(query, i);
-    };
-    li.appendChild(a);
-    paginationElement.appendChild(li);
+    const pageButton = createPageItem({
+      label: i,
+      page: i,
+      active: i === currentPage,
+      clickable: true,
+    });
+    fragment.appendChild(pageButton);
   }
 
-  // ...
+  // 뒤쪽 ...
   if (currentPage + 4 < totalPage) {
-    li = document.createElement('li');
-    li.className = `page-item`;
-    a = document.createElement('a');
-    a.className = 'page-link';
-    a.innerHTML = '...';
-    li.appendChild(a);
-    paginationElement.appendChild(li);
+    const ellipsisItem = createPageItem({
+      label: '...',
+      clickable: false,
+      disabled: true,
+    });
+    fragment.appendChild(ellipsisItem);
   }
 
   // last
   if (totalPage > 1) {
-    li = document.createElement('li');
-    li.className = `page-item ${totalPage === currentPage ? 'active' : ''}`;
-    a = document.createElement('a');
-    a.className = 'page-link';
-    a.innerHTML = totalPage;
-    a.href = '#';
-    a.onclick = (e) => {
-      e.preventDefault();
-      renderLyrics(query, totalPage);
-    };
-    li.appendChild(a);
-    paginationElement.appendChild(li);
+    const lastPageButton = createPageItem({
+      label: totalPage,
+      page: totalPage,
+      active: totalPage === currentPage,
+      clickable: true,
+    });
+    fragment.appendChild(lastPageButton);
   }
 
   // next
-  li = document.createElement('li');
-  li.className = `page-item text-nowrap ${currentPage + 1 > totalPage ? 'disabled' : ''}`;
-  a = document.createElement('a');
-  a.className = 'page-link';
-  a.innerHTML = '다음';
-  a.href = '#';
-  a.onclick = (e) => {
-    e.preventDefault();
-    renderLyrics(query, currentPage + 1);
-  };
-  li.appendChild(a);
-  paginationElement.appendChild(li);
+  const nextPageButton = createPageItem({
+    label: '다음',
+    page: currentPage + 1,
+    disabled: currentPage === totalPage,
+    clickable: true,
+  });
+  fragment.appendChild(nextPageButton);
+
+  container.appendChild(fragment);
+
+  // // prev
+  // let li = document.createElement('li');
+  // li.className = `page-item text-nowrap ${currentPage == 1 ? 'disabled' : ''}`;
+  // let a = document.createElement('a');
+  // a.className = 'page-link';
+  // a.innerHTML = '이전';
+  // a.href = '#';
+  // a.onclick = (e) => {
+  //   e.preventDefault();
+  //   renderLyrics(query, currentPage - 1);
+  // };
+  // li.appendChild(a);
+  // container.appendChild(li);
+
+  // // first
+  // li = document.createElement('li');
+  // li.className = `page-item ${1 === currentPage ? 'active' : ''}`;
+  // a = document.createElement('a');
+  // a.className = 'page-link';
+  // a.innerHTML = 1;
+  // a.href = '#';
+  // a.onclick = (e) => {
+  //   e.preventDefault();
+  //   renderLyrics(query, 1);
+  // };
+  // li.appendChild(a);
+  // container.appendChild(li);
+
+  // const pageStart = currentPage >= totalPage - 4 ? Math.max(totalPage - 7, 2) : Math.max(currentPage - 3, 2);
+  // const pageEnd = currentPage <= 5 && totalPage > 8 ? 8 : Math.min(currentPage + 3, totalPage - 1);
+
+  // // ...
+  // if (pageStart > 2) {
+  //   li = document.createElement('li');
+  //   li.className = `page-item`;
+  //   a = document.createElement('a');
+  //   a.className = 'page-link';
+  //   a.innerHTML = '...';
+  //   li.appendChild(a);
+  //   container.appendChild(li);
+  // }
+
+  // // currentPage-3 ~ currentPage+3
+  // for (let i = pageStart; i <= pageEnd; i++) {
+  //   li = document.createElement('li');
+  //   li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+  //   a = document.createElement('a');
+  //   a.className = 'page-link';
+  //   a.innerHTML = i;
+  //   a.href = '#';
+  //   a.onclick = (e) => {
+  //     e.preventDefault();
+  //     renderLyrics(query, i);
+  //   };
+  //   li.appendChild(a);
+  //   container.appendChild(li);
+  // }
+
+  // // ...
+  // if (currentPage + 4 < totalPage) {
+  //   li = document.createElement('li');
+  //   li.className = `page-item`;
+  //   a = document.createElement('a');
+  //   a.className = 'page-link';
+  //   a.innerHTML = '...';
+  //   li.appendChild(a);
+  //   container.appendChild(li);
+  // }
+
+  // // last
+  // if (totalPage > 1) {
+  //   li = document.createElement('li');
+  //   li.className = `page-item ${totalPage === currentPage ? 'active' : ''}`;
+  //   a = document.createElement('a');
+  //   a.className = 'page-link';
+  //   a.innerHTML = totalPage;
+  //   a.href = '#';
+  //   a.onclick = (e) => {
+  //     e.preventDefault();
+  //     renderLyrics(query, totalPage);
+  //   };
+  //   li.appendChild(a);
+  //   container.appendChild(li);
+  // }
+
+  // // next
+  // li = document.createElement('li');
+  // li.className = `page-item text-nowrap ${currentPage + 1 > totalPage ? 'disabled' : ''}`;
+  // a = document.createElement('a');
+  // a.className = 'page-link';
+  // a.innerHTML = '다음';
+  // a.href = '#';
+  // a.onclick = (e) => {
+  //   e.preventDefault();
+  //   renderLyrics(query, currentPage + 1);
+  // };
+  // li.appendChild(a);
+  // container.appendChild(li);
 }
 
 function renderSearchInfo(query, totalCount) {
@@ -492,8 +584,7 @@ async function selectLyrics(id) {
     const selectedSong = await getSongById(id);
     const { title, lyrics } = selectedSong;
 
-    setList.push({
-      no: setList.length + 1,
+    addToSetList({
       type: 'lyrics',
       data: {
         id,
@@ -501,8 +592,6 @@ async function selectLyrics(id) {
         lyrics,
       },
     });
-
-    renderSetlist();
   } catch (error) {
     console.error(error);
     alert('select lyrics error', error.message);
@@ -516,10 +605,9 @@ async function renderLyrics(query, pageNum) {
   renderLyricsTable(songs, pageNum);
   renderPagination(totalCount, pageNum, query);
   renderSearchInfo(query, totalCount);
-  renderSetlist();
 }
 
-function initLyrics() {
+export function initLyrics() {
   renderLyrics('%', 1);
   lyricsSearchInput.focus();
 }

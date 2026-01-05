@@ -1,3 +1,5 @@
+import { addToSetList } from './set-list.js';
+
 let rrInfo = null;
 let rrChoices = null;
 
@@ -48,20 +50,18 @@ function renderResponsiveReading(data) {
   a.href = '#';
   a.className = 'btn btn-primary';
   a.innerHTML = `교독문 ${no}번 선택`;
-  a.onclick = (e) => {
+  a.addEventListener('click', (e) => {
     e.preventDefault();
 
-    setList.push({
-      no: setList.length + 1,
+    addToSetList({
       type: 'responsive-reading',
       data: {
         title: `${no}번. ${title}`,
         contents,
       },
     });
+  });
 
-    renderSetlist();
-  };
   rrCardBody.appendChild(a);
 }
 
@@ -115,7 +115,7 @@ async function getResponsiveReadingInfo() {
   return data;
 }
 
-async function initResponsiveReading() {
+export async function initResponsiveReading() {
   try {
     if (!rrInfo) {
       rrInfo = await getResponsiveReadingInfo();
