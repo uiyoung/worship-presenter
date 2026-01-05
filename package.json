@@ -5,8 +5,8 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon -e js,njk,html app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "pm2 start ecosystem.config.cjs --env production",
+    "dev": "nodemon -e js,njk,html app.js"
   },
   "author": "suy",
   "license": "ISC",

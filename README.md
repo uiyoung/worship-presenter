@@ -20,26 +20,32 @@ create ppt for worship and manage setlists
 
 1. set `.env`
    ```
-   DATABASE_URL=postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public
+   DATABASE_URL=postgresql://[johndoe]:[password]@localhost:5432/mydb?schema=public
    COOKIE_SECRET=""
    ```
-2. run
+2. install packages
 
    ```bash
-   # install libraries
-   npm i
-
-   # run
-   npm start
+   $ npm install
    ```
+
+3. run
+   - development env
+     ```bash
+     $ npm run dev
+     ```
+   - production env
+     ```bash
+     $ npm run start
+     ```
 
 ## environments
 
-- Node.js 20
-- Express
+- Node.js 24
+- Express 5
 - Nunjucks
 - [PostgreSQL](https://www.postgresql.org)
-- [Prisma](https://www.prisma.io)
+- [Prisma 7](https://www.prisma.io)
 - [PptxGenJs](https://github.com/gitbrent/PptxGenJS)
 
 ## todo
