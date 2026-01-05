@@ -4,6 +4,7 @@ import session from 'express-session';
 import passport from 'passport';
 import passportConfig from './passport/index.js';
 import nunjucks from 'nunjucks';
+import morgan from 'morgan';
 
 import apiRouter from './routes/api/index.js';
 import viewRouter from './routes/view/index.js';
@@ -13,13 +14,19 @@ const app = express();
 app.set('trust proxy', 1);
 app.set('port', process.env.PORT || 5000);
 app.set('view engine', 'html');
-
 nunjucks.configure('views', { autoescape: true, express: app });
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(morgan('combined'));
+} else {
+  app.use(morgan('dev'));
+}
+
 passportConfig();
 
 app.use(express.static('public'));
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     resave: false,
