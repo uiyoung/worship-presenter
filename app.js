@@ -1,8 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
-import passport from 'passport';
-import passportConfig from './passport/index.js';
+import { initPassport } from './passport/index.js';
 import nunjucks from 'nunjucks';
 import morgan from 'morgan';
 
@@ -11,6 +10,8 @@ import viewRouter from './routes/view/index.js';
 import { notFound, errorHandler } from './middlewares/error.js';
 
 const app = express();
+const passport = initPassport();
+
 app.set('trust proxy', 1);
 app.set('port', process.env.PORT || 5000);
 app.set('view engine', 'html');
@@ -21,8 +22,6 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   app.use(morgan('dev'));
 }
-
-passportConfig();
 
 app.use(express.static('public'));
 app.use(express.json());
@@ -38,6 +37,7 @@ app.use(
     },
   })
 );
+
 app.use(passport.initialize());
 app.use(passport.session());
 

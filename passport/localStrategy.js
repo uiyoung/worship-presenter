@@ -1,15 +1,14 @@
-import passport from 'passport';
-import LocalStrategy from 'passport-local';
+import { Strategy as LocalStrategy } from 'passport-local';
 import bcrypt from 'bcrypt';
 import { prisma } from '../lib/prisma.js';
 
-export default () => {
+export function registerLocalStrategy(passport) {
   passport.use(
     new LocalStrategy(
       {
         usernameField: 'email',
         passwordField: 'password',
-        passReqToCallback: false,
+        session: true,
       },
       async (email, password, done) => {
         try {
@@ -27,7 +26,8 @@ export default () => {
             });
           }
 
-          return done(null, exUser);
+          const { password: _pw, ...userWithoutPassword } = exUser;
+          return done(null, userWithoutPassword);
         } catch (error) {
           console.error(error);
           return done(error);
@@ -35,4 +35,4 @@ export default () => {
       }
     )
   );
-};
+}

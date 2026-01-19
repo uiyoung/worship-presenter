@@ -1,8 +1,10 @@
 import passport from 'passport';
-import localStrategy from './localStrategy.js';
+import { registerLocalStrategy } from './localStrategy.js';
 import { prisma } from '../lib/prisma.js';
 
-export default () => {
+export function initPassport() {
+  registerLocalStrategy(passport);
+
   passport.serializeUser((user, done) => {
     // console.log('serializeUser', user);
     done(null, user.id);
@@ -11,13 +13,15 @@ export default () => {
   passport.deserializeUser(async (id, done) => {
     // console.log('deserializeUser', id);
     try {
-      const user = await prisma.user.findUnique({ where: { id } });
-      const { password, ...userWithoutPassword } = user;
-      done(null, userWithoutPassword);
+      const user = await prisma.user.findUnique({
+        where: { id },
+        omit: { password: true },
+      });
+      done(null, user);
     } catch (error) {
       done(error);
     }
   });
 
-  localStrategy();
-};
+  return passport;
+}
