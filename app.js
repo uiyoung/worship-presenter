@@ -4,6 +4,7 @@ import session from 'express-session';
 import { initPassport } from './passport/index.js';
 import nunjucks from 'nunjucks';
 import morgan from 'morgan';
+import helmet from 'helmet';
 
 import apiRouter from './routes/api/index.js';
 import viewRouter from './routes/view/index.js';
@@ -16,6 +17,8 @@ app.set('trust proxy', 1);
 app.set('port', process.env.PORT || 5000);
 app.set('view engine', 'html');
 nunjucks.configure('views', { autoescape: true, express: app });
+
+app.use(helmet({ contentSecurityPolicy: false }));
 
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan('combined'));
